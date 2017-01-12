@@ -1,0 +1,6 @@
+# Ignore mac chache file
+.DS_Store
+
+# Ignore npms
+/node_modules/
+/header-process-skipped-file-list.txt

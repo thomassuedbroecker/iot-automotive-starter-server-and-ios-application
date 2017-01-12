@@ -1,0 +1,92 @@
+{"templates":
+[
+  {
+    "makeModel": "Honda Accord",
+    "year": 2013,
+    "mileage": 80000,
+    "stars": 5,
+    "hourlyRate": 18,
+    "dailyRate": 44,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/%2713_Honda_Accord_Sedan.JPG/320px-%2713_Honda_Accord_Sedan.JPG",
+    "type": "Sedan",
+    "drive": "FF"
+  },
+  {
+    "makeModel": "Volkswagen Tiguan",
+    "year": 2013,
+    "mileage": 113000,
+    "stars": 3,
+    "hourlyRate": 10,
+    "dailyRate": 35,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/2010_Volkswagen_Tiguan_S_--_04-24-2010.jpg/320px-2010_Volkswagen_Tiguan_S_--_04-24-2010.jpg",
+    "type": "SUV",
+    "drive": "FF"
+  },
+  {
+    "makeModel": "Toyota Highlander",
+    "year": 2008,
+    "mileage": 97000,
+    "stars": 4,
+    "hourlyRate": 20,
+    "dailyRate": 55,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/%2708_Toyota_Highlander_Sport.JPG/320px-%2708_Toyota_Highlander_Sport.JPG",
+    "type": "SUV",
+    "drive": "AWD"
+  },
+  {
+    "makeModel": "Jeep Wrangler",
+    "year": 2007,
+    "mileage": 60000,
+    "stars": 4,
+    "hourlyRate": 15,
+    "dailyRate": 40,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Jeep_Wrangler_Unlimited_JK_%28Remax%29.JPG/320px-Jeep_Wrangler_Unlimited_JK_%28Remax%29.JPG",
+    "type": "SUV",
+    "drive": "AWD"
+  },
+  {
+    "makeModel": "Volkswagen Jetta",
+    "year": 2012,
+    "mileage": 30000,
+    "stars": 2,
+    "hourlyRate": 12,
+    "dailyRate": 34,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/2012_Volkswagen_Jetta_GLI_--_05-24-2012.JPG/320px-2012_Volkswagen_Jetta_GLI_--_05-24-2012.JPG",
+    "type": "Sedan",
+    "drive": "FF"
+  },
+  {
+    "makeModel": "BMW Z4",
+    "year": 2004,
+    "mileage": 72000,
+    "stars": 4,
+    "hourlyRate": 18,
+    "dailyRate": 45,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/%2704-%2705_BMW_Z4_%28Rigaud%29.JPG/320px-%2704-%2705_BMW_Z4_%28Rigaud%29.JPG",
+    "type": "Convertible",
+    "drive": "FR"
+  },
+  {
+    "makeModel": "BMW 335i",
+    "year": 2009,
+    "mileage": 30000,
+    "stars": 4,
+    "hourlyRate": 20,
+    "dailyRate": 50,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/2009_BMW_335i_--_07-13-2009.jpg/320px-2009_BMW_335i_--_07-13-2009.jpg",
+    "type": "Sedan",
+    "drive": "FR"
+  },
+  {
+    "makeModel": "Mini Cooper",
+    "year": 2006,
+    "mileage": 55000,
+    "stars": 3,
+    "hourlyRate": 10,
+    "dailyRate": 35,
+    "thumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Mini-Cooper-Convertible.jpg/320px-Mini-Cooper-Convertible.jpg",
+    "type": "Convertible",
+    "drive": "FF"
+  }
+]
+}
