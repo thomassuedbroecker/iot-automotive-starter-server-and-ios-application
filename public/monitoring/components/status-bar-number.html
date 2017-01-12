@@ -1,0 +1,21 @@
+<strong>{{title}}</strong>
+
+<strong class="vehicleStats orange">
+    <i class="icon-car iconMarginRight white"></i>{{value}}
+</strong>
+<div class="row noBottomPadding" ng-if="value_today || value_week || value_month">
+    <div class="column-4-med column-4-xs" ng-if="value_today">
+        <small class="timeRange">Today</small>
+        <p>{{value_today}}</p>
+    </div>
+    
+    <div class="column-4-med column-4-xs" ng-if="value_week">
+        <small class="timeRange">Week</small>
+        <p>{{value_week}}</p>
+    </div>
+    
+    <div class="column-4-med column-4-xs" ng-if="value_month">
+        <small class="timeRange" ngIf="value_month">Month</small>
+        <p>{{value_month}}</p>
+    </div>
+</div>

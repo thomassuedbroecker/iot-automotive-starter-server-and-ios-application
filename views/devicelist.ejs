@@ -1,0 +1,54 @@
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vehicle Management</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/admin/components/device-list.css" />
+    <link rel="stylesheet" href="/admin/css/style.css" />
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1//js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+	<script src="/admin/components/device-list.component.js"></script>
+	<style>
+		#pageTitle:after {
+			font-weight: 700;
+			content: "IBM IoT for Automotive - Mobility Starter Application - Administration";
+		}
+		@media (max-width: 768px) {
+			#pageTitle:after {
+				font-weight: 400;
+				content: "IoT for Automotive";
+			}
+		}
+	</style>
+</head>
+<body>
+    <header>
+        <div class="container noTopPadding">
+            <div class="floatLeft productTitle">
+                <a ui-sref="overview"><span id="pageTitle"></span></a>
+            </div>
+            <div class="floatRight">
+                <p>ADMIN</p>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+	    <div class="mainContent">
+			<div ng-app="devices">
+				<h4 class="alignCener">Vehicle Management</h4>
+				<device-list></device-list>
+			</div>
+		</div>	
+	</div>
+</body>
+</html>

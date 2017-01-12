@@ -1,0 +1,70 @@
+<div class="device-list-root">
+	<div><span class="col-xs-12 col-sm-12 message" ng-class="{'error': haserror}">{{message}}</span></div>
+	<div class="col-xs-12 col-sm-12 formButtons">
+		<span class="loading" ng-show=requestSending><img src="/images/loading.gif"></span>
+		<button ng-disabled="requestSending" ng-click="onreload()">Reload</button>
+		<button ng-show="!monitorMode" ng-disabled="requestSending" ng-click="oncreate()">Create</button>
+		<button ng-show="!monitorMode" ng-disabled="requestSending||deletedisable" ng-click="ondeleteSelected()">Delete Selected Devices</button>
+	</div>
+	<table class="table-bordered table-hover table-striped table-condensed table-responsive" id="table">
+		<thead>
+			<tr id="header">
+				<th class="centeringCell">#</th>
+				<th class="centeringCell" ng-show="!monitorMode"><input type="checkbox" name="selectall" ng-disabled="requestSending||noContents" ng-model="selectall" ng-click="onselectAll(selectall)"></th>
+				<th>Photo</th>
+				<th class="sortable" ng-click="orderBy='deviceDetails.name';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Name</span>
+					<span ng-show="orderBy=='deviceDetails.name'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='deviceId';ascendings[orderBy]=!ascendings[orderBy]" ng-show="!monitorMode">
+					<span>Device ID</div>
+					<span ng-show="orderBy=='deviceId'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='typeId';ascendings[orderBy]=!ascendings[orderBy]" ng-show="!monitorMode">
+					<span>Device Type</div>
+					<span ng-show="orderBy=='typeId'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='_simulated';ascendings[orderBy]=!ascendings[orderBy]" ng-show="monitorMode">
+					<span>Simulated Car</div>
+					<span ng-show="orderBy=='_simulated'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='registrationDate';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Registration Date</div>
+					<span ng-show="orderBy=='registrationDate'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='connected.lat';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Latitude</span>
+					<span ng-show="orderBy=='connected.lat'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='connected.lng';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Longitude</span>
+					<span ng-show="orderBy=='connected.lng'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='connected.lastUpdatedate';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Last Event Date</span>
+					<span ng-show="orderBy=='connected.lastUpdatedate'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+				<th class="sortable" ng-click="orderBy='connected.status';ascendings[orderBy]=!ascendings[orderBy]">
+					<span>Status</span>
+					<span ng-show="orderBy=='connected.status'" ng-class="ascendings[orderBy]?'ascending':'descending'"><img src="" alt=""></span>
+				</th>
+			</tr>
+		</thead>
+		<tbody id="tbody">
+			<tr ng-repeat="device in alldevices|filter:tableFilter|orderBy:orderBy:!ascendings[orderBy]">
+				<td class="centeringCell">{{$index + 1}}</td>
+				<td class="centeringCell" ng-show="!monitorMode"><input type="checkbox" name="deviceSelection" ng-model="selection[device.deviceId]" ng-change="onselectionChanged(selection[device.deviceId])"></td>
+ 				<td><div style="text-align:center;vertical-align:middle;"><img src="{{device.deviceDetails.model.thumbnailURL}}" width="auto" height="64px"></div></td>
+				<td>{{device.deviceDetails.name}}</td>
+				<td ng-show="!monitorMode"><a href="/admin/ui/device/form?deviceid={{device.deviceId}}&typeid={{device.typeId}}">{{device.deviceId}}</a></td>
+				<td ng-show="!monitorMode">{{device.typeId}}</td>
+				<td ng-show="monitorMode" ng-model="device._simulated=device.typeId=='ConnectedCarDevice'">{{device._simulated}}</td>
+				<td>{{device.registrationDate|dateFormat}}</td>
+				<td>{{device.connected.lat|number:5}}</td>
+				<td>{{device.connected.lng|number:5}}</td>
+				<td>{{device.connected.lastUpdatedate|dateFormat}}</td>
+				<td>{{device.connected.status}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,109 @@
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html>
+<head>
+<title>Data Listing</title>
+<style>
+table, td, th {
+	border: solid 1px; 
+	border-collapse: collapse;
+}
+thead {
+	background-color: cyan;
+}
+</style>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<body>
+	<table id="table" style="display:none">
+		<thead id="thead" ><tr id='header'><th>#</th></tr></thead>
+		<tbody id="tbody" >
+		</tbody>
+	</table>
+	<div id="status">Loading...</div>
+	<script type="text/javascript">
+		// assume the first URL parameter's valie is REST API to be displayed as list
+		var url = $(location).attr('search').split("=")[1];
+		
+		$(document).ready(function(){
+			$.ajax({
+				type: 'GET',
+				url: url,
+				dataType: 'json'
+			}).then(
+				function(response){
+					if(response.length > 0){
+						// columns
+						var columns = {};
+						for(var i=0; i<response.length; i++){
+							var data = response[i];
+							if($.isPlainObject(data)){
+								for(var colName in data){
+									if(colName !== "_rev"){
+										columns[colName]=true;
+									}	
+								}
+							}
+						}
+						columns = Object.keys(columns).sort();
+						
+						// display columns
+						columns.forEach(function(c) {
+							$("#header").append("<th>" + c + "</th>");
+						});
+						
+						// display data
+						response.forEach(function(record, index){
+							var content;
+							if($.isPlainObject(record)){
+								content = "<tr><td>" + (index + 1) + "</td>";
+								columns.forEach(function(c) {
+									var data = record[c];
+									if($.isPlainObject(data)){
+										content = content + "<td>";
+										for(var innerColumn in data){
+											var innerData = data[innerColumn];
+											if(innerColumn === "trip_uuid"){
+												innerData = "<a href='/user/ui/behaviors/" + innerData + "'>" + innerData + "</a>"; 
+											}
+											content = content + "<div>" + innerColumn + " : " + innerData + "</div>";
+										}
+										content = content + "</td>";
+									}else{
+										if (c === "deviceId" || c === "deviceID"){
+											content = content + "<td nowrap><a href='/admin/ui/device/form?deviceid=" + data + "'>" + data + "</a></td>"; 
+										} else {
+											content = content + "<td nowrap>" + (data || "") + "</td>";
+										}
+									}
+								});
+							}else{
+								// not an object
+								content = "<tr><td>" + (index + 1) + "</td><td colspan=" + columns.length + ">" + record + "</td>";
+							}
+							content = content + "</tr>";
+							$("#tbody").append(content);
+						});
+						$("#table").css("display", "");
+						$("#status").html("");
+					}else{
+						$("#status").html("No values");
+					}
+				},
+				function(xhr, status, error) {
+					$("#status").html("error ("+ status+ "): " + error);
+				}
+			); // $ajax
+		});
+	</script>
+</body>
+</html>

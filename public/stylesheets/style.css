@@ -1,0 +1,285 @@
+/**
+ * Copyright 2016 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the IBM License, a copy of which may be obtained at:
+ *
+ * http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+ *
+ * You may not use this file except in compliance with the license.
+ */
+body, html {
+	background-color: #FFF;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	font-family: "HelvBoldIBM","HelveticaNeue-Bold","Helvetica Neue Bold",
+	"HelveticaNeue","Helvetica Neue",Helvetica,Arial,Roboto,sans-serif;
+	color: #0F0F0F;
+}
+body > div {
+  padding: 50px 0px;
+  box-sizing: border-box;
+}
+h1, h2, h3, h4{
+	padding: 0px;
+}
+.bluemix-bar, .container:first-child h2,
+.content div.explain p, .content div.explain a, .install-info h3 {
+	font-family:"HelvRomanIBM","HelveticaNeue-Roman","Helvetica Neue Roman",
+	"HelveticaNeue","Helvetica Neue",Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+.main-section {
+  position: relative;
+  padding: 60px 0px;
+
+}
+
+.explore-info{
+	margin-bottom: 3px;
+}
+.selection-box{
+	padding: 0px 30px;
+}
+.explore-info:first-child .selection-box{
+  float: right;
+  margin-right: 10%;
+}
+.explore-info:last-child .selection-box{
+  float: left;
+  margin-left: 10%;
+}
+.explore-info .selection-box{
+	position: relative;
+	border: 2px solid transparent;
+	width:302px;
+	height: 360px;
+	cursor: pointer;
+}
+.explore-info .selection-box.active, .explore-info .selection-box:hover{
+	border-color: #4A97F8;
+}
+.explore-info .selection-box img{
+	margin-top: 40px;
+	margin-bottom: 20px;
+}
+.explore-info .selection-box img.mobile-img{
+	width: 128px;
+	height: 128px;
+}
+.container{
+	text-align: center;
+}
+.content{
+  margin: auto;
+	float: none;
+}
+.gray-background{
+	background-color: #E7ECEF;
+}
+.bluemix-bar{
+	margin: 0px;
+	padding: 20px 40px;
+	background-color: #20343E;
+	color: #FFF;
+	font-size:21px;
+}
+.container:first-child h2{
+	font-size: 28px;
+	margin-bottom: 40px;
+}
+.content:first-child p{
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+.content div.explain p{
+	font-size: 21px;
+	text-align: left;
+	width: 90%;
+}
+.content div.explain a{
+	margin-top: 40px;
+	font-size: 21px;
+	color: #4581E0;
+	float: left;
+}
+.content div.selection-code>img{
+	width:128px;
+	height:128px;
+	margin-bottom: 60px;
+}
+.content div>img{
+	margin-bottom: 70px;
+	width: 220px;
+	height: 138px;
+	margin-top: 6px;
+}
+.content .image-box>img{
+	margin-top: 60px;
+	margin-bottom: 80px;
+}
+.gray-background .content div.explain img{
+	width: 32px;
+	height: 32px;
+	vertical-align: top;
+}
+.gray-background .content div >.mobile-image,.content div >.mobile-image{
+	height: 120px;
+	width: 120px;
+	border: none;
+}
+.gray-background .arrow-section .content{
+	margin-bottom: 50px;
+}
+.hidden{
+	display: none;
+}
+
+
+/*Arrow*/
+.arrow-section:before, .arrow-section:after,
+.explore-info .selection-box.active:before, .explore-info .selection-box.active:after{
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.arrow-section:before,
+.explore-info .selection-box.active:before{
+  left: calc(50% - 25px);
+  border-left: 23px solid transparent;
+  border-right: 23px solid transparent;
+  border-top: 50px solid #4A97F8;
+}
+.arrow-section:after {
+  top: calc(100% - 4px);
+  left: calc(50% - 25px);
+  border-left: 23px solid transparent;
+  border-right: 23px solid transparent;
+  border-top: 50px solid #FFF;
+}
+.explore-info .selection-box.active:after{
+  top: calc(100% - 4px);
+  left: calc(50% - 25px);
+  border-left: 23px solid transparent;
+  border-right: 23px solid transparent;
+  border-top: 50px solid #E7ECEF;
+}
+.main-section.gray-background{
+	padding-bottom: 40px;
+}
+.main-section.arrow-section:before{
+	border-top-color: #FFF;
+	left: 36%;
+	z-index: 1;
+}
+.main-section.gray-background.arrow-section:before{
+	border-top-color: #E7ECEF;
+}
+.main-section.gray-background.arrow-section:after{
+	display: none;
+}
+
+.install-info{
+	float: left;
+	margin: auto;
+	text-align: left;
+}
+.install-info h3{
+  font-size: 21px;
+}
+.gray-background .content div.install-info>img{
+	border: none;
+	height: 49px;
+	width: 49px;
+	display: inline-block;
+}
+/*IBM TOP LINK*/
+a.ibm-top-link {
+	position: fixed;
+  background: #ececec;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  font-size: 0;
+	right: 1.5rem;
+  bottom: 60px;
+  height: 40px;
+  width: 40px;
+  z-index: 10;
+  overflow: hidden;
+}
+a.ibm-top-link:before,
+a.ibm-top-link:after{
+  top: 9px;
+  left: 8px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+a.ibm-top-link:before{
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 12px solid #000;
+}
+a.ibm-top-link:after{
+	top: 12px;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 12px solid #ececec;
+}
+a.ibm-top-link:hover {
+	background: #000
+}
+a.ibm-top-link:hover:before {
+	border-bottom-color: #FFF;
+}
+a.ibm-top-link:hover:after {
+	border-bottom-color: #000;
+}
+
+.selection-box:first-child h3, .selection-code h3{
+	color: #262626;
+	font-size:21px;
+	margin-bottom: 20px;
+}
+.selection-box:first-child p, .selection-code p{
+	font-size: 16px;
+
+}
+@media only screen and (max-width: 768px){
+  .explore-info .selection-box:before,
+	.explore-info .selection-box:after{
+    display: none;
+  }
+	.content .explore-info .selection-box{
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.list-group .list-item{
+		width: 50%;
+	}
+	.washer-details .washer-content{
+    text-align: left;
+	}
+	.washer-app-info > div{
+  	padding-left: 0px;
+	}
+}
+.footer-links{
+	list-style: none;
+	text-align: left;
+}
+.footer-links .link{
+	font-size: 28px;
+	color: #0F0F0F;
+}
+.footer-links h4{
+	margin-bottom: 20px;
+}

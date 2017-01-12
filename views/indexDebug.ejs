@@ -1,0 +1,43 @@
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+	<head>
+		<title> <%=appName%> </title>
+	</head>
+	<body>
+		<h1><%=appName%> Debug Console</h1>
+		<ul>
+			<li>Devices
+				<ul>
+					<li><a href="/admin/ui/device/form">Create new device</a></li>
+					<li><a href="/admin/ui/device">All registered devices</a></li>
+					<li><a href="/admin/listpage?url=/admin/connectedDevices">Connected devices (deprecated)</a></li>
+				</ul>
+			<li>Reservations
+				<ul>
+					<li><a href="/admin/listpage?url=/admin/allReservations">All Reservations</a></li>
+					<li><a href="/admin/listpage?url=/admin/activeReservations">Active Reservations</a></li>
+					<li><a href="/admin/listpage?url=/admin/closedReservations">Closed Reservations</a></li>
+				</ul>
+			<li>Driver Behavior
+				<ul>
+					<li><a href="/admin/listpage?url=/admin/tripId">All trips (trip_id)</a></li>
+					<li><a href="/admin/listpage?url=/admin/driverInsights">All analyzed trips (trip_uuid)</a></li>
+					<li><a href="/admin/listpage?url=/admin/driverInsights/behaviors">All behaviors</a></li>
+				</ul>
+			<li><a href="/admin/messagesMonitor">Message Monitor</a></li>
+			<li>Monitoring System
+				<ul>
+					<li><a href="/admin/monitoringDataSyncStatus">Get monitoring data synchronizer status</a></li>
+					<li><a href="/admin/monitoringDataSync">Synchronize monitoring system data</a></li>
+				</ul>
+		</ul>
+	</body>
+</html>

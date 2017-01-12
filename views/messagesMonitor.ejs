@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title><%=appName%> Messages Monitor</title>
+
+<link rel='stylesheet' href='/stylesheets/monitorStyle.css' />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1//js/bootstrap.min.js"></script>
+<script>
+	// prefix is 'http' or 'mqtt'
+	function initButtons(prefix) {
+		var play = $("#" + prefix + "-play");
+		var stop = $("#" + prefix + "-stop");
+
+		play.attr("disabled", "disabled");
+
+		stop.bind("click", function() {
+			stop.attr("disabled", "disabled");
+			play.removeAttr("disabled");
+		});
+
+		play.bind("click", function() {
+			play.attr("disabled", "disabled");
+			stop.removeAttr("disabled");
+		});
+	}
+
+	$(document).ready(function() {
+		initButtons("http");
+		initButtons("mqtt");
+		var wsProtocol = (location.protocol == "https:") ? "wss" : "ws"; 
+		var ws = new WebSocket(wsProtocol + '://' + window.location.host + "/admin/messagesMonitor");
+		ws.onmessage = function(evt) {
+			var msg = JSON.parse(evt.data);
+			switch (msg.protocol) {
+			case "http":
+				printHttp(msg.message);
+				break;
+			case "mqtt":
+				printMqtt(msg.message);
+				break;
+			}
+		};
+
+		ws.onopen = function() {
+			console.log("Connection Opened");
+		};
+
+		ws.onclose = function() {
+			console.log("Connection Closed");
+		};
+
+		ws.onerror = function(evt) {
+			console.error("The following error occurred: " + evt);
+		};
+		<%var configStr = JSON.stringify(iotconfig)%>
+		var iotConfig = JSON.parse('<%-configStr%>');
+		document.getElementById("iot_config_json").innerHTML = JSON.stringify(iotConfig, null, 2);
+
+	});
+
+	function iotAppendMessage(textarea, message) {
+		if (textarea && message) {
+			var t = textarea.val().trim();
+			if (t.length === 0) {
+				t = message.trim();
+			} else {
+				t += "\n" + message.trim();
+			}
+			textarea.val(t);
+		}
+	}
+
+	function printHttp(message) {
+		if ($("#http-play").attr('disabled')) {
+			iotAppendMessage($("#HTTPMessages"), message);
+		}
+	};
+
+	function printMqtt(message) {
+		if ($("#mqtt-play").attr('disabled')) {
+			iotAppendMessage($("#MQTTMessages"), message);
+		}
+	};
+
+	
+</script>
+</head>
+<body>
+	<div id="container">
+		<div style="width: 100%;">
+			<center>
+				<div id="inner-container"
+					style="background-color: rgba(0, 0, 0, 0.1); margin-top: 3%; min-height: 70%; width: 75%; border-radius: 8px 8px 8px 8px;">
+
+					<div id="pg_title" style="width: 100%; float: left;">
+						<h2 style="text-align: center;">
+							<span>Messages Monitor</span>
+						</h2>
+					</div>					
+					<div
+						style="background-color: rgba(0, 0, 0, 0.07); width: 96%; margin-left: 2%; margin-right: 2%; margin-top: 2%; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px 4px 4px 4px; float: left;">
+						<!--HTTP-->
+						<center>
+							<div id="Http_t"
+								style="width: 100%; float: left; margin-bottom: 1%; margin-top: 2%;">
+								<div style="float: left; margin-left: 45%;">
+									<h4 style="text-align: center;">HTTP</h4>
+								</div>
+								<div class="btn-group" style="float: left; margin-left: 20px;">
+									<button id="http-play" type="button" class="btn btn-default">Play</button>
+									<button id="http-stop" type="button" class="btn btn-default">Stop</button>
+								</div>
+							</div>
+						</center>
+
+						<div style="float: left; width: 100%;" style="margin-bottom:1%;">
+							<div
+								style="width: 96%; margin-left: 2%; margin-right: 2%; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px 4px 4px 4px; float: left; margin-bottom: 2.5%;">
+								<textarea id="HTTPMessages" rows="6" cols="50" type="text"
+									class="form-control" placeholder="" value=""
+									style="max-height: 200px; max-width: 100%; min-width: 100%;"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div
+						style="background-color: rgba(0, 0, 0, 0.07); width: 96%; margin-left: 2%; margin-right: 2%; margin-bottom: 2%; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px 4px 4px 4px; float: left;">
+						<!--HTTP-->
+						<center>
+							<div id="Mqtt_t"
+								style="width: 100%; float: left; margin-bottom: 1%; margin-top: 2%;">
+								<div style="float: left; margin-left: 45%;">
+									<h4 style="text-align: center;">MQTT</h4>
+								</div>
+								<div class="btn-group" style="float: left; margin-left: 20px;">
+									<button id="mqtt-play" type="button" class="btn btn-default">Play</button>
+									<button id="mqtt-stop" type="button" class="btn btn-default">Stop</button>
+								</div>
+							</div>
+						</center>
+
+						<div style="float: left; width: 100%;" style="margin-bottom:1%;">
+							<div
+								style="width: 96%; margin-left: 2%; margin-right: 2%; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 4px 4px 4px 4px; float: left; margin-bottom: 2.5%;">
+								<textarea id="MQTTMessages" rows="6" cols="50" type="text"
+									class="form-control" placeholder="" value=""
+									style="max-height: 200px; max-width: 100%; min-width: 100%;"></textarea>
+							</div>
+						</div>
+					</div>					
+				</div>
+			</center>
+			<div id="iot_config_div" style="width: 100%; float: left;">
+				<pre id="iot_config_json"></pre>					
+			</div>
+		</div>		
+	</div>
+	<!--end of container-->
+</body>
+</html>

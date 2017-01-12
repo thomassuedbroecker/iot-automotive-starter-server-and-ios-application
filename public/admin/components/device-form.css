@@ -1,0 +1,50 @@
+/**
+ * Copyright 2016 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the IBM License, a copy of which may be obtained at:
+ *
+ * http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+ *
+ * You may not use this file except in compliance with the license.
+ */
+.device-form-root .message {
+	text-align: center; 
+}
+.device-form-root .error {
+	color: red; 
+}
+.device-form-root .readonly {
+	background-color: #efefef; 
+}
+.device-form-root .row {
+	margin-bottom: 5px;
+}
+.device-form-root .fieldLabel {
+	white-space: nowrap;
+	text-align: right; 
+	width: 100%;
+}
+.device-form-root input, select {
+	width: 100%; 
+}
+.device-form-root .formButtons {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: right;
+}
+.device-form-root .formButtons button {
+	margin-left: 5px;
+}
+@media (max-width: 768px) {
+  .device-form-root .fieldLabel {
+	text-align: left; 
+  }
+}
+.device-form-root .loading {
+	margin: 0px;
+	padding: 0px;
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	z-index: 1;
+}

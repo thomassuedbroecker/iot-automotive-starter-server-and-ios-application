@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title>Behaviors Map</title>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!--<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>-->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
+
+<style type="text/css" media="screen">
+#canvas .olControlAttribution {
+    font-size:13px;
+    bottom:3px;
+}
+</style>
+</head>
+<body>
+
+	<div id="canvas" style="width:100%; height:600px"></div>
+	<table id="legend"></table>
+	<script type="text/javascript">
+		var trip_uuid = "<%= trip_uuid %>";
+		if(trip_uuid === "") trip_uuid="latest";
+		var locations = "/user/driverInsights/behaviors/" + trip_uuid;
+		var triplocation = "/user/driverInsights/triproutes/" + trip_uuid;
+		var map;
+        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+        var zoom           = 14;
+		var markerImages = {
+			Start: "/images/MarkerWhite.png",
+			End: "/images/MarkerBlack.png",
+			"Harsh acceleration": "/images/MarkerAqua.png",
+			"Harsh braking": "/images/MarkerBlue.png",
+			"Speeding": "/images/MarkerGreen.png",
+			"Frequent stops": "/images/MarkerIndigo.png",
+			"Frequent acceleration": "/images/MarkerOrange.png",
+			"Frequent braking": "/images/MarkerPink.png",
+			"Sharp turn": "/images/MarkerPurple.png",
+			"Acceleration before turn": "/images/MarkerRed.png",
+			"Over-braking before exiting turn": "/images/MarkerSkyBlue.png",
+			"Fatigued driving": "/images/MarkerYellow.png",
+		};
+		Object.keys(markerImages).forEach(function(key){
+			$("#legend").append("<tr><td><img src='" + markerImages[key] + "' alt='" + key + " icon' width='16'/></td><td>" + key + "</td></tr>");
+		});
+		var ICON_WIDTH = 20;
+		$(document).ready(
+				function(){
+	                map = new OpenLayers.Map("canvas");
+	                var mapnik = new OpenLayers.Layer.OSM(
+    					"OpenStreetMap", 
+    					// Official OSM tileset as protocol-independent URLs
+    					[
+					        '//a.tile.openstreetmap.org/${z}/${x}/${y}.png',
+					        '//b.tile.openstreetmap.org/${z}/${x}/${y}.png',
+					        '//c.tile.openstreetmap.org/${z}/${x}/${y}.png'
+					    ], null);
+	                map.addLayer(mapnik);
+					var markers = new OpenLayers.Layer.Markers("Markers");
+	                map.addLayer(markers);
+	                
+	                var lonLat = new OpenLayers.LonLat(139.76, 35.68).transform(fromProjection, toProjection);
+	                map.setCenter(lonLat, zoom);
+	                
+	                var addMaker = function(lng, lat, index, behaviorName){
+						var position = new OpenLayers.LonLat(lng, lat).transform(fromProjection, toProjection)
+						var image = markerImages[behaviorName];
+						var marker = null;
+						if(image){
+							var icon = new OpenLayers.Icon(image, {w: ICON_WIDTH}, {x: -ICON_WIDTH/2, y: -ICON_WIDTH});
+							marker = new OpenLayers.Marker(position, icon);
+						}else{
+							marker = new OpenLayers.Marker(position);
+						}
+						markers.addMarker(marker);
+		                if(index==0) map.setCenter(position, zoom);
+	                };
+	                
+	        		$.ajax({
+	        		    type: 'GET',
+	        		    url: locations,
+	        		    dataType: 'json',
+	        		    success: function(response){ 
+	        		    	if(response){
+								// display locations with behaviors
+								var locations = response.locations;
+								locations.forEach(function(loc){
+									if(loc.behaviors){
+										loc.behaviors.forEach(function(l, index){
+											addMaker(l.start_longitude, l.start_latitude, index, l.behavior_name);
+											addMaker(l.end_longitude, l.end_latitude, index, l.behavior_name);
+										});
+									}
+								});
+								addMaker(response.start_longitude, response.start_latitude, null, "Start");
+								addMaker(response.end_longitude, response.end_latitude, null, "End");
+							}
+	        		    },
+	        		    error: function(req, err){ 
+	        		    }
+	        		});
+
+					var routeName = "route: " + trip_uuid;
+					var routeStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+					routeStyle = OpenLayers.Util.extend(routeStyle, {
+						strokeColor: "green",
+						strokeWidth: 5
+					});
+					var route = new OpenLayers.Layer.Vector(routeName, {
+						projection: fromProjection,
+						strategies: [new OpenLayers.Strategy.Fixed()],
+						protocol: new OpenLayers.Protocol.HTTP({
+							url: triplocation,
+							format: new OpenLayers.Format.GeoJSON()
+						}),
+						style: routeStyle,
+						onFeatureInsert: function(feature){
+							map.zoomToExtent(feature.layer.getDataExtent());
+						}
+					});
+					map.addLayer(route);
+				});
+	</script>
+</body>
+</html>

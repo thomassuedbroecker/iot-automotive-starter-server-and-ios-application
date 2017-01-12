@@ -1,0 +1,8 @@
+[
+    {
+      "deviceType": "+",
+      "subscribeToStatus" : true,
+      "Ids": ["+"],
+      "events": ["+"]
+    }
+]

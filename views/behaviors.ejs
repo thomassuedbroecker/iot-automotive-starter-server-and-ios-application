@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title>Behaviors of <%= trip_uuid %></title>
+<style>
+thead {
+	background-color: cyan;
+}
+</style>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>	
+</head>
+<body>
+	<h1>Driving Behaviors</h1>
+   	<div id="general"></div>
+   	<div id="content"></div>
+   	<div id="status"></div>
+	<script type="text/javascript">
+		var trip_uuid = "<%= trip_uuid %>";
+		if(trip_uuid === "") trip_uuid="latest";
+		var list = "/user/driverInsights/behaviors/" + trip_uuid;
+		$(document).ready(
+				function(){
+	        		$.ajax({
+	        		    type: 'GET',
+	        		    url: list,
+	        		    dataType: 'json',
+	        		    success: function(response){
+	        		    	if(response){
+								// display columns
+								var start_time = response.start_time;
+								var m1 = moment(start_time);
+								$("#general").append( "start time: " + start_time + " (" + m1.format('YYYY-MM-DD HH:mm:ss dddd') + ")<br/>")
+								var end_time = response.end_time;
+								var m2 = moment(end_time);
+								$("#general").append( "end time: " + end_time + " (" + m2.format('YYYY-MM-DD HH:mm:ss dddd') + ")<br/>")
+								$("#general").append( "start location: " + response.start_longitude + "," + response.start_latitude + "<br/>")
+								$("#general").append( "end location: " + response.end_longitude + "," + response.end_latitude + "<br/>")
+								
+								// display scores
+								var content = "<h1>Scores</h1>";
+								var scoring = response.scoring;
+								$("#general").append("Overall Score : " + scoring.score + "<br/>")
+								
+								for(var bhv_name in scoring){
+									var bhv = scoring[bhv_name];
+									if(bhv.score !== undefined){
+										content = content + "<div>Score of " + bhv_name + ": " + bhv.score + "</div>";
+									}
+								}
+								$("#general").append(content);
+								
+								// display locations with behaviors
+								content = "<h1>Locations</h1>";
+								content = content + "<p><a href='/user/ui/behaviorsmap/" + trip_uuid + "'>Map</a></p>";
+								content = content + "<table border='1'><tr><th>Sub trip Location</th><th>Location for Behavior</th><th>Behavior</th></tr>";
+								var locations = response.locations;
+								locations.forEach(function(loc){
+									var num_bhv = (loc.behaviors && loc.behaviors.length) || 0;
+									content = content + "<tr><td rowspan='" + num_bhv + "'>" +  
+										"(" + loc.start_longitude + "," + loc.start_latitude + ")-(" + loc.end_longitude + "," + loc.end_latitude + ")</td>"; 										
+									if(num_bhv > 0){
+										loc.behaviors.forEach(function(l, index){
+											var row = index == 0 ? "" : "<tr>";
+											row = row + "<td>(" + l.start_longitude + "," + l.start_latitude + ")-(" + l.end_longitude + "," + l.end_latitude + ")</td><td>" + l.behavior_name + "</td>"; 
+											row = row + "</tr>";
+											content = content + row;
+										});
+									}else{
+										content = content + "</tr>"
+									}
+								});
+								content = content + "</table>";
+								$("#general").append(content);
+
+								// display times of behaviors
+								content = "<h1>Behaviors</h1>";
+								var behaviors = response.behaviors;
+								for(var bhv_name in behaviors){
+									content = content + "<div>" + bhv_name + "</div><table border='1'>";
+									var bhv_value = behaviors[bhv_name];
+									var row = "<tr><td nowrap='true'>Start time<br/>End Time</td>";
+									bhv_value.forEach(function(t){
+										row = row + "<td>" + t.start_time + "<br/>" + t.end_time + "</td>"; 
+									});
+									row = row + "</tr>";
+									content = content + row + "</table>";
+
+									// chart
+									content = content + "<table border='0' width='80%' height='20px' bgcolor='#191970'>";
+									var total_time = end_time - start_time;
+									var prev_time = start_time;
+									var bhv_value = behaviors[bhv_name];
+									row = "<tr>";
+									bhv_value.forEach(function(t){
+										row = row + "<td width='" + (t.start_time - prev_time)*100/total_time + "%' bgcolor='#191970'></td>" + 
+											"<td width='" + (t.end_time - t.start_time)*100/total_time + "%' bgcolor='#008B8B'></td>";
+										prev_time = t.end_time; 
+									});
+									row = row + "<td width='" + (end_time - prev_time)*100/total_time + "%' bgcolor='#191970'></td>"; 
+									row = row + "</tr>";
+									content = content + row + "</table>";
+
+								}
+								$("#general").append(content);
+	        		    	}
+	        		    },
+	        		    error: function(req, err){ 
+	        		        $("#status").html(err + "(" + res.status + "):" + res.statusText);
+	        		    }
+	        		});
+				});
+	</script>
+</body>
+</html>

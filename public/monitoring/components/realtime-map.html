@@ -1,0 +1,13 @@
+<div>
+  <div id="carmonitor" class="carMonitorMap">
+  <div class="mapLocationBar primary" ng-dblclick="switchDebug()">Location - {{$ctrl.region.name}}</div>
+    <div id="carmonitorpop"></div>
+  </div>
+  <table id="legend"></table>
+  <div ng-if="DEBUG">
+    Map extent: {{debugData}} <button ng-click="debugOut()">Refresh</button>
+  </div>
+</div>
+
+
+

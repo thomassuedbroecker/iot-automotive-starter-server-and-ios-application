@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+    <title>IoT for Automotive Starter Experience - Monitoring</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel='stylesheet' href='css/style.css' type='text/css' media='all' />
+    <link rel="stylesheet" href="/admin/components/device-list.css" />  
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" integrity="sha256-spTpc4lvj4dOkKjrGokIrHkJgNA0xMS98Pw9N7ir9oI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js" integrity="sha256-iY0FoX8s/FEg3c26R6iFw3jAtGbzDwcA5QJ1fiS0A6E=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js" integrity="sha256-R7BLQ3qJtH4loVlfCljvFVWk7z/llcALpaFFH61iX6E=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js" integrity="sha256-abzDH62eUIiLJAOiiWLn/KEJuH+e30wSvbsPMQ1VaKk=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js" integrity="sha256-LVlxCneTEVlhPoUHVwG+9kxyH4PbIhmQKp/6snSt//4=" crossorigin="anonymous"></script>
+    <!-- UI-Router -->
+    <script src="https://angular-ui.github.io/ui-router/release/angular-ui-router.js" integrity="sha256-x5BV4/AN4GB0p6zyCdA7i42YSmuscyUJUvi27CoXvHI=" crossorigin="anonymous"></script>
+    <!-- RxJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/3.1.2/rx.lite.js" integrity="sha256-rumRz0MeCi+tVl+jjPHoX7s7du+pr8OdL2uP7lFc110=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs-dom/7.0.3/rx.dom.js" integrity="sha256-7uIRDySy/wonZh4voCU/bHO8G8pZ5inBqcjwfVnkx40=" crossorigin="anonymous"></script>
+    
+    <!-- OpenLayers -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.js" integrity="sha256-ybQnvDcVTLFnbUmkq5oSsJ62Pij7mhFrdeUtnyYJnTk=" crossorigin="anonymous"></script>
+    
+    <!-- Additional libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js" integrity="sha256-LeGeo7heAyOd2cvjDZVFobWnzi8GYv6urz0tCIF56lw=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" integrity="sha256-QTFbCMKzMsKmdagXusjKHMZIwzEJtpnGYJ/v/ArHklQ=" crossorigin="anonymous"></script>
+    
+    <script type="text/javascript">
+        angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+    </script>
+    
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flexibility/1.0.6/flexibility.js" integrity="sha256-WME+JM37Y4TCaDbj6sUtF3Ac2daGxW6/k++76UJvjNY=" crossorigin="anonymous"></script>
+    <![endif]-->
+</head>
+<body ng-app="systemMonitoring">
+    <header>
+        <div class="container noTopPadding">
+            <div class="floatLeft productTitle productTitleWide">
+                <a ui-sref="overview"><strong>IBM IoT for Automotive - Mobility Starter Application - Monitoring</strong></a>
+            </div>
+            <div class="floatLeft productTitle productTitleNarrow">
+                <a ui-sref="overview">IoT for Automotive</a>
+            </div>
+            
+            <div class="floatRight">
+                <div class="userImg medium-hide">
+                    <img src="img/user.jpg" class="circularImg" />
+                </div>
+                
+                <p class="floatRight medium-hide">
+                    Archie
+                </p>
+                
+                <p class="floatRight medium-show large-hide">
+                    <a href="#" class="btn btn-demo em-Modal-Call" rel="loginModal">
+                        <i class="icon-menu"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </header>
+    
+    <div class="content">
+        <aside class="sidebar" ng-controller="sidebar">
+            <ul class="sidebarItems">
+                <li ng-repeat="sidebarItem in sidebarItems" ui-sref-active="active">
+                    <a ui-sref="{{sidebarItem.route}}"><i class="{{sidebarItem.icon}}"></i>{{sidebarItem.title}}</a>
+                </li>
+            </ul>
+        </aside>
+        
+        <div class="mainContent">
+            <div ui-view></div>
+        </div>
+    </div>
+    
+    <div class="em-Modal" id="loginModal" ng-controller="sidebar">
+        <div class="em-Modal-Content">
+            <div class="em-Modal-Close">
+                <a href="#">
+                    <i class="icon-close"></i>
+                </a>
+            </div>
+
+            <ul class="modalMenu">
+                <li ng-repeat="sidebarItem in sidebarItems" ui-sref-active="active">
+                    <a ui-sref="{{sidebarItem.route}}">
+                        <i class="{{sidebarItem.icon}} iconBlock"></i>
+                        {{sidebarItem.title}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.7/d3.min.js" charset="utf-8" integrity="sha256-AFTi9P04KT2PiaZDxp2ZFp/3tBJfLOisddu0t5DEHik=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.js" charset="utf-8" integrity="sha256-1lBqipDI1Bk3BwN3UnW8RguGaskbwBYNG0W9m+Ud4SU=" crossorigin="anonymous"></script>
+    <script src="js/ngScripts.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="components/realtime-map.component.js"></script>
+    <script src="components/number-of-cars.component.js"></script>
+    <script src="components/status-bar-number.component.js"></script>
+    <script src="components/chart-item.component.js"></script>
+    <script src="/admin/components/device-list.component.js"></script>
+</body>
+</html>

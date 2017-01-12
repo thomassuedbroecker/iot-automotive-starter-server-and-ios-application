@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title>List of Trip</title>
+<style>
+thead {
+	background-color: cyan;
+}
+</style>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>	
+</head>
+<body>
+	<h1>List of Trip</h1>
+   	<table>
+   	<thead><tr><th>Trip UUID</th><th>Moving Object ID</th><th>Score</th><th>Start Time</th><th>End Time</th><th>Driving Time</th></tr></thead>
+   	<tbody id="tbody">
+   	</table>
+   	<div id="status"></div>
+	<script type="text/javascript">
+		var list = "/user/driverInsights/behaviors";
+		$(document).ready(
+				function(){
+	        		$.ajax({
+	        		    type: 'GET',
+	        		    url: list,
+	        		    dataType: 'json',
+	        		    success: function(response){
+	        		    	if(response){
+								// List of trips
+								var rows = "";
+								response.forEach(function(trip){
+									var trip_uuid = trip.trip_uuid;
+									var start_time = trip.start_time;
+									var end_time = trip.end_time;
+									var totalTime = end_time - start_time;
+									var total_time_str = Math.floor(totalTime / (24*60*60*1000)) + "d " + 
+										Math.floor(totalTime / (60*60*1000)) % 24 + "h " +
+										Math.floor(totalTime / (60*1000)) % 60 + "m " + 
+										Math.floor(totalTime / 1000) % 60 + "s " + 
+										(totalTime % 1000) + "ms";  
+									
+									var m1 = moment(start_time);
+									var m2 = moment(end_time);
+									rows = "<tr><td><a href='behaviors/" + trip_uuid + "'>" + trip_uuid + "</a></td>" +
+										"<td>" + trip.mo_id + "</td>" +
+										"<td>" + trip.score + "</td>" +
+										"<td>" + m1.format('YYYY-MM-DD HH:mm:ss dddd') + "</td>" +
+										"<td>" + m2.format('YYYY-MM-DD HH:mm:ss dddd') + "</td>" + 
+										"<td>" + total_time_str + "</td></tr>" + rows; // latest is first
+								});
+								$("#tbody").append(rows); 
+
+	        		    	}
+	        		    },
+	        		    error: function(res, err){ 
+	        		        $("#status").html(err + "(" + res.status + "):" + res.statusText);
+	        		    }
+	        		});
+				});
+	</script>
+</body>
+</html>

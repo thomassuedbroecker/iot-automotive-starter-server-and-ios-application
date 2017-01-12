@@ -1,0 +1,36 @@
+<div class="container-50 noTopPadding container-30-right">
+    <div class="floatLeft">
+        <h4>Users Insights</h4>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="statusBar marginTop-15">
+    <div class="container-50 row noOffsetRow">
+        <div class="column-6-lg column-6-med column-6-sm">
+            <status-bar-number title="Total users registered" src="drivingScore/userCount"></status-bar-number>
+        </div>
+        
+        <div class="column-6-lg column-6-med column-6-sm">
+            <status-bar-number title="Total completed reservations" src="drivingScore/tripCount"></status-bar-number>
+        </div>
+    </div>
+</div>
+
+<div class="container-50 row noOffsetRow">
+    <div class="column-6-med">
+        <chart-item 
+            title="Driving Score" 
+            url="drivingScore/distribution"
+            chart-type="donut"
+            chart-rotated="false"></chart-item>
+    </div>
+    <div class="column-6-med">
+        <chart-item 
+            title="Driving Score by Zone" 
+            url="drivingScore/byZone"
+            chart-type="bar"
+            chart-rotated="true"></chart-item>
+    </div>
+</div>

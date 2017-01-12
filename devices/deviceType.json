@@ -1,0 +1,11 @@
+{
+  "id": "UserOwnedCarDevice",
+  "description": "User owned car device",
+  "classId": "Device",
+  "deviceInfo": {
+    "serialNumber": "",
+    "manufacturer": "",
+    "model": ""
+  },
+  "metadata": {}
+}

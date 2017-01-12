@@ -1,0 +1,84 @@
+<div id="device-form-root" class="container device-form-root">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 message">
+			<span ng-class="{'error': haserror}">{{message}}</span>
+			<span ng-show="createdDevice">(deviceId=<a href='/admin/ui/device/form?deviceid={{createdDevice.deviceID}}&typeid={{createdDevice.typeID}}'>{{createdDevice.deviceID}}</a>)</span>
+		</div>	
+	</div>
+	<div class="row">
+		<span class="col-xs-12 col-sm-12 loading" ng-show="requestSending"><img src="/images/loading.gif"></span>
+	</div>
+	<form name="deviceForm" novalidate>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" for="device-form-deviceID" ng-class="{'error': !requestSending&&deviceForm.deviceId.$invalid}">Device ID:</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-deviceID" name="deviceId" ng-model="deviceId" ng-readonly="fixedDeviceId" ng-class="{'readonly': fixedDeviceId}" ng-pattern="/^[0-9a-zA-Z_-]*$/"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.name.$invalid}" for="device-form-name">Car Name:</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-name" name="name" ng-model="deviceDetails.name" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.license.$invalid}" for="device-form-license">License:</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-license" name="license" ng-model="deviceDetails.license" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.makeModel.$invalid}" for="device-form-makeModel">Car Model:</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-makeModel" name="makeModel" ng-model="deviceDetails.model.makeModel" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.year.$invalid}" for="device-form-year">Model Year:</year></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-year" name="year" type="number" min="1900" max="2020" step="1" ng-model="deviceDetails.model.year" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.mileage.$invalid}" for="device-form-mileage">Mileage:</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-mileage" name="mileage" type="number" min="0" step="1" ng-model="deviceDetails.model.mileage" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.type.$invalid}" for="device-form-type">Type:</label></div>
+			<div class="col-xs-12 col-sm-9">
+				<select id="device-form-type" name="type" ng-model="deviceDetails.model.type">
+					<option value="Family">Family car</option>
+					<option value="Sedan">Full size sedan</option>
+					<option value="SUV">SUV</option>
+					<option value="Mnivan">Minivan</option>
+					<option value="Luxury">Luxury vehicle</option>
+					<option value="Sports">Sports saloon / Sports sedan</option>
+					<option value="Convertible">Convertible</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.drive.$invalid}" for="device-form-drive">Automobile Layout:</label></div>
+			<div class="col-xs-12 col-sm-9">
+				<select id="device-form-drive" name="drive" ng-model="deviceDetails.model.drive">
+					<option value="FF">FF: Front wheel drive</option>
+					<option value="MR">MR: Mid wheel drive</option>
+					<option value="FR">FR: Rear wheel drive</option>
+					<option value="AWD">AWD: All wheel drive</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.thumbnailURL.$invalid}" for="device-form-thumbnalURL">Photo URL (secure URL):</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-thumbnailURL" name="thumbnailURL" type="url" ng-model="deviceDetails.model.thumbnailURL" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.stars.$invalid}" for="device-form-stars">Stars (0-5):</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-stars" name="stars" type="number" min="0" max="5" step="1" ng-model="deviceDetails.model.stars" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.hourlyRate.$invalid}" for="device-form-hourlyRate">Hourly Rate (0-50):</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-hourlyRate" name="hourlyRate" type="number" min="0" max="50" step="1" ng-model="deviceDetails.model.hourlyRate" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3"><label class="fieldLabel" ng-class="{'error': !requestSending&&deviceForm.dailyRate.$invalid}" for="device-form-dailyRate">Daily Rate (0-200):</label></div>
+			<div class="col-xs-12 col-sm-9"><input id="device-form-dailyRate" name="dailyRate" type="number" min="0" max="200" step="1" ng-model="deviceDetails.model.dailyRate" ng-required="true"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12 formButtons">
+				<button type="button" ng-disabled="requestSending||deviceRemoved" ng-click="onsubmit()">{{updateMode?"Update":"Create"}}</button>
+				<button type="button" ng-disabled="requestSending||deviceRemoved" ng-click="ondelete()" ng-show="updateMode">Delete</button>
+			</div>	
+		</div>
+	</form>
+</div>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title>Driving Statistics</title>
+<style>
+thead {
+	background-color: cyan;
+}
+</style>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.7/d3.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.js"></script>
+</head>
+<body>
+	<h1>Driving Statistics</h1>
+   	<div id="general"></div>
+   	<div id="chart"></div>
+	<script type="text/javascript">
+		var list = "/user/driverInsights/statistics";
+		$(document).ready(
+				function(){
+	        		$.ajax({
+	        		    type: 'GET',
+	        		    url: list,
+	        		    dataType: 'json',
+	        		    success: function(response){
+	        		    	if(response){
+								// display score
+								var content = "<h1>Scores</h1>";
+								var totalDistance = response.totalDistance;
+								$("#general").append("Total Distance : " + totalDistance + "<br/>")
+								var scoring = response.scoring;
+								var totalTime = scoring.totalTime;
+								$("#general").append("Total Time : " + 
+									Math.floor(totalTime / (24*60*60*1000)) + "d " + 
+									Math.floor(totalTime / (60*60*1000)) % 24 + "h " +
+									Math.floor(totalTime / (60*1000)) % 60 + "m " + 
+									Math.floor(totalTime / 1000) % 60 + "s " + 
+									(totalTime % 1000) + "ms" +  
+									" (" + scoring.totalTime + ")<br/>")
+								$("#general").append("Overall Score : " + scoring.score + "<br/>")
+								
+								for(var bhv_name in scoring){
+									var bhv = scoring[bhv_name];
+									if(bhv.score !== undefined){
+										content = content + "<div>Score of " + bhv_name + ": " + bhv.score + "</div>";
+									}
+								}
+								$("#general").append(content);								
+
+								// display speed pattern, road types, and time ranges
+								var displayTypes = [ 
+									{ varName: "speedPattern", label: "Speed Pattern"}, 
+									{ varName: "roadType", label: "Road Types"}, 
+									{ varName: "timeRange", label: "Time Range"}
+								]; 
+								
+								displayTypes.forEach(function(di){
+									var content = "<h1>" + di.label + "</h1>";
+									var values = response[di.varName];
+									
+									var totalDistanceOf = values.totalDistance || totalDistance;
+									var chartColumns = [];
+									for(var name in values){
+										if(name === "totalDistance") continue; // ignore
+										var v = values[name];
+										content = content + "<div>Mileage of " + name + ": " + v + " (" + 100.0 * v / totalDistanceOf + "%)</div>";
+										chartColumns.push([name, v]);
+									}
+									$("#general").append(content);
+									// chart
+									var id = "chart_" + di.varName;
+									$("#general").append("<div id='" + id + "'></div>");
+									c3.generate({
+										bindto: "#" + id,
+									    data: {
+								        	columns: chartColumns,
+								        	type: 'pie'
+								    	},
+								    	legend: {
+ 											position: 'right'
+										}
+								    });																
+								});
+
+	        		    	}
+	        		    },
+	        		    error: function(req, err){ 
+	        		        $("#status").html(JSON.stringify(err));
+	        		    }
+	        		});
+				});
+	</script>
+</body>
+</html>

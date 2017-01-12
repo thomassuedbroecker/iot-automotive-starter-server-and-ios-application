@@ -1,0 +1,57 @@
+/**
+ * Copyright 2016 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the IBM License, a copy of which may be obtained at:
+ *
+ * http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+ *
+ * You may not use this file except in compliance with the license.
+ */
+header {
+    position: fixed;
+    z-index: 1000;
+    display: table;
+    top: 0;
+    background: #1b3649;
+    color: #fff;
+    width: 100%;
+}
+header .floatLeft,
+header .floatRight p {
+    padding: 15px 0;
+    margin: 0;
+}
+header .productTitle a {
+    color: #fff;
+    font-size: medium;
+}
+.container {
+    padding: 20px 30px;
+    margin: 0 auto;
+    text-align: left;
+}
+.noTopPadding {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.floatRight {
+    float: right;
+}
+.floatLeft {
+    float: left;
+}
+.alignCener {
+	text-align: center; 
+}
+.content .mainContent {
+    position: relative;
+    padding-top: 65px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.content .mainContent h4 {
+	margin-left: 10px;
+	font-weight: 500;
+    color: #2a506d;
+    text-transform: uppercase;
+}

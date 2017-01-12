@@ -1,0 +1,85 @@
+/**
+ * Copyright 2016 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the IBM License, a copy of which may be obtained at:
+ *
+ * http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+ *
+ * You may not use this file except in compliance with the license.
+ */
+.device-list-root.container {
+	width: auto;
+	padding: 10px;
+}
+.device-list-root .message {
+	text-align: center; 
+}
+.device-list-root .error {
+	color: red; 
+}
+.device-list-root .centeringCell {
+	text-align: center;
+}
+.device-list-root th {
+	text-align: center;
+	background-color: white;
+}
+.device-list-root .connected {
+	font-weight: bold;
+	color: blue; 
+}
+.device-list-root .formButtons {
+	text-align: right;
+	margin-bottom: 10px;
+}
+.device-list-root .formButtons button {
+	margin-left: 8px;
+}
+.device-list-root .loading {
+	margin: 0px;
+	padding: 0px;
+	position: fixed;
+	left: 50%;
+}
+.device-list-root th.sortable:hover {
+	cursor: pointer;
+}
+.device-list-root .sort {
+	font-size: 0;
+	float: right;
+	margin-left: 5px;
+	padding: 15px 0px 0px 0px; 
+	margin: 0px;
+	vertical-align: middle;
+}
+.device-list-root .ascending {
+	font-size: 0;
+	line-height: 0;
+	float: right;
+	margin: 0px;
+	padding: 17px 0px 0px 8px; 
+}
+.device-list-root .descending {
+	font-size: 0;
+	line-height: 0;
+	float: right;
+	margin: 0px;
+	padding: 7px 0px 0px 8px; 
+}
+.device-list-root .ascending img {
+	vertical-align: top;
+	width: 0;
+	height: 0;
+	border-bottom: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 10px solid #b0b0b0;
+}
+.device-list-root .descending img {
+	vertical-align: top;
+	width: 0;
+	height: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-bottom: 10px solid #b0b0b0;
+	}

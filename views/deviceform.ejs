@@ -1,0 +1,87 @@
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Car Details</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/admin/components/device-form.css" />
+    <link rel="stylesheet" href="/admin/css/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1//js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+	<script src="/admin/components/device-form.component.js"></script>
+	<script type="text/javascript">
+		var queries = $(location).attr('search').substring(1).split("&").map(function(param) {
+			var strs = param.split('=');
+			return {name: strs[0], value: strs[1]};
+		});
+
+		getQuery = function(name) {
+			var value = null;
+			queries.some(function(q) {
+				if (q.name === name) {
+					value = q.value;
+					return true;
+				}
+			});
+			return value;
+		};
+	</script>
+	<style>
+		#pageTitle:after {
+			font-weight: 700;
+			content: "IBM IoT for Automotive - Mobility Starter Application - Administration";
+		}
+		@media (max-width: 768px) {
+			#pageTitle:after {
+				font-weight: 400;
+				content: "IoT for Automotive";
+			}
+		}
+	</style>
+</head>
+
+<body>
+    <header>
+        <div class="container noTopPadding">
+            <div class="floatLeft productTitle">
+                <a ui-sref="overview"><span id="pageTitle"></span></a>
+            </div>
+            <div class="floatRight">
+                <p class="floatRight">
+                    ADMIN
+                </p>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+	    <div class="mainContent">
+			<a href="#" onclick="javascript:history.back();">&lt;back</a>
+			<h4 id="formTitle" class="alignCener">Car Registration Form</h4>
+			<div ng-app="devices">
+				<device-form deviceId="" typeId=""></device-form>
+			</div>
+		</div>
+	</div>		
+
+	<script type="text/javascript">
+		var deviceId = getQuery("deviceid");
+		var typeId = getQuery("typeid");
+		if (deviceId) {
+			$("#formTitle").html("Car Details");
+		}
+		$("device-form").attr("deviceId", deviceId);
+		$("device-form").attr("typeId", typeId);
+	</script>
+</body>
+</html>

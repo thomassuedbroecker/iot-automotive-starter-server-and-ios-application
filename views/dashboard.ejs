@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!------------------------------------------------------------------------------------------------
+   Copyright 2016 IBM Corp. All Rights Reserved.
+   
+   Licensed under the IBM License, a copy of which may be obtained at:
+   
+   http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DDIN-AEGGZJ&popup=y&title=IBM%20IoT%20for%20Automotive%20Sample%20Starter%20Apps%20%28Android-Mobile%20and%20Server-all%29
+   
+   You may not use this file except in compliance with the license.
+-------------------------------------------------------------------------------------------------->
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.css"/>
+<style>
+thead {
+	background-color: cyan;
+}
+#canvas .olControlAttribution {
+    font-size:13px;
+    bottom:3px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="menu navbar navbar-inverse">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">Dashboard</a>
+					</div>
+				</div>
+			</div> <!-- col -->
+		</div> <!-- row -->
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div id="status"></div>
+			</div> <!-- col -->
+		</div> <!-- row -->
+
+		<div class="row">
+			<div class="col-xs-12 col-md-6">
+
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Your driving score</h3>
+				  </div>
+				  <div class="panel-body">
+						<div>
+							<div id="driving_score_chart"></div>
+						</div>
+						<h3>Your rating by car owners</h3>
+						<div id="driving_score_retings"></div>
+				  </div>
+				</div>
+
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Over all</h3>
+				  </div>
+				  <div class="panel-body">
+						<div>
+						  <h3>Mileage distribution<small>By time of day</small></h3>
+					  	<div class='mileage_dist' id="mileage_dist_time" data-key="timeRange"></div>
+					  </div><div>
+						  <h3>Mileage distribution<small>By road types</small></h3>
+						  <div class='mileage_dist' id="mileage_dist_roadType" data-key="roadType"></div>
+					  </div><div>
+						  <h3>Mileage distribution<small>By traffic condition</small></h3>
+						  <div class='mileage_dist' id="mileage_dist_speedPattern" data-key="speedPattern"></div>
+				  	</div>
+					</div>
+				</div>
+
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Unsafe driving behavior</h3>
+				  </div>
+				  <div class="panel-body">
+						<div id="unsafe_driving_chart" data-key="speedPattern" ></div>
+					</div>
+				</div>
+
+			</div> <!-- col -->
+			<div class="col-xs-12 col-md-6">
+
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Recent trips analysis</h3>
+				  </div>
+				  <div class="panel-body">
+						<div id="canvas" style="width:100%; height:100px;"></div>
+						<h4>Areas for improvement</h4>
+						<div id="trip_analysis"></div>
+					</div>
+				</div> <!-- panel -->
+
+
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Trip's score</h3>
+				  </div>
+				  <div class="panel-body">
+						<div class="progress">
+						  <div id="trip_score_bar" class="progress-bar progress-bar-info" style="width: 35%">
+						  </div>
+						</div>
+						<p>To get 5 starts rating, improve:</p>
+						<ul class="list-group">
+						  <li class="list-group-item">Anxious Acceleration</li>
+						  <li class="list-group-item">Freq Break</li>
+						</ul>
+					</div>
+				</div>
+			</div> <!-- col -->
+		</div> <!-- row -->
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="footer">
+					<p>Footer
+				</div>
+			</div> <!-- col -->
+		</div> <!-- row -->
+	</div> <!-- container -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" chaset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.7/d3.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.js" chaset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js" chaset="utf-8"></script>
+
+	<script src="/js/dashboard.js" chaset="utf-8"></script>
+
+</body>
+</html>
