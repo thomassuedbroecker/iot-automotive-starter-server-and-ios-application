@@ -8,13 +8,12 @@
 echo "--> Ensure to deploy into the right bluemix region"
 echo "-> Start"
 
-user="thomas.suedbroecker.2@de.ibm.com"
+user="<bluemix-id>"
 # bluemix_api="https://api.eu-gb.bluemix.net"
 bluemix_api="https://api.ng.bluemix.net"
-organization_name="thomas.suedbroecker.2@de.ibm.com"
-# space_name="01_DEMO"
-space_name="01_development"
-application_name="iot-automotive-starter-tsuedbro"
+organization_name="<bluemix-organization-name>"
+space_name="<bluemix-space-name>"
+application_name="<bluemix-application-name>"
 
 echo "User: '$user' API: '$bluemix_api'"
 echo "Organization: '$organization_name'"

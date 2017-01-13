@@ -8,13 +8,12 @@
 echo "--> Ensure to deploy into the right bluemix region"
 echo "-> Start setup"
 
-user="thomas.suedbroecker.2@de.ibm.com"
+user="<bluemix-id>"
 # bluemix_api="https://api.eu-gb.bluemix.net"
 bluemix_api="https://api.ng.bluemix.net"
-organization_name="thomas.suedbroecker.2@de.ibm.com"
-# space_name="01_DEMO"
-space_name="01_development"
-application_name="iot-automotive-starter-tsuedbro"
+organization_name="<bluemix-organization-name>"
+space_name="<bluemix-space-name>"
+application_name="<bluemix-application-name>"
 
 echo "User: '$user' API: '$bluemix_api'"
 echo "Organization: '$organization_name'"
@@ -34,12 +33,13 @@ cf apps
 echo "******* push $application_name to Bluemix ********"
 cf push  $application_name --no-start
 echo "******* Create Custom Environment Variable ********"
-echo "->Set ADMIN USER and PASSWOR"
-cf set-env $application_name ADMIN_USER admin
-cf set-env $application_name ADMIN_PASSWORD rational
 echo "->Set ADMIN USER and PASSWORD"
-cf set-env $application_name ADMIN_USER admin
-cf set-env $application_name ADMIN_PASSWORD rational
+echo "->Choose a administration user:"
+read -s $user
+cf set-env $application_name ADMIN_USER $user
+echo "->Choose a administration user password:"
+read -s $password
+cf set-env $application_name ADMIN_PASSWORD $password
 echo "->Disable MCA_AUTHENTICATION"
 cf set-env $application_name MCA_AUTHENTICATION false
 echo "->Do not enable DISABLE_DEMO_CAR_DEVICES"
@@ -67,4 +67,5 @@ then
    echo "-> There are remaining steps to do!"
 else
   echo "-> Setup FAILED!"
+  echo "-> Best is to delete the application and services and run the setup once more."
 fi

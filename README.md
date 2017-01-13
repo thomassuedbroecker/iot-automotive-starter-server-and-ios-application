@@ -48,19 +48,19 @@ To manually deploy your own instance of the Mobility Starter Application server 
 
 3. Clone the Mobility Starter Application app to your local environment by using the following Terminal command:
 
-  ```
-  git clone https://hub.jazz.net/project/thomas.suedbroecker/iota-starter-server-tsuedbro/overview
+  ```sh
+  $git clone https://hub.jazz.net/project/thomas.suedbroecker/iota-starter-server-tsuedbro/overview
   ```
 4. Change to the directory that you just created.
 
 5. Edit the `manifest.yml` file and change the values of `<name>` and `<host>` to something unique.
 
-  ```
+  ```javascript
   applications:
          :
     disk_quota: 1024M
-    host: iot-automotive-starter
-    name: IoT-Automotive-Starter
+    host: <name>
+    name: <host>,
     path: .
     instances: 1
     memory: 640M
@@ -69,12 +69,72 @@ To manually deploy your own instance of the Mobility Starter Application server 
   The host value is used to generate your application URL, which is in the following syntax:
   `<host>.mybluemix.net`.
 
-6. By using the command line tool, connect to Bluemix and log in when prompted.
+6. Edit the `package.json` file and change the values of `<name>` to name of the application.
 
-  ```
-  $ cf api https://api.ng.bluemix.net
-  $ cf login
-  ```
+   ```javascript
+     "name": "<name>",
+     "version": "1.3.2",
+   ```
+
+7. Edit the `docs/push-and-log.sh`, `docs/push-setup.sh`, `docs/restage-and-log.sh` and `docs/deploy_create_services`  files and change the values of `<bluemix-id>`, `<bluemix-organization-name>`, `<bluemix-space-name>` and `<bluemix-application-name>` to your needs.
+
+   ```javascript
+      user="<bluemix-id>"
+      # bluemix_api="https://api.eu-gb.bluemix.net"
+      bluemix_api="https://api.ng.bluemix.net"
+      organization_name="<bluemix-organization-name>"
+      space_name="<bluemix-space-name>"
+      application_name="<bluemix-application-name>"
+   ```
+
+6. By using the command line to enable the bash scripts for execution.
+
+   ```sh
+   $ cd docs
+   $ chmod u+x init-bash-scripts.sh
+   $ ./init-bash-scripts.sh
+   ```
+
+6. Using the command line to run the bash setup. Follow the written instructions during the execution.
+
+    ```sh
+    $ cd docs
+    $ ./init-sample-bluemix-cf-application.sh
+    $ --> This script will create the needed Bluemix Services and the Bluemix CF Node JS Application
+    $ -> Start Setup IoT for Automotive Sample
+    $ -> Start creating the Bluemix Services
+    ...
+    $ Insert your password:
+    $ *******
+    ...
+    $ --> Create Bluemix Service - DONE!
+    $ --> Ensure to deploy into the right bluemix region
+    $ -> Start setup
+    ...
+    $ Insert your password:
+    $ *******
+    ...
+    $ ->Set ADMIN USER and PASSWORD
+    $ ->Choose a administration user:
+    ADMIN
+    $ ->Choose a administration user password:
+    ADMIN
+    $ ->***************
+    $ ->Now you must:
+    $
+    $ Activating the bluemix services
+    $ Before you can use the application you must activate the Context Mapping and Driver Behavior services on Bluemix, as outlined in the following steps:
+    $  Make sure that the app is not running on Bluemix.
+    $   1-Open the Bluemix dashboard in your browser.
+    $   2-Open the Context Mapping service and wait for a few seconds until your credentials display.
+    $   3-Open the Driver Behavior service.
+    $  
+    $  Did you finish this tasks: Y/N
+    $  Y
+    ...
+    $  -> First Setup is DONE!
+    $  -> There are remaining steps to do!
+    ```
 
 7. Create an instance of Watson IoT Platform, Context Mapping, and Driver Behavior services on Bluemix.
 

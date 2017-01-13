@@ -25,8 +25,8 @@ applications:
       - iotf-PushNotifications
       - iotf-AdvancedMobileAccess
     disk_quota: 1024M
-    host: iot-automotive-starter-tsuedbro
-    name: iot-automotive-starter-tsuedbro
+    host: <host>
+    name: <name>
     path: .
     instances: 1
     memory: 1024M
