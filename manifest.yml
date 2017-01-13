@@ -17,11 +17,11 @@ declared-services:
 
 applications:
   - services:
-      - iota-IoTPlatform
-      - iota-MobilityDB
-      - iota-ContextMapping
-      - iota-DriverBehavior
-      - iota-WeatherInsights
+      - iotf-IoTPlatform
+      - iotf-MobilityDB
+      - iotf-ContextMapping
+      - iotf-DriverBehavior
+      - iotf-WeatherInsights
     disk_quota: 1024M
     host: iot-automotive-starter-tsuedbro
     name: iot-automotive-starter-tsuedbro
@@ -29,4 +29,4 @@ applications:
     instances: 1
     memory: 640M
     iotWbManagedServices:
-      - iota-MobilityDB
+      - iotf-MobilityDB
