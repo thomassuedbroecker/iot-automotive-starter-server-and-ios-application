@@ -19,7 +19,7 @@ private var currentViewController: UIViewController?
 class CustomAuthDelegate : AuthenticationDelegate {
     let defalutLoginPrompt = "This sample login demonstrates custom authentication capability of Mobile Client Access.\nFor this demo, you can enter any values to connect and use the app."
 
-    func onAuthenticationChallengeReceived(_ authContext: AuthenticationContext, challenge: AnyObject) {
+    func onAuthenticationChallengeReceived(authContext: AuthenticationContext, challenge: AnyObject) {
         print("onAuthenticationChallengeReceived challenge = \(challenge)")
         print("onAuthenticationChallengeReceived ----")
         currentContext = authContext
@@ -31,53 +31,53 @@ class CustomAuthDelegate : AuthenticationDelegate {
         if chalText.hasPrefix("Login failed.") {
             print("re-challenge: \(chalText)")
             prompt = chalText
-            DispatchQueue.main.async(execute: {
+            dispatch_async(dispatch_get_main_queue(), {
                 self.dismissInProcessAlert(nil)
             })
         }
 
-        DispatchQueue.main.async(execute: {
+        dispatch_async(dispatch_get_main_queue(), {
             currentViewController = self.getCurrentViewController()
         })
-        DispatchQueue.main.async(execute: {
+        dispatch_async(dispatch_get_main_queue(), {
             self.showLoginAlert(prompt)
         })
     }
 
-    func onAuthenticationSuccess(_ info: AnyObject?) {
+    func onAuthenticationSuccess(info: AnyObject?) {
         print("onAuthenticationSuccess info = \(info)")
         print("onAuthenticationSuccess ----")
-        DispatchQueue.main.async(execute: {
+        dispatch_async(dispatch_get_main_queue(), {
             self.dismissInProcessAlert(nil)
         })
     }
 
     // should not been called.  should receive re-challenge.
-    func onAuthenticationFailure(_ info: AnyObject?) {
+    func onAuthenticationFailure(info: AnyObject?) {
         print("onAuthenticationFailure info = \(info)")
         print("onAuthenticationFailure ----")
-        DispatchQueue.main.async(execute: {
+        dispatch_async(dispatch_get_main_queue(), {
             self.dismissInProcessAlert(self.showLoginFailureAlert)
         })
     }
 
-    fileprivate func getViewController() -> UIViewController? {
+    private func getViewController() -> UIViewController? {
         var vc: UIViewController?
-        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+        if var topController = UIApplication.sharedApplication().keyWindow?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
             }
             vc = topController
         } else {
-            let window:UIWindow?? = UIApplication.shared.delegate?.window
+            let window:UIWindow?? = UIApplication.sharedApplication().delegate?.window
             vc = window!!.rootViewController!
         }
         return vc
     }
 
-    fileprivate func getCurrentViewController() -> UIViewController? {
+    private func getCurrentViewController() -> UIViewController? {
         var cvc: UIViewController?
-        let topController = UIApplication.shared.keyWindow?.rootViewController
+        let topController = UIApplication.sharedApplication().keyWindow?.rootViewController
         let vvc = (topController as! UINavigationController).visibleViewController
 
         if vvc is UITabBarController {
@@ -90,35 +90,35 @@ class CustomAuthDelegate : AuthenticationDelegate {
         return cvc
     }
     
-    fileprivate func setMessage(_ text: String) {
+    private func setMessage(text: String) {
         if currentViewController is MessageViewController  {
             (currentViewController as! MessageViewController).setMessage(text)
         }
     }
 
-    fileprivate struct InProcess {
-        static var label = UILabel(frame: CGRect(x: 0, y: 0, width: 180, height: 100));
+    private struct InProcess {
+        static var label = UILabel(frame: CGRectMake(0, 0, 180, 100));
         static func setLabel() {
-            self.label.center = CGPoint(x: 200, y: 280)
-            self.label.textAlignment = NSTextAlignment.center
-            self.label.textColor = UIColor.white
-            self.label.font = UIFont.systemFont(ofSize: 24)
+            self.label.center = CGPointMake(200, 280)
+            self.label.textAlignment = NSTextAlignment.Center
+            self.label.textColor = UIColor.whiteColor()
+            self.label.font = UIFont.systemFontOfSize(24)
             self.label.text = "Certifying..."
         }
 
         static var activeIndicator = UIActivityIndicatorView()
         static func set() {
-            self.activeIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+            self.activeIndicator.frame = CGRectMake(0, 0, 50, 50)
             self.activeIndicator.hidesWhenStopped = false
-            self.activeIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.white
-            self.activeIndicator.backgroundColor = UIColor.gray;
+            self.activeIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
+            self.activeIndicator.backgroundColor = UIColor.grayColor();
             self.activeIndicator.startAnimating()
         }
     }
 
-    fileprivate var inProcessView = UIView(frame: UIScreen.main.bounds)
-    fileprivate func setInProcessView() {
-        inProcessView.backgroundColor = UIColor.gray
+    private var inProcessView = UIView(frame: UIScreen.mainScreen().bounds)
+    private func setInProcessView() {
+        inProcessView.backgroundColor = UIColor.grayColor()
         inProcessView.alpha = 0.8 // transparency
         InProcess.setLabel()
         inProcessView.addSubview(InProcess.label)
@@ -127,38 +127,38 @@ class CustomAuthDelegate : AuthenticationDelegate {
         inProcessView.addSubview(InProcess.activeIndicator)
     }
 
-    fileprivate func showInProcessAlert() {
+    private func showInProcessAlert() {
         self.setInProcessView()
         getViewController()!.view.addSubview(inProcessView)
     }
 
-    fileprivate func dismissInProcessAlert(_ completion: (()->Void)?) {
-        DispatchQueue.main.async(execute: {
+    private func dismissInProcessAlert(completion: (()->Void)?) {
+        dispatch_async(dispatch_get_main_queue(), {
           self.inProcessView.removeFromSuperview()
         })
         if completion != nil {
-            DispatchQueue.main.async(execute: {
+            dispatch_async(dispatch_get_main_queue(), {
                 self.showLoginFailureAlert()
             })
         }
     }
 
-    fileprivate func showLoginFailureAlert() {
+    private func showLoginFailureAlert() {
         let message = "Login failed"
-        DispatchQueue.main.async(execute: {
+        dispatch_async(dispatch_get_main_queue(), {
             self.setMessage(message)
             currentViewController = nil
         })
-        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default) {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default) {
             action in
             // do nothing
         }
         alertController.addAction(okAction)
-        getViewController()!.present(alertController, animated: true, completion: nil)
+        getViewController()!.presentViewController(alertController, animated: true, completion: nil)
     }
 
-    fileprivate func showLoginAlert(_ message: String) {
+    private func showLoginAlert(message: String) {
         var usernameTextField:UITextField?
         var passwordTextField:UITextField?
 
@@ -166,38 +166,38 @@ class CustomAuthDelegate : AuthenticationDelegate {
         let cancelButtonTitle = NSLocalizedString("Cancel", comment: "")
         let okButtonTitle = NSLocalizedString("OK", comment: "")
 
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 
         // Add the text field
-        alertController.addTextField { textField in
+        alertController.addTextFieldWithConfigurationHandler { textField in
             usernameTextField = textField
             usernameTextField!.placeholder = NSLocalizedString("username", comment: "")
-            usernameTextField!.isSecureTextEntry = false
+            usernameTextField!.secureTextEntry = false
         }
 
         // Add the text field for the secure text entry
-        alertController.addTextField { textField in
+        alertController.addTextFieldWithConfigurationHandler { textField in
             passwordTextField = textField
             passwordTextField?.placeholder = NSLocalizedString("password", comment: "")
-            passwordTextField?.isSecureTextEntry = true
+            passwordTextField?.secureTextEntry = true
         }
 
-        if let storedUserID = UserDefaults.standard.value(forKey: "userID") as? String {
+        if let storedUserID = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String {
             usernameTextField!.text = storedUserID
         }
 
         // Create the actions
-        let cancelAction = UIAlertAction(title: cancelButtonTitle, style: .cancel) { action in
+        let cancelAction = UIAlertAction(title: cancelButtonTitle, style: .Cancel) { action in
             print("The \"Login\" alert's cancel action occurred.")
-            DispatchQueue.main.async(execute: {
+            dispatch_async(dispatch_get_main_queue(), {
                 self.setMessage("Login canceled")
             })
             currentContext!.submitAuthenticationFailure(["Reason":"Login canceled"])
         }
 
-        let okAction = UIAlertAction(title: okButtonTitle, style: .default) { action in
+        let okAction = UIAlertAction(title: okButtonTitle, style: .Default) { action in
             print("Submitting auth... username:\(usernameTextField!.text)")
-            DispatchQueue.main.async(execute: {
+            dispatch_async(dispatch_get_main_queue(), {
                 self.showInProcessAlert()
             })
             currentContext!.submitAuthenticationChallengeAnswer(["username":usernameTextField!.text!, "password":passwordTextField!.text!])
@@ -206,6 +206,6 @@ class CustomAuthDelegate : AuthenticationDelegate {
         // Add the actions
         alertController.addAction(cancelAction)
         alertController.addAction(okAction)
-        getViewController()!.present(alertController, animated: true, completion: nil)
+        getViewController()!.presentViewController(alertController, animated: true, completion: nil)
     }
 }

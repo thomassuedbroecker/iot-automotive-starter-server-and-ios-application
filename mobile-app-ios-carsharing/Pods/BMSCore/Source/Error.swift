@@ -50,7 +50,7 @@ public enum BMSCoreError: Error {
 /**
     Indicates a failure that occurred within the BMSCore framework.
 */
-public enum BMSCoreError: Int, ErrorProtocol {
+public enum BMSCoreError: Int, ErrorType {
     
     case malformedUrl
     case clientNotInitialized

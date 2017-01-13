@@ -36,7 +36,7 @@ class Scoring {
     var brakeOutTurn : ScoringBehavior?
     var sharpTurn : ScoringBehavior?
 
-    class func fromDictionary(_ array:NSArray) -> [Scoring] {
+    class func fromDictionary(array:NSArray) -> [Scoring] {
         var returnArray:[Scoring] = []
         for item in array {
             returnArray.append(Scoring(dictionary: item as! NSDictionary))

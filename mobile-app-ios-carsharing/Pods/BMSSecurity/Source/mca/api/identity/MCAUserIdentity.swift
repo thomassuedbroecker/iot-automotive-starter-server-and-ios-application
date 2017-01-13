@@ -15,7 +15,7 @@ import BMSCore
 
 /// This class represents the base user identity class, with default methods and keys
 
-open class MCAUserIdentity : BaseUserIdentity{
+public class MCAUserIdentity : BaseUserIdentity{
     
     public override init() {
         super.init()

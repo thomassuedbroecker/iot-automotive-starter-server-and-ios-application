@@ -288,34 +288,34 @@ public class MCAAuthorizationManager : AuthorizationManager {
 
 #else
    
-open class MCAAuthorizationManager : AuthorizationManager {
+public class MCAAuthorizationManager : AuthorizationManager {
     
     /// Default scheme to use (default is https)
-    open static var defaultProtocol: String = HTTPS_SCHEME
-    open static let HTTP_SCHEME = "http"
-    open static let HTTPS_SCHEME = "https"
+    public static var defaultProtocol: String = HTTPS_SCHEME
+    public static let HTTP_SCHEME = "http"
+    public static let HTTPS_SCHEME = "https"
     
-    open static let CONTENT_TYPE = "Content-Type"
+    public static let CONTENT_TYPE = "Content-Type"
     
-    fileprivate static let logger =  Logger.logger(name: Logger.bmsLoggerPrefix + "MCAAuthorizationManager")
+    private static let logger =  Logger.logger(name: Logger.bmsLoggerPrefix + "MCAAuthorizationManager")
     
     internal var preferences:AuthorizationManagerPreferences
     
     //lock constant
-    fileprivate var lockQueue = DispatchQueue(label: "MCAAuthorizationManagerQueue", attributes: DispatchQueue.Attributes.concurrent)
+    private var lockQueue = dispatch_queue_create("MCAAuthorizationManagerQueue", DISPATCH_QUEUE_CONCURRENT)
     
-    fileprivate var challengeHandlers:[String:ChallengeHandler]
+    private var challengeHandlers:[String:ChallengeHandler]
     
     // Specifies the bluemix region of the MCA service instance
-    open fileprivate(set) var bluemixRegion: String?
+    public private(set) var bluemixRegion: String?
     
     // Specifies the tenant id of the MCA service instance
-    open fileprivate(set) var tenantId: String?
+    public private(set) var tenantId: String?
     
     /**
      - returns: The singelton instance
      */
-    open static let sharedInstance = MCAAuthorizationManager()
+    public static let sharedInstance = MCAAuthorizationManager()
     
     var processManager : AuthorizationProcessManager
     /**
@@ -324,7 +324,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - parameter tenantId:           The tenant id of the MCA service instance
      - parameter bluemixRegion:      The region where your MCA service instance is hosted. Use one of the `BMSClient.REGION` constants.
      */
-    open func initialize (tenantId: String? = nil, bluemixRegion: String? = nil) {
+    public func initialize (tenantId tenantId: String? = nil, bluemixRegion: String? = nil) {
         self.tenantId = tenantId != nil ? tenantId : BMSClient.sharedInstance.bluemixAppGUID
         self.bluemixRegion = bluemixRegion != nil ? bluemixRegion: BMSClient.sharedInstance.bluemixRegion
     }
@@ -332,14 +332,14 @@ open class MCAAuthorizationManager : AuthorizationManager {
     /**
      - returns: The locally stored authorization header or nil if the value does not exist.
      */
-    open var cachedAuthorizationHeader:String? {
+    public var cachedAuthorizationHeader:String? {
         get{
             var returnedValue:String? = nil
-            lockQueue.sync(flags: .barrier, execute: {
+            dispatch_barrier_sync(lockQueue){
                 if let accessToken = self.preferences.accessToken.get(), idToken = self.preferences.idToken.get() {
                     returnedValue = "\(BMSSecurityConstants.BEARER) \(accessToken) \(idToken)"
                 }
-            })
+            }
             return returnedValue
         }
     }
@@ -347,7 +347,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
     /**
      - returns: User identity
      */
-    open var userIdentity:UserIdentity? {
+    public var userIdentity:UserIdentity? {
         get{
             let userIdentityJson = preferences.userIdentity.getAsMap()
             return MCAUserIdentity(map: userIdentityJson)
@@ -357,7 +357,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
     /**
      - returns: Device identity
      */
-    open var deviceIdentity:DeviceIdentity {
+    public var deviceIdentity:DeviceIdentity {
         get{
             let deviceIdentityJson = preferences.deviceIdentity.getAsMap()
             return MCADeviceIdentity(map: deviceIdentityJson)
@@ -367,14 +367,14 @@ open class MCAAuthorizationManager : AuthorizationManager {
     /**
      - returns: Application identity
      */
-    open var appIdentity:AppIdentity {
+    public var appIdentity:AppIdentity {
         get{
             let appIdentityJson = preferences.appIdentity.getAsMap()
             return MCAAppIdentity(map: appIdentityJson)
         }
     }
     
-    fileprivate init() {
+    private init() {
         self.preferences = AuthorizationManagerPreferences()
         processManager = AuthorizationProcessManager(preferences: preferences)
         self.challengeHandlers = [String:ChallengeHandler]()
@@ -402,7 +402,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - returns: True if the response satisfies both conditions
      */
     
-    open func isAuthorizationRequired(for httpResponse: Response) -> Bool {
+    public func isAuthorizationRequired(for httpResponse: Response) -> Bool {
         if let header = httpResponse.headers![caseInsensitive : BMSSecurityConstants.WWW_AUTHENTICATE_HEADER], authHeader : String = header as? String {
             guard let statusCode = httpResponse.statusCode else {
                 return false
@@ -422,17 +422,17 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - returns: True if status is 401 or 403 and The value of the header contains 'Bearer'
      */
     
-    open func isAuthorizationRequired(for statusCode: Int, httpResponseAuthorizationHeader responseAuthorizationHeader: String) -> Bool {
-        if (statusCode == 401 || statusCode == 403) && responseAuthorizationHeader.lowercased().contains(BMSSecurityConstants.BEARER.lowercased()) &&
-            responseAuthorizationHeader.lowercased().contains(BMSSecurityConstants.AUTH_REALM.lowercased()) {
+    public func isAuthorizationRequired(for statusCode: Int, httpResponseAuthorizationHeader responseAuthorizationHeader: String) -> Bool {
+        if (statusCode == 401 || statusCode == 403) && responseAuthorizationHeader.lowercaseString.containsString(BMSSecurityConstants.BEARER.lowercaseString) &&
+            responseAuthorizationHeader.lowercaseString.containsString(BMSSecurityConstants.AUTH_REALM.lowercaseString) {
             return true
         }
         
         return false
     }
     
-    fileprivate func clearSessionCookie() {
-        let cookiesStorage = HTTPCookieStorage.shared
+    private func clearSessionCookie() {
+        let cookiesStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
         if let cookies = cookiesStorage.cookies {
             let jSessionCookies = cookies.filter() {$0.name == "JSESSIONID"}
             for cookie in jSessionCookies {
@@ -445,7 +445,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      Clear the local stored authorization data
      */
     
-    open func clearAuthorizationData() {
+    public func clearAuthorizationData() {
         preferences.userIdentity.clear()
         preferences.idToken.clear()
         preferences.accessToken.clear()
@@ -459,11 +459,11 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - Parameter request - The request to add the header to.
      */
     
-    open func addCachedAuthorizationHeader(_ request: NSMutableURLRequest) {
+    public func addCachedAuthorizationHeader(request: NSMutableURLRequest) {
         addAuthorizationHeader(request, header: cachedAuthorizationHeader)
     }
     
-    fileprivate func addAuthorizationHeader(_ request: NSMutableURLRequest, header:String?) {
+    private func addAuthorizationHeader(request: NSMutableURLRequest, header:String?) {
         guard let unWrappedHeader = header else {
             return
         }
@@ -475,10 +475,10 @@ open class MCAAuthorizationManager : AuthorizationManager {
      Invoke process for obtaining authorization header.
      */
     
-    open func obtainAuthorization(completionHandler: BMSCompletionHandler?) {
-        lockQueue.async(flags: .barrier, execute: {
+    public func obtainAuthorization(completionHandler completionHandler: BMSCompletionHandler?) {
+        dispatch_barrier_async(lockQueue){
             self.processManager.startAuthorizationProcess(completionHandler)
-        })
+        }
     }
     
     
@@ -488,7 +488,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - Parameter delegate - The delegate that will handle authentication challenges
      - Parameter realm -  The realm name
      */
-    open func registerAuthenticationDelegate(_ delegate: AuthenticationDelegate, realm: String) {
+    public func registerAuthenticationDelegate(delegate: AuthenticationDelegate, realm: String) {
         guard !realm.isEmpty else {
             MCAAuthorizationManager.logger.error(message: "The realm name can't be empty")
             return;
@@ -503,12 +503,12 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - Parameter realm - The realm name
      */
     
-    open func unregisterAuthenticationDelegate(_ realm: String) {
+    public func unregisterAuthenticationDelegate(realm: String) {
         guard !realm.isEmpty else {
             return
         }
         
-        challengeHandlers.removeValue(forKey: realm)
+        challengeHandlers.removeValueForKey(realm)
     }
     
     /**
@@ -516,7 +516,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - returns: The current persistence policy
      */
     
-    open func authorizationPersistencePolicy() -> PersistencePolicy {
+    public func authorizationPersistencePolicy() -> PersistencePolicy {
         return preferences.persistencePolicy.get()
     }
     
@@ -525,7 +525,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - parameter policy - The policy to be set
      */
     
-    open func setAuthorizationPersistencePolicy(_ policy: PersistencePolicy) {
+    public func setAuthorizationPersistencePolicy(policy: PersistencePolicy) {
         
         if preferences.persistencePolicy.get() != policy {
             preferences.persistencePolicy.set(policy, shouldUpdateTokens: true);
@@ -539,7 +539,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - returns: Challenge handler for the input's realm.
      */
     
-    open func challengeHandlerForRealm(_ realm:String) -> ChallengeHandler?{
+    public func challengeHandlerForRealm(realm:String) -> ChallengeHandler?{
         return challengeHandlers[realm]
     }
     
@@ -548,7 +548,7 @@ open class MCAAuthorizationManager : AuthorizationManager {
      - parameter completionHandler - This is an optional parameter. A completion handler that the app is calling this function wants to be called.
      */
     
-    open func logout(_ completionHandler: BMSCompletionHandler?){
+    public func logout(completionHandler: BMSCompletionHandler?){
         self.clearAuthorizationData()
         processManager.logout(completionHandler)
     }

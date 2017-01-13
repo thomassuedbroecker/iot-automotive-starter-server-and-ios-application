@@ -20,7 +20,7 @@ internal class AuthorizationManagerPreferences {
     #if swift (>=3.0)
     internal static var sharedPreferences:UserDefaults = UserDefaults.standard
     #else
-    internal static var sharedPreferences:UserDefaults = UserDefaults.standard
+    internal static var sharedPreferences:NSUserDefaults = NSUserDefaults.standardUserDefaults()
     #endif
     
     internal var persistencePolicy:PolicyPreference
@@ -71,7 +71,7 @@ internal class StringPreference {
 #else
     internal init(prefName:String, defaultValue:String?) {
         self.prefName = prefName
-        if let val = AuthorizationManagerPreferences.sharedPreferences.value(forKey: prefName) as? String {
+        if let val = AuthorizationManagerPreferences.sharedPreferences.valueForKey(prefName) as? String {
             self.value = val
         } else {
             self.value = defaultValue
@@ -89,7 +89,7 @@ internal class StringPreference {
         commit()
     }
 #else
-    internal func set(_ value:String?) {
+    internal func set(value:String?) {
         self.value = value
         commit()
     }
@@ -100,7 +100,7 @@ internal class StringPreference {
         commit()
     }
     
-    fileprivate func commit() {
+    private func commit() {
         AuthorizationManagerPreferences.sharedPreferences.setValue(value, forKey: prefName)
         AuthorizationManagerPreferences.sharedPreferences.synchronize()
     }
@@ -118,7 +118,7 @@ internal class JSONPreference:StringPreference {
         set(try? Utils.JSONStringify(json as AnyObject))
     }
 #else
-    internal func set(_ json:[String:AnyObject]) {
+    internal func set(json:[String:AnyObject]) {
         set(try? Utils.JSONStringify(json))
     }
 #endif
@@ -143,8 +143,8 @@ internal class JSONPreference:StringPreference {
  */
 internal class PolicyPreference {
     
-    fileprivate var value:PersistencePolicy
-    fileprivate var prefName:String
+    private var value:PersistencePolicy
+    private var prefName:String
     internal weak var idToken:TokenPreference?
     internal weak var accessToken:TokenPreference?
     
@@ -164,7 +164,7 @@ internal class PolicyPreference {
         self.accessToken = accessToken
         self.idToken = idToken
         self.prefName = prefName
-        if let rawValue = AuthorizationManagerPreferences.sharedPreferences.value(forKey: prefName) as? String, let newValue = PersistencePolicy(rawValue: rawValue){
+        if let rawValue = AuthorizationManagerPreferences.sharedPreferences.valueForKey(prefName) as? String, let newValue = PersistencePolicy(rawValue: rawValue){
             self.value = newValue
         } else {
             self.value = defaultValue
@@ -186,7 +186,7 @@ internal class PolicyPreference {
         AuthorizationManagerPreferences.sharedPreferences.synchronize()
     }
 #else
-    internal func set(_ value:PersistencePolicy, shouldUpdateTokens:Bool) {
+    internal func set(value:PersistencePolicy, shouldUpdateTokens:Bool) {
         self.value = value
         if(shouldUpdateTokens){
             self.accessToken!.updateStateByPolicy()
@@ -220,7 +220,7 @@ internal class TokenPreference {
         }
     }
 #else
-    internal func set(_ value:String) {
+    internal func set(value:String) {
         runtimeValue = value
         if self.persistencePolicy.get() ==  PersistencePolicy.always {
             SecurityUtils.saveItemToKeyChain(value, label: prefName)

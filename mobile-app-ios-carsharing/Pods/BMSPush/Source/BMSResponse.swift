@@ -187,16 +187,16 @@ import BMSCore
             
             if  let  subscriptionDictionary:NSDictionary = convertStringToDictionary(self.responseText!)! as NSDictionary {
                 
-                if let subscriptionArray:NSArray = subscriptionDictionary.object(forKey: IMFPUSH_SUBSCRIPTIONS) as? NSArray{
+                if let subscriptionArray:NSArray = subscriptionDictionary.objectForKey(IMFPUSH_SUBSCRIPTIONS) as? NSArray{
                     
                     
                     var subscriptionResponsDic:NSDictionary?
                     
                     for  i in 0..<subscriptionArray.count {
                         
-                        subscriptionResponsDic = subscriptionArray.object(at: i) as? NSDictionary
+                        subscriptionResponsDic = subscriptionArray.objectAtIndex(i) as? NSDictionary
                         
-                        subscription.add((subscriptionResponsDic?.object(forKey: IMFPUSH_TAGNAME))!)
+                        subscription.addObject((subscriptionResponsDic?.objectForKey(IMFPUSH_TAGNAME))!)
                     }
                 }
                 
@@ -222,18 +222,18 @@ import BMSCore
             
             let  subscriptions = convertStringToDictionary(self.responseText!)! as NSDictionary
             
-            if let arraySub:NSArray = subscriptions.object(forKey: IMFPUSH_SUBSCRIPTIONEXISTS) as? NSArray {
+            if let arraySub:NSArray = subscriptions.objectForKey(IMFPUSH_SUBSCRIPTIONEXISTS) as? NSArray {
                 
                 finalDict.setObject(arraySub, forKey:IMFPUSH_SUBSCRIPTIONEXISTS)
                 
             }
-            if let dictionarySub:NSDictionary = subscriptions.object(forKey: IMFPUSH_TAGSNOTFOUND) as? NSDictionary {
+            if let dictionarySub:NSDictionary = subscriptions.objectForKey(IMFPUSH_TAGSNOTFOUND) as? NSDictionary {
                 
                 
                 finalDict.setObject(dictionarySub, forKey:IMFPUSH_TAGSNOTFOUND)
                 
             }
-            if let arraySub:NSArray = subscriptions.object(forKey: IMFPUSH_SUBSCRIBED) as? NSArray {
+            if let arraySub:NSArray = subscriptions.objectForKey(IMFPUSH_SUBSCRIBED) as? NSArray {
                 
                 finalDict.setObject(arraySub, forKey:IMFPUSH_SUBSCRIPTIONS)
             }
@@ -253,19 +253,19 @@ import BMSCore
             
             let  subscriptions = convertStringToDictionary(self.responseText!)! as NSDictionary
             
-            if let arraySub:NSArray = subscriptions.object(forKey: IMFPUSH_SUBSCRIPTIONEXISTS) as? NSArray {
+            if let arraySub:NSArray = subscriptions.objectForKey(IMFPUSH_SUBSCRIPTIONEXISTS) as? NSArray {
                 
                 
                 finalDict.setObject(arraySub, forKey:IMFPUSH_SUBSCRIPTIONEXISTS)
                 
             }
-            if let dictionarySub:NSDictionary = subscriptions.object(forKey: IMFPUSH_TAGSNOTFOUND) as? NSDictionary {
+            if let dictionarySub:NSDictionary = subscriptions.objectForKey(IMFPUSH_TAGSNOTFOUND) as? NSDictionary {
                 
                 
                 finalDict.setObject(dictionarySub, forKey:IMFPUSH_TAGSNOTFOUND)
                 
             }
-            if let arraySub:NSArray = subscriptions.object(forKey: IMFPUSH_SUBSCRIBED) as? NSArray {
+            if let arraySub:NSArray = subscriptions.objectForKey(IMFPUSH_SUBSCRIBED) as? NSArray {
                 
                 finalDict.setObject(arraySub, forKey:IMFPUSH_SUBSCRIPTIONS)
             }
@@ -284,15 +284,15 @@ import BMSCore
             
             let  tagsDictionary = convertStringToDictionary(self.responseText!)! as NSDictionary
             
-            if let tag:NSArray = tagsDictionary.object(forKey: IMFPUSH_TAGS) as? NSArray {
+            if let tag:NSArray = tagsDictionary.objectForKey(IMFPUSH_TAGS) as? NSArray {
                 
                 var tagResponseDic:NSDictionary?
                 
                 for  i in 0..<tag.count {
                     
-                    tagResponseDic = tag.object(at: i) as? NSDictionary
+                    tagResponseDic = tag.objectAtIndex(i) as? NSDictionary
                     
-                    tags.add((tagResponseDic?.object(forKey: IMFPUSH_NAME))!)
+                    tags.addObject((tagResponseDic?.objectForKey(IMFPUSH_NAME))!)
                     
                 }
             }
@@ -301,10 +301,10 @@ import BMSCore
         }
         
         
-        fileprivate func convertStringToDictionary(_ text: String) -> [String:AnyObject]? {
-            if let data = text.data(using: String.Encoding.utf8) {
+        private func convertStringToDictionary(text: String) -> [String:AnyObject]? {
+            if let data = text.dataUsingEncoding(NSUTF8StringEncoding) {
                 
-                return try! JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
+                return try! NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:AnyObject]
             }
             return nil
         }

@@ -15,7 +15,7 @@ class LicenseViewController: UIViewController {
         var message = ""
         
         // load License.txt
-        if let filepath = Bundle(for:ViewController.self).path(forResource: "LICENSE", ofType: "") {
+        if let filepath = NSBundle(forClass:ViewController.self).pathForResource("LICENSE", ofType: "") {
             do {
                 message = try NSString(contentsOfFile: filepath, usedEncoding: nil) as String
             } catch {
@@ -25,14 +25,14 @@ class LicenseViewController: UIViewController {
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        licenseText.setContentOffset(CGPoint.zero, animated: false)
+        licenseText.setContentOffset(CGPointZero, animated: false)
     }
     
     @IBAction func onAgree() {
-        self.dismiss(animated: true, completion: nil)
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     @IBAction func onDisagree() {
-        self.dismiss(animated: true, completion: {Void in
+        self.dismissViewControllerAnimated(true, completion: {Void in
             exit(-1)
         })
     }

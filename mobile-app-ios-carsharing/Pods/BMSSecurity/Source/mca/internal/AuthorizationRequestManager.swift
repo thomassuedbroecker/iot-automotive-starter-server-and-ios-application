@@ -382,7 +382,7 @@ public class AuthorizationRequestManager {
 
 #else
     
-open class AuthorizationRequestManager {
+public class AuthorizationRequestManager {
     
     //MARK constants
     //MARK vars (private)
@@ -392,9 +392,9 @@ open class AuthorizationRequestManager {
     
     var answers: [String : AnyObject]?
     
-    open static var overrideServerHost: String?
+    public static var overrideServerHost: String?
     
-    fileprivate static let logger = Logger.logger(name: BMSSecurityConstants.authorizationRequestManagerLoggerName)
+    private static let logger = Logger.logger(name: BMSSecurityConstants.authorizationRequestManagerLoggerName)
     
     internal var defaultCompletionHandler : BMSCompletionHandler
     
@@ -412,14 +412,14 @@ open class AuthorizationRequestManager {
         AuthorizationRequestManager.logger.debug(message: "AuthorizationRequestAgent is initialized.")
     }
     
-    internal func send(_ path:String , options:RequestOptions) throws {
+    internal func send(path:String , options:RequestOptions) throws {
         var rootUrl:String = ""
         var computedPath:String = path
         
-        if path.hasPrefix(MCAAuthorizationManager.HTTP_SCHEME) && path.characters.index(of: ":") != nil {
-            let url = URL(string: path)
+        if path.hasPrefix(MCAAuthorizationManager.HTTP_SCHEME) && path.characters.indexOf(":") != nil {
+            let url = NSURL(string: path)
             if let pathTemp = url?.path {
-                rootUrl = (path as NSString).replacingOccurrences(of: pathTemp, with: "")
+                rootUrl = (path as NSString).stringByReplacingOccurrencesOfString(pathTemp, withString: "")
                 computedPath = pathTemp
             }
             else {
@@ -458,7 +458,7 @@ open class AuthorizationRequestManager {
         
     }
     
-    internal static func isAuthorizationRequired(_ response: Response?) -> Bool {
+    internal static func isAuthorizationRequired(response: Response?) -> Bool {
         if let unwrappedResponse = response, unWrappedheaders = unwrappedResponse.headers,
             authHeader = unWrappedheaders[caseInsensitive : BMSSecurityConstants.WWW_AUTHENTICATE_HEADER] as? String
             where authHeader == BMSSecurityConstants.AUTHENTICATE_HEADER_VALUE {
@@ -468,7 +468,7 @@ open class AuthorizationRequestManager {
     }
     
     
-    internal func sendInternal(_ rootUrl:String, path:String, options:RequestOptions?) throws {
+    internal func sendInternal(rootUrl:String, path:String, options:RequestOptions?) throws {
         self.requestOptions = options != nil ? options : RequestOptions()
         
         requestPath = Utils.concatenateUrls(rootUrl, path: path)
@@ -490,11 +490,11 @@ open class AuthorizationRequestManager {
         
         let callback: BMSCompletionHandler = { (response: Response?, error: NSError?) in
             
-            func isRedirect(_ response: Response?) -> Bool{
+            func isRedirect(response: Response?) -> Bool{
                 return 300..<399 ~= (response?.statusCode)!
             }
             
-            func processResponseWrapper(_ response:Response?, isFailure:Bool) {
+            func processResponseWrapper(response:Response?, isFailure:Bool) {
                 let isRedirect:Bool = isRedirect(response)
                 if isFailure || !isRedirect {
                     self.processResponse(response)
@@ -547,7 +547,7 @@ open class AuthorizationRequestManager {
      
      - parameter jsonFailures: Collection of authentication failures
      */
-    internal func processFailures(_ jsonFailures: [String:AnyObject]?) {
+    internal func processFailures(jsonFailures: [String:AnyObject]?) {
         
         guard let failures = jsonFailures else {
             return
@@ -564,13 +564,13 @@ open class AuthorizationRequestManager {
         }
     }
     
-    internal func requestFailed(_ info:[String:AnyObject]?) {
+    internal func requestFailed(info:[String:AnyObject]?) {
         AuthorizationRequestManager.logger.error(message: "BaseRequest failed with info: \(info == nil ? "info is nil" : String(info))")
         defaultCompletionHandler(nil, NSError(domain: BMSSecurityConstants.BMSSecurityErrorDomain, code: -1, userInfo: [NSLocalizedDescriptionKey:"\(info)"]))
     }
     
     
-    internal func processSuccesses(_ jsonSuccesses: [String:AnyObject]?) {
+    internal func processSuccesses(jsonSuccesses: [String:AnyObject]?) {
         
         guard let successes = jsonSuccesses else {
             return
@@ -587,12 +587,12 @@ open class AuthorizationRequestManager {
         }
     }
     
-    enum ResponseError: ErrorProtocol {
-        case noLocation(String)
-        case challengeHandlerNotFound(String)
+    enum ResponseError: ErrorType {
+        case NoLocation(String)
+        case ChallengeHandlerNotFound(String)
     }
     
-    internal func processResponse(_ response: Response?) {
+    internal func processResponse(response: Response?) {
         // at this point a server response should contain a secure JSON with challenges
         do {
             let responseJson = try Utils.extractSecureJson(response)
@@ -610,7 +610,7 @@ open class AuthorizationRequestManager {
         }
     }
     
-    internal func startHandleChallenges(_ jsonChallenges: [String: AnyObject], response: Response) throws {
+    internal func startHandleChallenges(jsonChallenges: [String: AnyObject], response: Response) throws {
         let challenges = Array(jsonChallenges.keys)
         
         if (AuthorizationRequestManager.isAuthorizationRequired(response)) {
@@ -622,12 +622,12 @@ open class AuthorizationRequestManager {
                 handler.handleChallenge(self, challenge:  unWrappedChallenge)
             }
             else {
-                throw ResponseError.challengeHandlerNotFound("Challenge handler for realm: \(realm), is not found")
+                throw ResponseError.ChallengeHandlerNotFound("Challenge handler for realm: \(realm), is not found")
             }
         }
     }
     
-    internal func setExpectedAnswers(_ realms:[String]) {
+    internal func setExpectedAnswers(realms:[String]) {
         guard answers != nil else {
             return
         }
@@ -637,9 +637,9 @@ open class AuthorizationRequestManager {
         }
     }
     
-    internal func removeExpectedAnswer(_ realm:String) {
+    internal func removeExpectedAnswer(realm:String) {
         if answers != nil {
-            answers!.removeValue(forKey: realm)
+            answers!.removeValueForKey(realm)
         }
         
         if isAnswersFilled() {
@@ -658,7 +658,7 @@ open class AuthorizationRequestManager {
      - parameter answer: Answer to add.
      - parameter realm:  Authentication realm for the answer.
      */
-    internal func submitAnswer(_ answer:[String:AnyObject]?, realm:String) {
+    internal func submitAnswer(answer:[String:AnyObject]?, realm:String) {
         guard let unwrappedAnswer = answer else {
             AuthorizationRequestManager.logger.error(message: "Cannot submit nil answer for realm \(realm)")
             return
@@ -696,9 +696,9 @@ open class AuthorizationRequestManager {
         try send(requestPath!, options: requestOptions!)
     }
     
-    internal func processRedirectResponse(_ response:Response) throws {
+    internal func processRedirectResponse(response:Response) throws {
         
-        func getLocationString(_ locationHeader:AnyObject?) -> String? {
+        func getLocationString(locationHeader:AnyObject?) -> String? {
             guard locationHeader != nil else {
                 return nil
             }
@@ -713,17 +713,17 @@ open class AuthorizationRequestManager {
         }
         
         guard let location = getLocationString(response.headers?[caseInsensitive : BMSSecurityConstants.LOCATION_HEADER_NAME]) else {
-            throw ResponseError.noLocation("Redirect response does not contain 'Location' header.")
+            throw ResponseError.NoLocation("Redirect response does not contain 'Location' header.")
         }
         
         // the redirect location url should contain "wl_result" value in query parameters.
-        guard let url:URL = URL(string: location)! else {
-            throw ResponseError.noLocation("Could not create URL from 'Location' header.")
+        guard let url:NSURL = NSURL(string: location)! else {
+            throw ResponseError.NoLocation("Could not create URL from 'Location' header.")
         }
         
         let query =  url.query
         
-        if let q = query where q.lowercased().contains(BMSSecurityConstants.WL_RESULT.lowercased()) {
+        if let q = query where q.lowercaseString.containsString(BMSSecurityConstants.WL_RESULT.lowercaseString) {
             if let result = Utils.getParameterValueFromQuery(query, paramName: BMSSecurityConstants.WL_RESULT, caseSensitive: false) {
                 let jsonResult = try Utils.parseJsonStringtoDictionary(result)
                 // process failures if any

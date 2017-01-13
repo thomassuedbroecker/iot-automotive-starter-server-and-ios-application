@@ -116,7 +116,7 @@ public class BMSClient {
 /**
     A singleton that serves as an entry point to Bluemix client-server communication.
 */
-open class BMSClient {
+public class BMSClient {
     
     
     // MARK: Constants
@@ -144,22 +144,22 @@ open class BMSClient {
     // MARK: Properties (API)
     
     /// The singleton that is used for all `BMSClient` activity.
-    open static let sharedInstance = BMSClient()
+    public static let sharedInstance = BMSClient()
     
     /// Specifies the base Bluemix application backend URL.
-    open fileprivate(set) var bluemixAppRoute: String?
+    public private(set) var bluemixAppRoute: String?
     
     // Specifies the region where the Bluemix service is hosted.
-    open fileprivate(set) var bluemixRegion: String?
+    public private(set) var bluemixRegion: String?
     
     /// Specifies the Bluemix application backend identifier.
-    open fileprivate(set) var bluemixAppGUID: String?
+    public private(set) var bluemixAppGUID: String?
     
     /// Specifies the allowed timeout (in seconds) for all `BMSClient` network requests.
-    open var requestTimeout: Double = 20.0
+    public var requestTimeout: Double = 20.0
     
     // Handles the authentication process for network requests.
-    open var authorizationManager: AuthorizationManager
+    public var authorizationManager: AuthorizationManager
     
     
     
@@ -176,7 +176,7 @@ open class BMSClient {
         - parameter backendAppGUID:            (Optional) The GUID of the Bluemix application.
         - parameter bluemixRegion:             The region where your Bluemix application is hosted. Use one of the `BMSClient.Region` constants.
     */
-    open func initialize(bluemixAppRoute: String? = nil, bluemixAppGUID: String? = nil, bluemixRegion: String...) {
+    public func initialize(bluemixAppRoute bluemixAppRoute: String? = nil, bluemixAppGUID: String? = nil, bluemixRegion: String...) {
     
         self.bluemixAppRoute = bluemixAppRoute
         self.bluemixAppGUID = bluemixAppGUID
@@ -185,7 +185,7 @@ open class BMSClient {
     
     
     // Prevent users from using BMSClient() initializer - They must use BMSClient.sharedInstance
-    fileprivate init() {
+    private init() {
         self.authorizationManager = BaseAuthorizationManager()
     }
     

@@ -23,7 +23,7 @@ internal class Queue<Element> {
         items.append(element)
     }
 #else
-    internal func add(_ element:Element){
+    internal func add(element:Element){
         items.append(element)
     }
 #endif

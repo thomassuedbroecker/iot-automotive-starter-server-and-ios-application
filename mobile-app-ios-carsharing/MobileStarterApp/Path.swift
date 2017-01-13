@@ -12,7 +12,7 @@ import Foundation
 class Path {
     var coordinates : [NSArray]?
     
-    class func fromDictionary(_ array:NSArray) -> [Path] {
+    class func fromDictionary(array:NSArray) -> [Path] {
         var returnArray:[Path] = []
         for item in array {
             if let features = item["features"] as? [NSDictionary] {

@@ -13,7 +13,7 @@ class BehaviorDuration {
 	var start_time : UInt64?
 	var end_time : UInt64?
 
-    class func fromDictionary(_ array:NSArray) -> [BehaviorDuration] {
+    class func fromDictionary(array:NSArray) -> [BehaviorDuration] {
         var returnArray:[BehaviorDuration] = []
         for item in array {
             returnArray.append(BehaviorDuration(dictionary: item as! NSDictionary))

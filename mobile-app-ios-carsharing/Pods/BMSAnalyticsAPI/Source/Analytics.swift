@@ -167,17 +167,17 @@ public protocol AnalyticsDelegate {
 
     When you are ready to send all of the recorded data to the Mobile Analytics service, use `send(completionHandler:)`.
 */
-open class Analytics {
+public class Analytics {
     
     
     // MARK: Properties
     
     /// Determines whether analytics data will be recorded.
-    open static var isEnabled: Bool = true
+    public static var isEnabled: Bool = true
     
     /// Identifies the current application user.
     /// To reset the `userIdentity`, set the value to nil.
-    open static var userIdentity: String? {
+    public static var userIdentity: String? {
         didSet {
             Analytics.delegate?.userIdentity = userIdentity
         }
@@ -189,9 +189,9 @@ open class Analytics {
     
     // Handles all internal implementation of the Analytics class
     // Public access required by BMSAnalytics framework, which is required to initialize this property
-    open static var delegate: AnalyticsDelegate?
+    public static var delegate: AnalyticsDelegate?
     
-    open static let logger = Logger.logger(name: Logger.bmsLoggerPrefix + "analytics")
+    public static let logger = Logger.logger(name: Logger.bmsLoggerPrefix + "analytics")
     
     
     
@@ -208,7 +208,7 @@ open class Analytics {
 
         - parameter metadata:  The analytics data
      */
-    open static func log(metadata: [String: AnyObject], file: String = #file, function: String = #function, line: Int = #line) {
+    public static func log(metadata metadata: [String: AnyObject], file: String = #file, function: String = #function, line: Int = #line) {
     
         Analytics.logger.analytics(metadata: metadata, file: file, function: function, line: line)
     }

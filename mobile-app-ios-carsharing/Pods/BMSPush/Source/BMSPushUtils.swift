@@ -92,18 +92,18 @@ import BMSCore
      
      This class is responsilble for creating time logs, matrics events etc.
      */
-    open class BMSPushUtils: NSObject {
+    public class BMSPushUtils: NSObject {
         
         static var loggerMessage:String = ""
         
-        class func saveValueToNSUserDefaults (_ value:String, key:String){
+        class func saveValueToNSUserDefaults (value:String, key:String){
             
             
-            let standardUserDefaults : UserDefaults = UserDefaults.standard
-            if standardUserDefaults.object(forKey: key) != nil  {
+            let standardUserDefaults : NSUserDefaults = NSUserDefaults.standardUserDefaults()
+            if standardUserDefaults.objectForKey(key) != nil  {
                 
-                UserDefaults.standard.set(value, forKey: key)
-                UserDefaults.standard.synchronize()
+                NSUserDefaults.standardUserDefaults().setObject(value, forKey: key)
+                NSUserDefaults.standardUserDefaults().synchronize()
                 
             }
             loggerMessage = ("Saving value to NSUserDefaults with Key: \(key) and Value: \(value)")
@@ -115,9 +115,9 @@ import BMSCore
             
             var pushEnabled = false
             
-            if  ((UIDevice.current.systemVersion as NSString).floatValue >= 8.0) {
+            if  ((UIDevice.currentDevice().systemVersion as NSString).floatValue >= 8.0) {
                 
-                if (UIApplication.shared.isRegisteredForRemoteNotifications) {
+                if (UIApplication.sharedApplication().isRegisteredForRemoteNotifications()) {
                     pushEnabled = true
                 }
                 else {
@@ -125,9 +125,9 @@ import BMSCore
                 }
             } else {
                 
-                let grantedSettings = UIApplication.shared.currentUserNotificationSettings
+                let grantedSettings = UIApplication.sharedApplication().currentUserNotificationSettings()
                 
-                if grantedSettings!.types.rawValue & UIUserNotificationType.alert.rawValue != 0 {
+                if grantedSettings!.types.rawValue & UIUserNotificationType.Alert.rawValue != 0 {
                     // Alert permission granted
                     pushEnabled = true
                 }

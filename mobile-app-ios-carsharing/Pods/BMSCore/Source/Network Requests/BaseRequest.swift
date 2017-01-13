@@ -345,40 +345,40 @@ public typealias BMSCompletionHandler = (Response?, NSError?) -> Void
 
     When building a Request object, all components of the HTTP request must be provided in the initializer, except for the `requestBody`, which can be supplied as NSData when sending the request via the `send()` method.
 */
-open class BaseRequest: NSObject, URLSessionTaskDelegate {
+public class BaseRequest: NSObject, NSURLSessionTaskDelegate {
     
     
     // MARK: Constants
     
-    open static let contentType = "Content-Type"
+    public static let contentType = "Content-Type"
     
     
     
     // MARK: Properties (API)
     
     /// URL that the request is being sent to.
-    open fileprivate(set) var resourceUrl: String
+    public private(set) var resourceUrl: String
     
     /// The HTTP method (GET, POST, etc.).
-    open let httpMethod: HttpMethod
+    public let httpMethod: HttpMethod
     
     /// Request timeout measured in seconds.
-    open var timeout: Double
+    public var timeout: Double
     
     /// All request headers.
-    open var headers: [String: String] = [:]
+    public var headers: [String: String] = [:]
     
     /// Query parameters to append to the `resourceURL`.
-    open var queryParameters: [String: String]?
+    public var queryParameters: [String: String]?
     
     /// The request body can be set when sending the request via the `send()` method.
-    open fileprivate(set) var requestBody: Data?
+    public private(set) var requestBody: NSData?
     
     /// Determines whether request should follow HTTP redirects.
-    open var allowRedirects : Bool = true
+    public var allowRedirects : Bool = true
     
     /// Deterimes the cache policy to use for sending request.
-    open var cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy
+    public var cachePolicy: NSURLRequestCachePolicy = .UseProtocolCachePolicy
     
     
     
@@ -386,25 +386,25 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
     
     // The request timeout is set in this URLSession's configuration.
     // Public access required by BMSSecurity framework.
-    open var networkSession: Foundation.URLSession!
+    public var networkSession: NSURLSession!
     
     // The time at which the request is sent.
     // Public access required by BMSAnalytics framework.
-    open fileprivate(set) var startTime: TimeInterval = 0.0
+    public private(set) var startTime: NSTimeInterval = 0.0
     
     // The unique ID to keep track of each request.
     // Public access required by BMSAnalytics framework.
-    open fileprivate(set) var trackingId: String = ""
+    public private(set) var trackingId: String = ""
     
     // Metadata for the request.
     // This will obtain a value when the Analytics class from BMSAnalytics is initialized.
     // Public access required by BMSAnalytics framework.
-    open static var requestAnalyticsData: String?
+    public static var requestAnalyticsData: String?
     
     // The current request.
     var networkRequest: NSMutableURLRequest
     
-    fileprivate static let logger = Logger.logger(name: Logger.bmsLoggerPrefix + "request")
+    private static let logger = Logger.logger(name: Logger.bmsLoggerPrefix + "request")
     
     
     
@@ -427,10 +427,10 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
                headers: [String: String]? = nil,
                queryParameters: [String: String]? = nil,
                timeout: Double = BMSClient.sharedInstance.requestTimeout,
-               cachePolicy: NSURLRequest.CachePolicy = NSURLRequest.CachePolicy.useProtocolCachePolicy) {
+               cachePolicy: NSURLRequestCachePolicy = NSURLRequestCachePolicy.UseProtocolCachePolicy) {
     
         // Relative URL
-        if (!url.contains("http://") && !url.contains("https://")),
+        if (!url.containsString("http://") && !url.containsString("https://")),
             let bmsAppRoute = BMSClient.sharedInstance.bluemixAppRoute {
             
             self.resourceUrl = bmsAppRoute + url
@@ -448,7 +448,7 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
         self.queryParameters = queryParameters
         
         // Set timeout and initialize network session and request
-        let configuration = URLSessionConfiguration.default
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.timeoutIntervalForRequest = timeout
         networkRequest = NSMutableURLRequest()
         
@@ -456,7 +456,7 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
         
         super.init()
         
-        self.networkSession = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        self.networkSession = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }
     
     
@@ -473,23 +473,23 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
         - parameter requestBody: The HTTP request body.
         - parameter completionHandler: The block that will be called when this request finishes.
     */
-    open func send(requestBody: Data? = nil, completionHandler: BMSCompletionHandler?) {
+    public func send(requestBody requestBody: NSData? = nil, completionHandler: BMSCompletionHandler?) {
         
         self.requestBody = requestBody
     
         // Add metadata to the request header so that analytics data can be obtained for ALL bms network requests
         
         // The analytics server needs this ID to match each request with its corresponding response
-        self.trackingId = UUID().uuidString
+        self.trackingId = NSUUID().UUIDString
         headers["x-wl-analytics-tracking-id"] = self.trackingId
         
         if let requestMetadata = BaseRequest.requestAnalyticsData {
             self.headers["x-mfp-analytics-metadata"] = requestMetadata
         }
         
-        self.startTime = Date.timeIntervalSinceReferenceDate
+        self.startTime = NSDate.timeIntervalSinceReferenceDate()
         
-        if let url = URL(string: self.resourceUrl) {
+        if let url = NSURL(string: self.resourceUrl) {
             buildAndSendRequest(url: url, callback: completionHandler)
         }
         else {
@@ -504,13 +504,13 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
     
     // MARK: Methods (internal)
     
-    fileprivate func buildAndSendRequest(url: URL, callback: BMSCompletionHandler?) {
+    private func buildAndSendRequest(url url: NSURL, callback: BMSCompletionHandler?) {
     
         // A callback that builds the Response object and passes it to the user
         let buildAndSendResponse = {
-            (data: Data?, response: URLResponse?, error: NSError?) -> Void in
+            (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
     
-            let networkResponse = Response(responseData: data, httpResponse: response as? HTTPURLResponse, isRedirect: self.allowRedirects)
+            let networkResponse = Response(responseData: data, httpResponse: response as? NSHTTPURLResponse, isRedirect: self.allowRedirects)
             
             callback?(networkResponse as Response, error)
         }
@@ -532,16 +532,16 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
         
         // Build request
         resourceUrl = String(requestUrl)
-        networkRequest.url = requestUrl
-        networkRequest.httpMethod = httpMethod.rawValue
+        networkRequest.URL = requestUrl
+        networkRequest.HTTPMethod = httpMethod.rawValue
         networkRequest.allHTTPHeaderFields = headers
-        networkRequest.httpBody = requestBody
+        networkRequest.HTTPBody = requestBody
         networkRequest.cachePolicy = cachePolicy
         
         BaseRequest.logger.debug(message: "Sending Request to " + resourceUrl)
         
         // Send request
-        self.networkSession.dataTask(with: networkRequest as URLRequest, completionHandler: buildAndSendResponse).resume()
+        self.networkSession.dataTaskWithRequest(networkRequest as NSURLRequest, completionHandler: buildAndSendResponse).resume()
     }
     
     
@@ -554,25 +554,25 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
 
         - returns: The original URL with the query parameters appended to it
     */
-    static func append(queryParameters parameters: [String: String], toURL originalUrl: URL) -> URL? {
+    static func append(queryParameters parameters: [String: String], toURL originalUrl: NSURL) -> NSURL? {
     
         if parameters.isEmpty {
             return originalUrl
         }
         
-        var parametersInURLFormat = [URLQueryItem]()
+        var parametersInURLFormat = [NSURLQueryItem]()
         for (key, value) in parameters {
-            parametersInURLFormat += [URLQueryItem(name: key, value: value)]
+            parametersInURLFormat += [NSURLQueryItem(name: key, value: value)]
         }
         
-        if let newUrlComponents = URLComponents(url: originalUrl, resolvingAgainstBaseURL: false) {
+        if let newUrlComponents = NSURLComponents(URL: originalUrl, resolvingAgainstBaseURL: false) {
             if newUrlComponents.queryItems != nil {
-                newUrlComponents.queryItems!.append(contentsOf: parametersInURLFormat)
+                newUrlComponents.queryItems!.appendContentsOf(parametersInURLFormat)
             }
             else {
                 newUrlComponents.queryItems = parametersInURLFormat
             }
-            return newUrlComponents.url
+            return newUrlComponents.URL
         }
         else {
             return nil
@@ -584,13 +584,13 @@ open class BaseRequest: NSObject, URLSessionTaskDelegate {
     // MARK: NSURLSessionTaskDelegate
     
     // Handle HTTP redirection
-    open func urlSession(_ session: URLSession,
-                          task: URLSessionTask,
-                          willPerformHTTPRedirection response: HTTPURLResponse,
-                          newRequest request: URLRequest,
-                          completionHandler: (@escaping (URLRequest?) -> Void)) {
+    public func URLSession(session: NSURLSession,
+                          task: NSURLSessionTask,
+                          willPerformHTTPRedirection response: NSHTTPURLResponse,
+                          newRequest request: NSURLRequest,
+                          completionHandler: ((NSURLRequest?) -> Void)) {
     
-        var redirectRequest: URLRequest?
+        var redirectRequest: NSURLRequest?
         if allowRedirects {
             BaseRequest.logger.debug(message: "Redirecting: " + String(session))
             redirectRequest = request

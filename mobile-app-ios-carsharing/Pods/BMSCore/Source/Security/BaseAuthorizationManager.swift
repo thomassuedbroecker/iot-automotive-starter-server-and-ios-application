@@ -60,7 +60,7 @@ internal class BaseAuthorizationManager : AuthorizationManager {
         
     }
     
-    func addCachedAuthorizationHeader(_ request: NSMutableURLRequest) {
+    func addCachedAuthorizationHeader(request: NSMutableURLRequest) {
         
     }
 	

@@ -111,13 +111,13 @@ public class ChallengeHandler : AuthenticationContext{
 }
 
 #else
-open class ChallengeHandler : AuthenticationContext{
+public class ChallengeHandler : AuthenticationContext{
     
     internal var realm:String
     internal var authenticationDelegate:AuthenticationDelegate?
     internal var waitingRequests:[AuthorizationRequestManager]
     internal var activeRequest:AuthorizationRequestManager?
-    internal var lockQueue = DispatchQueue(label: "ChallengeHandlerQueue", attributes: DispatchQueue.Attributes.concurrent)
+    internal var lockQueue = dispatch_queue_create("ChallengeHandlerQueue", DISPATCH_QUEUE_CONCURRENT)
     
     public init(realm:String , authenticationDelegate:AuthenticationDelegate) {
         self.realm = realm
@@ -126,8 +126,8 @@ open class ChallengeHandler : AuthenticationContext{
         self.waitingRequests = [AuthorizationRequestManager]()
     }
     
-    open func submitAuthenticationChallengeAnswer(_ answer:[String:AnyObject]?) {
-        lockQueue.async(flags: .barrier, execute: {
+    public func submitAuthenticationChallengeAnswer(answer:[String:AnyObject]?) {
+        dispatch_barrier_async(lockQueue){
             guard let aRequest = self.activeRequest else {
                 return
             }
@@ -138,32 +138,32 @@ open class ChallengeHandler : AuthenticationContext{
                 aRequest.removeExpectedAnswer(self.realm)
             }
             self.activeRequest = nil
-        })
+        }
     }
     
-    open func submitAuthenticationSuccess () {
-        lockQueue.async(flags: .barrier, execute: {
+    public func submitAuthenticationSuccess () {
+        dispatch_barrier_async(lockQueue){
             if self.activeRequest != nil {
                 self.activeRequest!.removeExpectedAnswer(self.realm)
                 self.activeRequest = nil
             }
             
             self.releaseWaitingList()
-        })
+        }
     }
     
-    open func submitAuthenticationFailure (_ info:[String:AnyObject]?) {
-        lockQueue.async(flags: .barrier, execute: {
+    public func submitAuthenticationFailure (info:[String:AnyObject]?) {
+        dispatch_barrier_async(lockQueue){
             if self.activeRequest != nil {
                 self.activeRequest!.requestFailed(info)
                 self.activeRequest = nil
             }
             self.releaseWaitingList()
-        })
+        }
     }
     
-    internal func handleChallenge(_ request:AuthorizationRequestManager, challenge:[String:AnyObject]) {
-        lockQueue.async(flags: .barrier, execute: {
+    internal func handleChallenge(request:AuthorizationRequestManager, challenge:[String:AnyObject]) {
+        dispatch_barrier_async(lockQueue){
             if self.activeRequest == nil {
                 self.activeRequest = request
                 if let unWrappedListener = self.authenticationDelegate{
@@ -172,34 +172,34 @@ open class ChallengeHandler : AuthenticationContext{
             } else {
                 self.waitingRequests.append(request)
             }
-        })
+        }
     }
     
-    internal func handleSuccess(_ success:[String:AnyObject]) {
-        lockQueue.async(flags: .barrier, execute: {
+    internal func handleSuccess(success:[String:AnyObject]) {
+        dispatch_barrier_async(lockQueue){
             if let unWrappedListener = self.authenticationDelegate{
                 unWrappedListener.onAuthenticationSuccess(success)
             }
             self.releaseWaitingList()
             self.activeRequest = nil
-        })
+        }
     }
-    internal func handleFailure(_ failure:[String:AnyObject]) {
-        lockQueue.async(flags: .barrier, execute: {
+    internal func handleFailure(failure:[String:AnyObject]) {
+        dispatch_barrier_async(lockQueue){
             if let unWrappedListener = self.authenticationDelegate{
                 unWrappedListener.onAuthenticationFailure(failure)
             }
             self.clearWaitingList()
             self.activeRequest = nil
-        })
+        }
     }
-    fileprivate func releaseWaitingList() {
+    private func releaseWaitingList() {
         for request in self.waitingRequests {
             request.removeExpectedAnswer(self.realm)
         }
         self.clearWaitingList()
     }
-    fileprivate func clearWaitingList() {
+    private func clearWaitingList() {
         self.waitingRequests.removeAll()
     }
 }

@@ -15,7 +15,7 @@ import BMSCore
 
 /// This class represents the base app identity class, with default methods and keys
 
-open class MCAAppIdentity : BaseAppIdentity{
+public class MCAAppIdentity : BaseAppIdentity{
     
     public override init() {
         

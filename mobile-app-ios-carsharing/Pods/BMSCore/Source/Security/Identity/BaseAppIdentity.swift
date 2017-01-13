@@ -77,7 +77,7 @@ open class BaseAppIdentity: AppIdentity {
     
     
 /// This class represents the base app identity class, with default methods and keys
-open class BaseAppIdentity: AppIdentity {
+public class BaseAppIdentity: AppIdentity {
 
     
     public struct Key {
@@ -87,14 +87,14 @@ open class BaseAppIdentity: AppIdentity {
     }
     
     
-    open internal(set) var jsonData: [String:String] = ([:])
+    public internal(set) var jsonData: [String:String] = ([:])
     
-	open var ID: String? {
+	public var ID: String? {
 		get {
 			return jsonData[BaseAppIdentity.Key.ID]
 		}
 	}
-	open var version: String? {
+	public var version: String? {
 		get {
 			return jsonData[BaseAppIdentity.Key.version]
 		}
@@ -102,8 +102,8 @@ open class BaseAppIdentity: AppIdentity {
 	
 	public init() {
         
-        jsonData[BaseAppIdentity.Key.ID] = Bundle.main.bundleIdentifier
-        jsonData[BaseAppIdentity.Key.version] = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        jsonData[BaseAppIdentity.Key.ID] = NSBundle.mainBundle().bundleIdentifier
+        jsonData[BaseAppIdentity.Key.version] = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String
 	}
 	
     public init(map: [String:AnyObject]?) {

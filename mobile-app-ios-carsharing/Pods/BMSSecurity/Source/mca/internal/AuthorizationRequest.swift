@@ -97,17 +97,17 @@ internal class AuthorizationRequest : BaseRequest {
 
 internal class AuthorizationRequest : BaseRequest {
     
-    internal func send(_ completionHandler: BMSCompletionHandler?) {
+    internal func send(completionHandler: BMSCompletionHandler?) {
         super.send(requestBody: nil, completionHandler: completionHandler)
     }
     
     //Add new header
-    internal func addHeader(_ key:String, val:String) {
+    internal func addHeader(key:String, val:String) {
         headers[key] = val
     }
     
     //Iterate and add all new headers
-    internal func addHeaders(_ newHeaders: [String:String]) {
+    internal func addHeaders(newHeaders: [String:String]) {
         for (key,value) in newHeaders {
             addHeader(key, val: value)
         }
@@ -117,9 +117,9 @@ internal class AuthorizationRequest : BaseRequest {
         super.init(url: url, headers: nil, queryParameters: nil, method: method, timeout: 0)
         allowRedirects = false
         
-        let configuration = URLSessionConfiguration.default
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.timeoutIntervalForRequest = timeout
-        networkSession = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        networkSession = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }
     
     /**
@@ -129,7 +129,7 @@ internal class AuthorizationRequest : BaseRequest {
      * @param formParameters The parameters to put in the request body
      * @param listener       The listener whose onSuccess or onFailure methods will be called when this request finishes.
      */
-    internal func sendWithCompletionHandler(_ formParamaters : [String : String], callback: BMSCompletionHandler?) {
+    internal func sendWithCompletionHandler(formParamaters : [String : String], callback: BMSCompletionHandler?) {
         headers[BaseRequest.contentType] = "application/x-www-form-urlencoded"
         var body = ""
         var i = 0
@@ -142,24 +142,24 @@ internal class AuthorizationRequest : BaseRequest {
             i+=1
         }
         
-        send(requestBody: body.data(using: String.Encoding.utf8), completionHandler: callback)
+        send(requestBody: body.dataUsingEncoding(NSUTF8StringEncoding), completionHandler: callback)
     }
-    fileprivate func urlEncode(_ str:String) -> String{
+    private func urlEncode(str:String) -> String{
         var encodedString = ""
         var unchangedCharacters = ""
         let FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~%"
         let range = NSMakeRange(0x20, 0x5f).toRange()!
         range.forEach({(element:Int) in
-            if !FORM_ENCODE_SET.contains(String(UnicodeScalar(element))) {
+            if !FORM_ENCODE_SET.containsString(String(UnicodeScalar(element))) {
                 unchangedCharacters += String(Character(UnicodeScalar(element)))
             }
         })
-        encodedString = str.trimmingCharacters(in: CharacterSet(charactersIn: "\n\r\t"))
+        encodedString = str.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "\n\r\t"))
         let charactersToRemove = ["\n", "\r", "\t"]
         for char in charactersToRemove {
-            encodedString = encodedString.replacingOccurrences(of: char, with: "")
+            encodedString = encodedString.stringByReplacingOccurrencesOfString(char, withString: "")
         }
-        if let encodedString = encodedString.addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: unchangedCharacters)) {
+        if let encodedString = encodedString.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: unchangedCharacters)) {
             return encodedString
         }
         else {

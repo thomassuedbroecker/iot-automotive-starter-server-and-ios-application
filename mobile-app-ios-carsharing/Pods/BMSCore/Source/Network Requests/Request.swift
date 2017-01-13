@@ -117,20 +117,20 @@ open class Request: BaseRequest {
 
     When building a Request object, all components of the HTTP request must be provided in the initializer, except for the `requestBody`, which can be supplied as Data when sending the request via the `send()` method.
 */
-open class Request: BaseRequest {
+public class Request: BaseRequest {
     
     
     // MARK: Properties (internal)
     
     internal var oauthFailCounter = 0
     
-    internal var savedRequestBody: Data?
+    internal var savedRequestBody: NSData?
     
     
     
     // MARK: Method overrides
     
-    open override func send(requestBody: Data? = nil, completionHandler: BMSCompletionHandler?) {
+    public override func send(requestBody requestBody: NSData? = nil, completionHandler: BMSCompletionHandler?) {
     
         let authManager: AuthorizationManager = BMSClient.sharedInstance.authorizationManager
         

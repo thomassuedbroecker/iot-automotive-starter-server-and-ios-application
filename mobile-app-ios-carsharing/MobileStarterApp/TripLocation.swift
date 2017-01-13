@@ -16,7 +16,7 @@ class TripLocation {
 	var end_longitude : Double?
 	var behaviors : [TripBehavior]?
 
-    class func fromDictionary(_ array:NSArray) -> [TripLocation] {
+    class func fromDictionary(array:NSArray) -> [TripLocation] {
         var returnArray:[TripLocation] = []
         for item in array {
             returnArray.append(TripLocation(dictionary: item as! NSDictionary))

@@ -29,7 +29,7 @@ class CarDetailsViewController: UIViewController {
     let specificationsLabels = ["Make and Model:", "Year:", "Mileage:"]
     var specificationsValues: [String] = []
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.backItem?.title = ""
         
@@ -42,7 +42,7 @@ class CarDetailsViewController: UIViewController {
         // TODO: localize
         self.title = "Car Details"
         
-        self.tabBarController?.tabBar.isHidden = true
+        self.tabBarController?.tabBar.hidden = true
        
         // Do any additional setup after loading the view.
         self.carNameLabel.text = car?.name
@@ -51,7 +51,7 @@ class CarDetailsViewController: UIViewController {
         
         self.carDetailThumbnail.image = CarBrowseViewController.thumbnailCache[(car?.thumbnailURL)!]  as? UIImage
         
-        ratingLabel.text = String(repeating: "\u{2605}", count: (car?.stars)!) + String(repeating: "\u{2606}", count: (5-(car?.stars)!))
+        ratingLabel.text = String(count: (car?.stars)!, repeatedValue: Character("\u{2605}")) + String(count: (5-(car?.stars)!), repeatedValue: Character("\u{2606}"))
         
         ratingLabel.textColor = UIColor(red: 243/255, green: 118/255, blue: 54/255, alpha: 100)
         
@@ -61,15 +61,15 @@ class CarDetailsViewController: UIViewController {
         carDetailsTableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0)
         carDetailsTableView.allowsSelection = true
         carDetailsTableView.allowsMultipleSelection = false
-        carDetailsTableView.backgroundColor = UIColor.white
-        carDetailsTableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        carDetailsTableView.backgroundColor = UIColor.whiteColor()
+        carDetailsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = DateFormatter.Style.short
-        dateFormatter.timeStyle = DateFormatter.Style.none
-        let pickupDate = Date()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
+        let pickupDate = NSDate()
         
-        availabilityValues[0] = dateFormatter.string(from: pickupDate)
+        availabilityValues[0] = dateFormatter.stringFromDate(pickupDate)
         availabilityValues[0] += " 8:00AM - 10:00PM"
         
         availabilityValues[2] = "$\((car?.hourlyRate)!)/hr, $\((car?.dailyRate)!)/day"
@@ -82,22 +82,22 @@ class CarDetailsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func locationButtonAction(_ sender: AnyObject) {
+    @IBAction func locationButtonAction(sender: AnyObject) {
         showMapAtCarCoordinates()
     }
     
     func showMapAtCarCoordinates() {
-        let url : URL = URL(string: "http://maps.apple.com/maps?q=\((car?.lat)!),\((car?.lng)!)")!
-        if UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.openURL(url)
+        let url : NSURL = NSURL(string: "http://maps.apple.com/maps?q=\((car?.lat)!),\((car?.lng)!)")!
+        if UIApplication.sharedApplication().canOpenURL(url) {
+            UIApplication.sharedApplication().openURL(url)
         }
     }
     
-    func thousandSeparator(_ num: Int) -> String {
-        let temp = NumberFormatter()
-        temp.numberStyle = .decimal
+    func thousandSeparator(num: Int) -> String {
+        let temp = NSNumberFormatter()
+        temp.numberStyle = .DecimalStyle
         
-        return temp.string(from: NSNumber(num))!
+        return temp.stringFromNumber(num)!
     }
     
     /*
@@ -110,9 +110,9 @@ class CarDetailsViewController: UIViewController {
     }
     */
     // MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        let targetController: CreateReservationViewController = segue.destination as! CreateReservationViewController
+        let targetController: CreateReservationViewController = segue.destinationViewController as! CreateReservationViewController
         
         targetController.car = car
     }
@@ -121,11 +121,11 @@ class CarDetailsViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension CarDetailsViewController: UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
          return availabilityLabels.count
         } else if section == 1 {
@@ -135,19 +135,19 @@ extension CarDetailsViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sectionHeaderValues[section]
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "MyIdentifier"
-        let cell = UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: cellIdentifier)
-        cell.contentView.backgroundColor = UIColor.white
-        cell.textLabel?.textColor = UIColor.black
+        let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: cellIdentifier)
+        cell.contentView.backgroundColor = UIColor.whiteColor()
+        cell.textLabel?.textColor = UIColor.blackColor()
         cell.textLabel?.font = UIFont(name: cell.textLabel!.font.fontName, size: 12)
-        cell.detailTextLabel?.textColor = UIColor.black
+        cell.detailTextLabel?.textColor = UIColor.blackColor()
         cell.detailTextLabel?.font = UIFont(name: cell.textLabel!.font.fontName, size: 12)
-        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
         
         if indexPath.section == 0 {
             cell.textLabel?.text = availabilityLabels[indexPath.row]
@@ -170,19 +170,19 @@ extension CarDetailsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension CarDetailsViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 26
     }
     
     // to override the grey background and black text on section headers
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let myView = view as! UITableViewHeaderFooterView
-        myView.tintColor = UIColor.white
+        myView.tintColor = UIColor.whiteColor()
         myView.textLabel?.textColor = Colors.dark
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
         if cell?.textLabel?.text == availabilityLabels[1] {
             showMapAtCarCoordinates()
         }

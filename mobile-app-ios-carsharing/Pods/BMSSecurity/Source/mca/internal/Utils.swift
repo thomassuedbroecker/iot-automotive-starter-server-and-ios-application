@@ -321,10 +321,10 @@ extension Dictionary where Key : Any {
     subscript(caseInsensitive key : Key) -> Value? {
         get {
             if let stringKey = key as? String {
-                let searchKeyLowerCase = stringKey.lowercased()
+                let searchKeyLowerCase = stringKey.lowercaseString
                 for currentKey in self.keys {
                     if let stringCurrentKey = currentKey as? String {
-                        let currentKeyLowerCase = stringCurrentKey.lowercased()
+                        let currentKeyLowerCase = stringCurrentKey.lowercaseString
                         if currentKeyLowerCase == searchKeyLowerCase {
                             return self[currentKey]
                         }
@@ -336,10 +336,10 @@ extension Dictionary where Key : Any {
     }
 }
 
-open class Utils {
+public class Utils {
     
     
-    internal static func concatenateUrls(_ rootUrl:String, path:String) -> String {
+    internal static func concatenateUrls(rootUrl:String, path:String) -> String {
         guard !rootUrl.isEmpty else {
             return path
         }
@@ -350,7 +350,7 @@ open class Utils {
         }
         
         if path.hasPrefix("/") {
-            retUrl += path.substring(with: (path.characters.index(path.startIndex, offsetBy: 1) ..< path.endIndex))
+            retUrl += path.substringWithRange(Range<String.Index>(start: path.startIndex.advancedBy(1), end: path.endIndex))
         } else {
             retUrl += path
         }
@@ -358,15 +358,15 @@ open class Utils {
         return retUrl
     }
     
-    internal static func getParameterValueFromQuery(_ query:String?, paramName:String, caseSensitive:Bool) -> String? {
+    internal static func getParameterValueFromQuery(query:String?, paramName:String, caseSensitive:Bool) -> String? {
         guard let myQuery = query  else {
             return nil
         }
         
-        let paramaters = myQuery.components(separatedBy: "&")
+        let paramaters = myQuery.componentsSeparatedByString("&")
         
         for val in paramaters {
-            let pairs = val.components(separatedBy: "=")
+            let pairs = val.componentsSeparatedByString("=")
             
             if (pairs.endIndex != 2) {
                 continue
@@ -376,7 +376,7 @@ open class Utils {
                     return pairs[1].stringByRemovingPercentEncoding
                 }
             } else {
-                if let normal = pairs[0].stringByRemovingPercentEncoding?.lowercased() where normal == paramName.lowercased() {
+                if let normal = pairs[0].stringByRemovingPercentEncoding?.lowercaseString where normal == paramName.lowercaseString {
                     return pairs[1].stringByRemovingPercentEncoding
                 }
             }
@@ -384,41 +384,41 @@ open class Utils {
         return nil
     }
     
-    internal static func JSONStringify(_ value: AnyObject, prettyPrinted:Bool = false) throws -> String{
+    internal static func JSONStringify(value: AnyObject, prettyPrinted:Bool = false) throws -> String{
         
-        let options = prettyPrinted ? JSONSerialization.WritingOptions.prettyPrinted : JSONSerialization.WritingOptions(rawValue: 0)
+        let options = prettyPrinted ? NSJSONWritingOptions.PrettyPrinted : NSJSONWritingOptions(rawValue: 0)
         
         
-        if JSONSerialization.isValidJSONObject(value) {
+        if NSJSONSerialization.isValidJSONObject(value) {
             do{
-                let data = try JSONSerialization.data(withJSONObject: value, options: options)
-                guard let string = NSString(data: data, encoding: String.Encoding.utf8) as? String else {
-                    throw JsonUtilsErrors.jsonIsMalformed
+                let data = try NSJSONSerialization.dataWithJSONObject(value, options: options)
+                guard let string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String else {
+                    throw JsonUtilsErrors.JsonIsMalformed
                 }
                 return string
             } catch {
-                throw JsonUtilsErrors.jsonIsMalformed
+                throw JsonUtilsErrors.JsonIsMalformed
             }
         }
         return ""
     }
     
-    open static func parseJsonStringtoDictionary(_ jsonString:String) throws ->[String:AnyObject] {
+    public static func parseJsonStringtoDictionary(jsonString:String) throws ->[String:AnyObject] {
         do {
-            guard let data = jsonString.data(using: String.Encoding.utf8), responseJson =  try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject] else {
-                throw JsonUtilsErrors.jsonIsMalformed
+            guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding), responseJson =  try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:AnyObject] else {
+                throw JsonUtilsErrors.JsonIsMalformed
             }
             return responseJson as [String:AnyObject]
         }
     }
     
-    internal static func extractSecureJson(_ response: Response?) throws -> [String:AnyObject?] {
+    internal static func extractSecureJson(response: Response?) throws -> [String:AnyObject?] {
         
         guard let responseText:String = response?.responseText where (responseText.hasPrefix(BMSSecurityConstants.SECURE_PATTERN_START) && responseText.hasSuffix(BMSSecurityConstants.SECURE_PATTERN_END)) else {
-            throw JsonUtilsErrors.couldNotExtractJsonFromResponse
+            throw JsonUtilsErrors.CouldNotExtractJsonFromResponse
         }
         
-        let jsonString : String = responseText.substring(with: (responseText.characters.index(responseText.startIndex, offsetBy: BMSSecurityConstants.SECURE_PATTERN_START.characters.count) ..< responseText.characters.index(responseText.endIndex, offsetBy: -BMSSecurityConstants.SECURE_PATTERN_END.characters.count)))
+        let jsonString : String = responseText.substringWithRange(Range<String.Index>(start: responseText.startIndex.advancedBy(BMSSecurityConstants.SECURE_PATTERN_START.characters.count), end: responseText.endIndex.advancedBy(-BMSSecurityConstants.SECURE_PATTERN_END.characters.count)))
         
         do {
             let responseJson = try parseJsonStringtoDictionary(jsonString)
@@ -428,8 +428,8 @@ open class Utils {
     
     //Return the App Name and Version
     internal static func getApplicationDetails() -> (name:String, version:String) {
-        var version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        var name = Bundle.main.bundleIdentifier
+        var version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String
+        var name = NSBundle.mainBundle().bundleIdentifier
         if name == nil {
             AuthorizationProcessManager.logger.error(message: "Could not retrieve application name. Application name is set to nil")
             name = "nil"
@@ -464,24 +464,24 @@ open class Utils {
      - returns: return decoded String
      */
     
-    internal static func decodeBase64WithString(_ strBase64:String) -> Data? {
+    internal static func decodeBase64WithString(strBase64:String) -> NSData? {
         
-        guard let objPointerHelper = strBase64.cString(using: String.Encoding.ascii), objPointer = String(validatingUTF8: objPointerHelper) else {
+        guard let objPointerHelper = strBase64.cStringUsingEncoding(NSASCIIStringEncoding), objPointer = String(UTF8String: objPointerHelper) else {
             return nil
         }
         
         let intLengthFixed:Int = (objPointer.characters.count)
-        var result:[Int8] = [Int8](repeating: 1, count: intLengthFixed)
+        var result:[Int8] = [Int8](count: intLengthFixed, repeatedValue : 1)
         
         var i:Int=0, j:Int=0, k:Int
         var count = 0
         var intLengthMutated:Int = (objPointer.characters.count)
         var current:Character
         
-        for current = objPointer[objPointer.characters.index(objPointer.startIndex, offsetBy: count++)] ; current != "\0" && intLengthMutated-- > 0 ; current = objPointer[objPointer.characters.index(objPointer.startIndex, offsetBy: count++)]  {
+        for current = objPointer[objPointer.startIndex.advancedBy(count++)] ; current != "\0" && intLengthMutated-- > 0 ; current = objPointer[objPointer.startIndex.advancedBy(count++)]  {
             
             if current == "=" {
-                if  count < intLengthFixed && objPointer[objPointer.characters.index(objPointer.startIndex, offsetBy: count)] != "=" && i%4 == 1 {
+                if  count < intLengthFixed && objPointer[objPointer.startIndex.advancedBy(count)] != "=" && i%4 == 1 {
                     
                     return nil
                 }
@@ -544,30 +544,30 @@ open class Utils {
         }
         
         // Setup the return NSData
-        return Data(bytes: UnsafePointer<UInt8>(result), count: j)
+        return NSData(bytes: result, length: j)
     }
-    internal static func base64StringFromData(_ data:Data, length:Int, isSafeUrl:Bool) -> String {
+    internal static func base64StringFromData(data:NSData, length:Int, isSafeUrl:Bool) -> String {
         var ixtext:Int = 0
         var ctremaining:Int
-        var input:[Int] = [Int](repeating: 0, count: 3)
-        var output:[Int] = [Int](repeating: 0, count: 4)
+        var input:[Int] = [Int](count: 3, repeatedValue: 0)
+        var output:[Int] = [Int](count: 4, repeatedValue: 0)
         var charsonline:Int = 0, ctcopy:Int
-        guard data.count >= 1 else {
+        guard data.length >= 1 else {
             return ""
         }
         var result:String = ""
-        let count = data.count / sizeof(Int8)
-        var raw = [Int8](repeating: 0, count: count)
-        (data as NSData).getBytes(&raw, length:count * sizeof(Int8))
+        let count = data.length / sizeof(Int8)
+        var raw = [Int8](count: count, repeatedValue: 0)
+        data.getBytes(&raw, length:count * sizeof(Int8))
         while (true) {
-            ctremaining = data.count - ixtext
+            ctremaining = data.length - ixtext
             if ctremaining <= 0 {
                 break
             }
             
             for i in 0..<3 {
                 let ix:Int = ixtext + i
-                if ix < data.count {
+                if ix < data.length {
                     input[i] = Int(raw[ix])
                 } else {
                     input[i] = 0
@@ -606,8 +606,8 @@ open class Utils {
         return result
     }
     
-    internal static func base64StringFromData(_ data:Data, isSafeUrl:Bool) -> String {
-        let length = data.count
+    internal static func base64StringFromData(data:NSData, isSafeUrl:Bool) -> String {
+        let length = data.length
         return base64StringFromData(data, length: length, isSafeUrl: isSafeUrl)
     }
 }

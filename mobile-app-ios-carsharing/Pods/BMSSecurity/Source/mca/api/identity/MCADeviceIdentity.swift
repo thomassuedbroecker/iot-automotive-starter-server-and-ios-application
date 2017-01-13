@@ -45,7 +45,7 @@ public class MCADeviceIdentity : BaseDeviceIdentity {
     }
 }
 #else
-    open class MCADeviceIdentity : BaseDeviceIdentity {
+    public class MCADeviceIdentity : BaseDeviceIdentity {
         
         public override init() {
             var dict:[String : String] = [:]
@@ -58,10 +58,10 @@ public class MCADeviceIdentity : BaseDeviceIdentity {
                 ]
             #else
                 dict = [
-                    BaseDeviceIdentity.Key.ID : (UIDevice.current.identifierForVendor?.uuidString)!,
-                    BaseDeviceIdentity.Key.OS :  UIDevice.current.systemName,
-                    BaseDeviceIdentity.Key.OSVersion : UIDevice.current.systemVersion,
-                    BaseDeviceIdentity.Key.model :  UIDevice.current.model
+                    BaseDeviceIdentity.Key.ID : (UIDevice.currentDevice().identifierForVendor?.UUIDString)!,
+                    BaseDeviceIdentity.Key.OS :  UIDevice.currentDevice().systemName,
+                    BaseDeviceIdentity.Key.OSVersion : UIDevice.currentDevice().systemVersion,
+                    BaseDeviceIdentity.Key.model :  UIDevice.currentDevice().model
                 ]
             #endif
             super.init(map: dict)
