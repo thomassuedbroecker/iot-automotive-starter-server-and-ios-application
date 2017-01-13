@@ -16,7 +16,7 @@ class DriverStatistics {
     var roadType : RoadType?
     var timeRange : TimeRange?
     
-    class func fromDictionary(array:NSArray) -> [DriverStatistics] {
+    class func fromDictionary(_ array:NSArray) -> [DriverStatistics] {
         var returnArray:[DriverStatistics] = []
         for item in array {
             returnArray.append(DriverStatistics(dictionary: item as! NSDictionary))
@@ -61,7 +61,7 @@ class RoadType {
     var main: Double?
     var unknown: Double?
     
-    class func fromDictionary(array:NSArray) -> [RoadType] {
+    class func fromDictionary(_ array:NSArray) -> [RoadType] {
         var returnArray:[RoadType] = []
         for item in array {
             returnArray.append(RoadType(dictionary: item as! NSDictionary))
@@ -114,7 +114,7 @@ class SpeedPattern {
     var severeCongestion : Double?
     var unknown : Double?
     
-    class func fromDictionary(array:NSArray) -> [SpeedPattern] {
+    class func fromDictionary(_ array:NSArray) -> [SpeedPattern] {
         var returnArray:[SpeedPattern] = []
         for item in array {
             returnArray.append(SpeedPattern(dictionary: item as! NSDictionary))
@@ -163,7 +163,7 @@ class TimeRange {
     var dayDriving : Double?
     var eveningPeak : Double?
     
-    class func fromDictionary(array:NSArray) -> [TimeRange] {
+    class func fromDictionary(_ array:NSArray) -> [TimeRange] {
         var returnArray:[TimeRange] = []
         for item in array {
             returnArray.append(TimeRange(dictionary: item as! NSDictionary))

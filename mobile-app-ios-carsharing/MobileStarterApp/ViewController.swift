@@ -22,53 +22,53 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
     var locationManager = CLLocationManager()
     
     // drive using my device
-    static var mobileAppDeviceId: String = "d" + API.getUUID().substringToIndex(API.getUUID().startIndex.advancedBy(30))
+    static var mobileAppDeviceId: String = "d" + API.getUUID().substring(to: API.getUUID().characters.index(API.getUUID().startIndex, offsetBy: 30))
     static var behaviorDemo: Bool = false
-    private static var needCredentials: Bool = false
-    private static var tripID: String? = nil
-    private static var userUnlocked: Bool = false
-    private static var mqtt: CocoaMQTT?
+    fileprivate static var needCredentials: Bool = false
+    fileprivate static var tripID: String? = nil
+    fileprivate static var userUnlocked: Bool = false
+    fileprivate static var mqtt: CocoaMQTT?
     
-    static func startDrive(deviceId: String)-> Bool{
+    static func startDrive(_ deviceId: String)-> Bool{
         if(ViewController.mqtt == nil){
             return false
         }
         if(ViewController.reservationForMyDevice(deviceId)){
             ViewController.userUnlocked = true
             if(ViewController.tripID == nil){
-                ViewController.tripID = NSUUID().UUIDString
+                ViewController.tripID = UUID().uuidString
             }
         }
         return true
     }
 
-    static func stopDrive(deviceId: String?){
+    static func stopDrive(_ deviceId: String?){
         if(ViewController.reservationForMyDevice(deviceId)){
             ViewController.userUnlocked = false
         }
     }
     
-    static func completeDrive(deviceId: String?){
+    static func completeDrive(_ deviceId: String?){
         if(ViewController.reservationForMyDevice(deviceId)){
             ViewController.tripID = nil // clear the tripID
         }
     }
     
-    static func getTripId(deviceId: String?) -> String? {
+    static func getTripId(_ deviceId: String?) -> String? {
         if(ViewController.reservationForMyDevice(deviceId)){
             return ViewController.tripID
         }
         return nil
     }
 
-    static func reservationForMyDevice(deviceId: String?) -> Bool {
+    static func reservationForMyDevice(_ deviceId: String?) -> Bool {
         return ViewController.behaviorDemo && deviceId == ViewController.mobileAppDeviceId
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {
+    func locationManager(_ manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {
         if (ViewController.behaviorDemo) {
             if (ViewController.mqtt == nil && ViewController.needCredentials) {
-                let url = NSURL(string: "\(API.credentials)/\(ViewController.mobileAppDeviceId)?owneronly=true")!
+                let url = URL(string: "\(API.credentials)/\(ViewController.mobileAppDeviceId)?owneronly=true")!
                 let request = NSMutableURLRequest(URL: url)
                 request.HTTPMethod = "GET"
                 
@@ -106,7 +106,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
             }
             
             if (ViewController.mqtt != nil && ViewController.userUnlocked){
-                if(ViewController.mqtt!.connState == CocoaMQTTConnState.DISCONNECTED){
+                if(ViewController.mqtt!.connState == CocoaMQTTConnState.disconnected){
                     ViewController.mqtt?.connect()
                 }else{
                     sendLocation(newLocation, oldLocation: oldLocation)
@@ -115,25 +115,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
         }
     }
     
-    func sendLocation(userLocation: CLLocation, oldLocation: CLLocation?) {
-        if(ViewController.mqtt == nil || ViewController.mqtt!.connState != CocoaMQTTConnState.CONNECTED){
+    func sendLocation(_ userLocation: CLLocation, oldLocation: CLLocation?) {
+        if(ViewController.mqtt == nil || ViewController.mqtt!.connState != CocoaMQTTConnState.connected){
             return;
         }
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         
         var data: [String: AnyObject] = [
             "speed": max(0, userLocation.speed * 60 * 60 / 1000),
             "lng": userLocation.coordinate.longitude,
             "lat": userLocation.coordinate.latitude,
-            "ts": dateFormatter.stringFromDate(NSDate()),
+            "ts": dateFormatter.string(from: Date()),
             "id": ViewController.mobileAppDeviceId,
             "status":  ViewController.tripID != nil ? "Unlocked" : "Locked"
         ]
         if(ViewController.tripID != nil){
-            data["trip_id"] = ViewController.tripID
+            data["trip_id"] = ViewController.tripID as AnyObject?
         }else{
             // this trip should be completed, so lock device now
             ViewController.userUnlocked = false;
@@ -145,9 +145,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
     }
     
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.tabBarController?.tabBar.hidden = true
+        self.tabBarController?.tabBar.isHidden = true
         
         UITabBar.appearance().tintColor = UIColor(red: 65/255, green: 120/255, blue: 190/255, alpha: 1)
         
@@ -172,24 +172,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
         view.backgroundColor = Colors.dark
         
         getStartedButton.layer.borderWidth = 2
-        getStartedButton.layer.borderColor = UIColor.whiteColor().CGColor
+        getStartedButton.layer.borderColor = UIColor.white.cgColor
         
         specifyServerButton.layer.borderWidth = 2
-        specifyServerButton.layer.borderColor = UIColor.whiteColor().CGColor
+        specifyServerButton.layer.borderColor = UIColor.white.cgColor
         
         driverBehaviorButton.layer.borderWidth = 2
-        driverBehaviorButton.layer.borderColor = UIColor.whiteColor().CGColor
+        driverBehaviorButton.layer.borderColor = UIColor.white.cgColor
         
-        let version: String! = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
-        let build: String! = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        let version: String! = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build: String! = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         versionLabel.text = "Version: " + version + " Build: " + build
         
         self.navigationController?.navigationBar.barTintColor = Colors.dark
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : UIColor.whiteColor()]
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
     }
     
-    func jsonToString(data: [String: AnyObject]) -> String {
+    func jsonToString(_ data: [String: AnyObject]) -> String {
         var temp: String = "{\"d\":{"
         var accum: Int = 0
         
@@ -206,14 +206,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
         return temp
     }
     
-    @IBAction func getStartedAction(sender: AnyObject) {
+    @IBAction func getStartedAction(_ sender: AnyObject) {
         API.doInitialize()
         ViewController.behaviorDemo = false
         locationManager.requestWhenInUseAuthorization()
         locationManager.stopUpdatingLocation()
     }
     
-    @IBAction func driverBehaviorDemoAction(sender: AnyObject) {
+    @IBAction func driverBehaviorDemoAction(_ sender: AnyObject) {
         API.doInitialize()
         ViewController.behaviorDemo = true
         ViewController.needCredentials = true
@@ -224,111 +224,111 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UIViewControl
         locationManager.startUpdatingLocation()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let target :UITabBarController? = segue.destinationViewController as? UITabBarController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let target :UITabBarController? = segue.destination as? UITabBarController
         if(segue.identifier == "showHomeTab"){
-            target?.viewControllers!.removeAtIndex(0) // Drive
+            target?.viewControllers!.remove(at: 0) // Drive
             NotificationUtils.initRemoteNotification()
         } else if(segue.identifier == "showDriveTab"){
-            target?.viewControllers!.removeAtIndex(1) // Home
-            target?.viewControllers!.removeAtIndex(1) // Reservations
-            let app = UIApplication.sharedApplication()
+            target?.viewControllers!.remove(at: 1) // Home
+            target?.viewControllers!.remove(at: 1) // Reservations
+            let app = UIApplication.shared
             app.cancelAllLocalNotifications()
         }
     }
 
 
     func confirmDisclaimer() {
-        let licenseVC: UIViewController = self.storyboard!.instantiateViewControllerWithIdentifier("licenseViewController")
-        licenseVC.modalPresentationStyle = .Custom
+        let licenseVC: UIViewController = self.storyboard!.instantiateViewController(withIdentifier: "licenseViewController")
+        licenseVC.modalPresentationStyle = .custom
         licenseVC.transitioningDelegate = self
-        self.presentViewController(licenseVC, animated: true, completion: nil)
+        self.present(licenseVC, animated: true, completion: nil)
     }
-    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
-        return LicensePresentationController(presentedViewController: presented, presentingViewController: presenting)
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return LicensePresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 class LicensePresentationController: UIPresentationController{
-    private static let LICENSE_VIEW_MARGIN:CGFloat = 20
+    fileprivate static let LICENSE_VIEW_MARGIN:CGFloat = 20
     var overlay: UIView!
     override func presentationTransitionWillBegin() {
         let containerView = self.containerView!
-        self.overlay = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+        self.overlay = UIVisualEffectView(effect: UIBlurEffect(style: .light))
         self.overlay.frame = containerView.bounds
-        containerView.insertSubview(self.overlay, atIndex: 0)
+        containerView.insertSubview(self.overlay, at: 0)
     }
-    override func dismissalTransitionDidEnd(completed: Bool) {
+    override func dismissalTransitionDidEnd(_ completed: Bool) {
         if completed {
             self.overlay.removeFromSuperview()
         }
     }
-    override func sizeForChildContentContainer(container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
+    override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
         return CGSize(width: parentSize.width - LicensePresentationController.LICENSE_VIEW_MARGIN*2, height: parentSize.height - LicensePresentationController.LICENSE_VIEW_MARGIN*2)
     }
-    override func frameOfPresentedViewInContainerView() -> CGRect {
-        var presentedViewFrame = CGRectZero
+    override var frameOfPresentedViewInContainerView : CGRect {
+        var presentedViewFrame = CGRect.zero
         let containerBounds = self.containerView!.bounds
-        presentedViewFrame.size = self.sizeForChildContentContainer(self.presentedViewController, withParentContainerSize: containerBounds.size)
+        presentedViewFrame.size = self.size(forChildContentContainer: self.presentedViewController, withParentContainerSize: containerBounds.size)
         presentedViewFrame.origin.x = LicensePresentationController.LICENSE_VIEW_MARGIN
         presentedViewFrame.origin.y = LicensePresentationController.LICENSE_VIEW_MARGIN
         return presentedViewFrame
     }
     override func containerViewWillLayoutSubviews() {
         self.overlay.frame = self.containerView!.bounds
-        self.presentedView()!.frame = self.frameOfPresentedViewInContainerView()
+        self.presentedView!.frame = self.frameOfPresentedViewInContainerView
     }
 }
 
 extension ViewController: CocoaMQTTDelegate {
     
-    func mqtt(mqtt: CocoaMQTT, didConnect host: String, port: Int) {
+    func mqtt(_ mqtt: CocoaMQTT, didConnect host: String, port: Int) {
         print("didConnect \(host):\(port)")
     }
     
-    func mqtt(mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
         print("connected")
         sendLocation(locationManager.location!, oldLocation: nil) // initial location
         
         //print("didConnectAck \(ack.rawValue)")
-        if ack == .ACCEPT {
+        if ack == .accept {
             print("ACK")
         }
         
     }
     
-    func mqtt(mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
+    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
         print("didPublishMessage with message: \((message.string)!)")
     }
     
-    func mqtt(mqtt: CocoaMQTT, didPublishAck id: UInt16) {
+    func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
         print("didPublishAck with id: \(id)")
     }
     
-    func mqtt(mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
+    func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
         print("didReceivedMessage: \(message.string) with id \(id)")
     }
     
-    func mqtt(mqtt: CocoaMQTT, didSubscribeTopic topic: String) {
+    func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopic topic: String) {
         print("didSubscribeTopic to \(topic)")
     }
     
-    func mqtt(mqtt: CocoaMQTT, didUnsubscribeTopic topic: String) {
+    func mqtt(_ mqtt: CocoaMQTT, didUnsubscribeTopic topic: String) {
         print("didUnsubscribeTopic to \(topic)")
     }
     
-    func mqttDidPing(mqtt: CocoaMQTT) {
+    func mqttDidPing(_ mqtt: CocoaMQTT) {
         print("didPing")
     }
     
-    func mqttDidReceivePong(mqtt: CocoaMQTT) {
+    func mqttDidReceivePong(_ mqtt: CocoaMQTT) {
         _console("didReceivePong")
     }
     
-    func mqttDidDisconnect(mqtt: CocoaMQTT, withError err: NSError?) {
+    func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: NSError?) {
         _console("mqttDidDisconnect")
     }
     
-    func _console(info: String) {
+    func _console(_ info: String) {
         print("Delegate: \(info)")
     }
     

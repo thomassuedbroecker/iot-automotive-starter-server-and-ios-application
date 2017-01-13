@@ -20,7 +20,7 @@ class Trip {
 	var scoring : Scoring?
 	var locations : [TripLocation]?
 
-    class func fromDictionary(array:NSArray) -> [Trip] {
+    class func fromDictionary(_ array:NSArray) -> [Trip] {
         var returnArrary:[Trip] = []
         for item in array {
             returnArrary.append(Trip(dictionary: item as! NSDictionary))

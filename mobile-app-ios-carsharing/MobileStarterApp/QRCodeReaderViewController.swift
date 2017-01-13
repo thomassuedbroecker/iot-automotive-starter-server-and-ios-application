@@ -23,11 +23,11 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
         super.viewDidLoad()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         self.configureVideoCapture()
         self.addVideoPreviewLayer()
@@ -35,7 +35,7 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
     }
     
     func configureVideoCapture() {
-        let objCaptureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        let objCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         var error:NSError?
         let objCaptureDeviceInput: AnyObject!
         do {
@@ -47,15 +47,15 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
         }
         if (error != nil) {
             let alert = UIAlertController(title: "No camera detected",
-                  message: "Enter the route to the server", preferredStyle: .Alert)
+                  message: "Enter the route to the server", preferredStyle: .alert)
 
             // Add the text field for entering the route manually
             var routeTextField: UITextField?
 
-            alert.addTextFieldWithConfigurationHandler { textField in
+            alert.addTextField { textField in
                 routeTextField = textField
                 routeTextField?.placeholder = NSLocalizedString("Application Route", comment: "")
-                if let appRoute: String = NSUserDefaults.standardUserDefaults().valueForKey(USER_DEFAULTS_KEY_APP_ROUTE) as? String {
+                if let appRoute: String = UserDefaults.standard.value(forKey: USER_DEFAULTS_KEY_APP_ROUTE) as? String {
                     routeTextField?.text = appRoute
                 }
             }
@@ -63,10 +63,10 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
             // Add the text field for entering the Push Notifications App Guid manually
             var pushGuidTextField: UITextField?
 
-            alert.addTextFieldWithConfigurationHandler { textField in
+            alert.addTextField { textField in
                 pushGuidTextField = textField
                 pushGuidTextField?.placeholder = NSLocalizedString("Push App Guid (optional)", comment: "")
-                if let pushAppGUID: String = NSUserDefaults.standardUserDefaults().valueForKey(USER_DEFAULTS_KEY_PUSH_APP_GUID) as? String {
+                if let pushAppGUID: String = UserDefaults.standard.value(forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID) as? String {
                     pushGuidTextField?.text = pushAppGUID
                 }
             }
@@ -74,10 +74,10 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
             // Add the text field for entering the Push Notifications Client Secret manually
             var pushClientSecretTextField: UITextField?
             
-            alert.addTextFieldWithConfigurationHandler { textField in
+            alert.addTextField { textField in
                 pushClientSecretTextField = textField
                 pushClientSecretTextField?.placeholder = NSLocalizedString("Push Client Secret (optional)", comment: "")
-                if let pushClientSecret: String = NSUserDefaults.standardUserDefaults().valueForKey(USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET) as? String {
+                if let pushClientSecret: String = UserDefaults.standard.value(forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET) as? String {
                     pushClientSecretTextField?.text = pushClientSecret
                 }
             }
@@ -85,25 +85,25 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
             // Add the text field for entering the MCA Tenant Id manually
             var mcaTenantIdTextField: UITextField?
             
-            alert.addTextFieldWithConfigurationHandler { textField in
+            alert.addTextField { textField in
                 mcaTenantIdTextField = textField
                 mcaTenantIdTextField?.placeholder = NSLocalizedString("MCA Tenant Id (optional)", comment: "")
-                if let mcaTenantId: String = NSUserDefaults.standardUserDefaults().valueForKey(USER_DEFAULTS_KEY_MCA_TENANT_ID) as? String {
+                if let mcaTenantId: String = UserDefaults.standard.value(forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID) as? String {
                     mcaTenantIdTextField?.text = mcaTenantId
                 }
             }
 
             // Create the actions.
-            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-                self.navigationController?.popViewControllerAnimated(true)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
+                self.navigationController?.popViewController(animated: true)
             }
             
-            let okAction = UIAlertAction(title: "OK", style: .Default) { action in
+            let okAction = UIAlertAction(title: "OK", style: .default) { action in
                 let appRoute = routeTextField?.text
                 let pushAppGuid = pushGuidTextField?.text
                 let pushClientSecret = pushClientSecretTextField?.text
                 let mcaTenatId = mcaTenantIdTextField?.text
-                let userDefaults = NSUserDefaults.standardUserDefaults()
+                let userDefaults = UserDefaults.standard
                 if appRoute != "" {
                     userDefaults.setValue(appRoute, forKey: USER_DEFAULTS_KEY_APP_ROUTE)
                     userDefaults.setValue(pushAppGuid, forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
@@ -111,14 +111,14 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
                     userDefaults.setValue(mcaTenatId, forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
                 }
                 userDefaults.synchronize()
-                self.navigationController?.popViewControllerAnimated(true)
+                self.navigationController?.popViewController(animated: true)
             }
 
             // Add the actions.
             alert.addAction(cancelAction)
             alert.addAction(okAction)
 
-            self.presentViewController(alert, animated: true){}
+            self.present(alert, animated: true){}
             return
         }
         
@@ -126,7 +126,7 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
         objCaptureSession?.addInput(objCaptureDeviceInput as! AVCaptureInput)
         let objCaptureMetadataOutput = AVCaptureMetadataOutput()
         objCaptureSession?.addOutput(objCaptureMetadataOutput)
-        objCaptureMetadataOutput.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
+        objCaptureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
         objCaptureMetadataOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode]
     }
     
@@ -140,48 +140,48 @@ class QRCodeReaderViewController: UIViewController, AVCaptureMetadataOutputObjec
     
     func initializeQRView() {
         vwQRCode = UIView()
-        vwQRCode?.layer.borderColor = UIColor.redColor().CGColor
+        vwQRCode?.layer.borderColor = UIColor.red.cgColor
         vwQRCode?.layer.borderWidth = 5
         self.view.addSubview(vwQRCode!)
-        self.view.bringSubviewToFront(vwQRCode!)
+        self.view.bringSubview(toFront: vwQRCode!)
     }
     
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         if metadataObjects == nil || metadataObjects.count == 0 {
-            vwQRCode?.frame = CGRectZero
+            vwQRCode?.frame = CGRect.zero
             return
         }
         let objMetadataMachineReadableCodeObject = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
         if objMetadataMachineReadableCodeObject.type == AVMetadataObjectTypeQRCode {
-            let objBarCode = objCaptureVideoPreviewLayer?.transformedMetadataObjectForMetadataObject(objMetadataMachineReadableCodeObject as AVMetadataMachineReadableCodeObject) as! AVMetadataMachineReadableCodeObject
+            let objBarCode = objCaptureVideoPreviewLayer?.transformedMetadataObject(for: objMetadataMachineReadableCodeObject as AVMetadataMachineReadableCodeObject) as! AVMetadataMachineReadableCodeObject
             
             vwQRCode?.frame = objBarCode.bounds;
             
             if objMetadataMachineReadableCodeObject.stringValue != nil {
-                let fullString = objMetadataMachineReadableCodeObject.stringValue.componentsSeparatedByString(",")
+                let fullString = objMetadataMachineReadableCodeObject.stringValue.components(separatedBy: ",")
                 
                 if fullString.count == 5 && fullString[0] == "1" && fullString[1] != ""{
                     let appRoute = fullString[1]
-                    NSUserDefaults.standardUserDefaults().setValue(appRoute, forKey: USER_DEFAULTS_KEY_APP_ROUTE)
+                    UserDefaults.standard.setValue(appRoute, forKey: USER_DEFAULTS_KEY_APP_ROUTE)
                     let pushAppGuid = fullString[2]
                     let pushClientSecret = fullString[3]
                     if(pushAppGuid == "" && pushClientSecret == ""){
-                        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_PUSH_APP_GUID)
-                        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
+                        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
+                        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
                     }else if(pushAppGuid != "" && pushClientSecret != ""){
-                        NSUserDefaults.standardUserDefaults().setValue(pushAppGuid, forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
-                        NSUserDefaults.standardUserDefaults().setValue(pushClientSecret, forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
+                        UserDefaults.standard.setValue(pushAppGuid, forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
+                        UserDefaults.standard.setValue(pushClientSecret, forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
                     }
                     let mcaTenantId = fullString[4]
                     if(mcaTenantId == ""){
-                        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_MCA_TENANT_ID)
+                        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
                     }else{
-                        NSUserDefaults.standardUserDefaults().setValue(mcaTenantId, forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
+                        UserDefaults.standard.setValue(mcaTenantId, forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
                     }
-                    NSUserDefaults.standardUserDefaults().synchronize()
+                    UserDefaults.standard.synchronize()
                 }
             }
         }
-        navigationController?.popViewControllerAnimated(true)
+        navigationController?.popViewController(animated: true)
     }
 }

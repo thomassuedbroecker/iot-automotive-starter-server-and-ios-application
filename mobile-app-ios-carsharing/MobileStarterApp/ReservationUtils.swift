@@ -18,10 +18,10 @@ class ReservationUtils {
     static let DROPOFF_NOTIFICATION_BEFORE:Double = 60*30 // 30 minutes
 
 
-    private init(){}
+    fileprivate init(){}
     
-    static func getReservation(reservationId:String, callback:(reservation:ReservationsData)->Void){
-        let url = NSURL(string:"\(API.reservation)/\(reservationId)")
+    static func getReservation(_ reservationId:String, callback:@escaping (_ reservation:ReservationsData)->Void){
+        let url = URL(string:"\(API.reservation)/\(reservationId)")
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "GET"
         API.doRequest(request, callback: {(response, jsonArray)->Void in
@@ -33,7 +33,7 @@ class ReservationUtils {
         })
     }
     static func resetReservationNotifications(){
-        let url = NSURL(string: API.reservations)!
+        let url = URL(string: API.reservations)!
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "GET"
         
@@ -52,15 +52,15 @@ class ReservationUtils {
             }
         }
     }
-    static func showReservationAlert(label:String, description:String, handler:(action:UIAlertAction)->Void){
-        let action = UIAlertAction(title:label, style:.Default, handler:handler)
+    static func showReservationAlert(_ label:String, description:String, handler:@escaping (_ action:UIAlertAction)->Void){
+        let action = UIAlertAction(title:label, style:.default, handler:handler)
         NotificationUtils.showAlert(description, action: action)
     }
-    static func showReservationPage(reservationId:String){
+    static func showReservationPage(_ reservationId:String){
         ReservationUtils.getReservation(reservationId, callback:{(reservation)->Void in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 // Need to modify layout in main thread
-                let window = UIApplication.sharedApplication().keyWindow
+                let window = UIApplication.shared.keyWindow
                 // Assume first tabbarcontroller is main ui
                 for vc in (window?.rootViewController?.childViewControllers)! {
                     if let tabBarController = vc as? UITabBarController {
@@ -68,7 +68,7 @@ class ReservationUtils {
                         tabBarController.selectedIndex = TAB_INDEX_RESERVATION
                         if reservation.carDetails != nil {
                             let reservationsVC = tabBarController.selectedViewController as! ReservationsViewController
-                            reservationsVC.performSegueWithIdentifier("editReservationSegue", sender: reservation)
+                            reservationsVC.performSegue(withIdentifier: "editReservationSegue", sender: reservation)
                         }
                         break
                     }
@@ -76,15 +76,15 @@ class ReservationUtils {
             })
         })
     }
-    static func setPickupNotification(reservation:ReservationsData){
-        let pickupTime = NSDate(timeIntervalSince1970:reservation.pickupTime!)
-        let cal = NSCalendar(identifier:NSCalendarIdentifierGregorian)
-        let result = cal?.compareDate(NSDate(timeIntervalSinceNow:ReservationUtils.PICKUP_NOTIFICATION_BEFORE), toDate: pickupTime, toUnitGranularity: .Second)
-        var notifyAt:NSDate
-        if result == NSComparisonResult.OrderedDescending {
-            notifyAt = NSDate(timeIntervalSinceNow: 20)
+    static func setPickupNotification(_ reservation:ReservationsData){
+        let pickupTime = Date(timeIntervalSince1970:reservation.pickupTime!)
+        let cal = Calendar(identifier:Calendar.Identifier.gregorian)
+        let result = (cal as NSCalendar?)?.compare(Date(timeIntervalSinceNow:ReservationUtils.PICKUP_NOTIFICATION_BEFORE), to: pickupTime, toUnitGranularity: .second)
+        var notifyAt:Date
+        if result == ComparisonResult.orderedDescending {
+            notifyAt = Date(timeIntervalSinceNow: 20)
         }else{
-            notifyAt = NSDate(timeIntervalSince1970:reservation.pickupTime! - ReservationUtils.PICKUP_NOTIFICATION_BEFORE)
+            notifyAt = Date(timeIntervalSince1970:reservation.pickupTime! - ReservationUtils.PICKUP_NOTIFICATION_BEFORE)
         }
         NotificationUtils.setNotification(
             notifyAt,
@@ -99,15 +99,15 @@ class ReservationUtils {
                 USER_DEFAULTS_KEY_MCA_TENANT_ID: API.connectedMcaTenantId
             ])
     }
-    static func setDropoffNotification(reservation:ReservationsData){
-        let dropOffTime = NSDate(timeIntervalSince1970:(reservation.dropOffTime)!)
-        let cal = NSCalendar(identifier: NSCalendarIdentifierGregorian)
-        let result = cal?.compareDate(NSDate(timeIntervalSinceNow:ReservationUtils.DROPOFF_NOTIFICATION_BEFORE), toDate: dropOffTime, toUnitGranularity: .Second)
-        var notifyAt:NSDate
-        if result == NSComparisonResult.OrderedDescending {
-            notifyAt = NSDate(timeIntervalSinceNow: 20)
+    static func setDropoffNotification(_ reservation:ReservationsData){
+        let dropOffTime = Date(timeIntervalSince1970:(reservation.dropOffTime)!)
+        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+        let result = (cal as NSCalendar?)?.compare(Date(timeIntervalSinceNow:ReservationUtils.DROPOFF_NOTIFICATION_BEFORE), to: dropOffTime, toUnitGranularity: .second)
+        var notifyAt:Date
+        if result == ComparisonResult.orderedDescending {
+            notifyAt = Date(timeIntervalSinceNow: 20)
         }else{
-            notifyAt = NSDate(timeIntervalSince1970:(reservation.dropOffTime)! - ReservationUtils.DROPOFF_NOTIFICATION_BEFORE)
+            notifyAt = Date(timeIntervalSince1970:(reservation.dropOffTime)! - ReservationUtils.DROPOFF_NOTIFICATION_BEFORE)
         }
         NotificationUtils.setNotification(
             notifyAt,

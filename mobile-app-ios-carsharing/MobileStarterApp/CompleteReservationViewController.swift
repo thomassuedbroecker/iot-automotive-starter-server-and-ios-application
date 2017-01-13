@@ -28,7 +28,7 @@ class CompleteReservationViewController: UIViewController {
     
     @IBOutlet weak var unlockMessageLabel: UILabel!
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.backItem?.title = ""
         
@@ -36,8 +36,8 @@ class CompleteReservationViewController: UIViewController {
         
         let color: UIColor = Colors.dark
         cancelReservationButton.layer.borderWidth = 2
-        cancelReservationButton.layer.borderColor = color.CGColor
-        cancelReservationButton.setTitleColor(color, forState: UIControlState.Normal)
+        cancelReservationButton.layer.borderColor = color.cgColor
+        cancelReservationButton.setTitleColor(color, for: UIControlState())
         
         changeReservationButton.backgroundColor = color
         
@@ -56,12 +56,12 @@ class CompleteReservationViewController: UIViewController {
             }
         }
 
-        dispatch_async(dispatch_get_main_queue(), {
-            self.cancelReservationButton.enabled = false
-            self.unlockButton.enabled = false
+        DispatchQueue.main.async(execute: {
+            self.cancelReservationButton.isEnabled = false
+            self.unlockButton.isEnabled = false
             ReservationUtils.getReservation((self.reservation?._id)!, callback:{(reservation) in
                 self.reservation = reservation
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.setLabelsAccordingToStatus()
                 })
             })
@@ -84,24 +84,24 @@ class CompleteReservationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func locationButtonAction(sender: AnyObject) {
+    @IBAction func locationButtonAction(_ sender: AnyObject) {
         if let car: CarData = reservation?.carDetails {
-            if let latTemp = car.lat, longTemp = car.lng {
-                let url : NSURL = NSURL(string: "http://maps.apple.com/maps?q=\(latTemp),\(longTemp))")!
-                if UIApplication.sharedApplication().canOpenURL(url) {
-                    UIApplication.sharedApplication().openURL(url)
+            if let latTemp = car.lat, let longTemp = car.lng {
+                let url : URL = URL(string: "http://maps.apple.com/maps?q=\(latTemp),\(longTemp))")!
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.openURL(url)
                 }
             }
         }
     }
     
-    @IBAction func changeReservationAction(sender: AnyObject) {
+    @IBAction func changeReservationAction(_ sender: AnyObject) {
     }
 
-    @IBAction func cancelReservationAction(sender: AnyObject) {
+    @IBAction func cancelReservationAction(_ sender: AnyObject) {
         // Need at least 10 sec to anlyze trip
         if(reservation!.status == "driving" && reservation!.actualPickupTime != nil &&
-            NSDate().timeIntervalSince1970 - Double((self.reservation!.actualPickupTime)!) < 15){ // under 15 secs
+            Date().timeIntervalSince1970 - Double((self.reservation!.actualPickupTime)!) < 15){ // under 15 secs
             confirmForTooShortTrip(cancelReservation)
         }else{
             cancelReservation()
@@ -109,9 +109,9 @@ class CompleteReservationViewController: UIViewController {
     }
     
     func cancelReservation() {
-        cancelReservationButton.enabled = false
+        cancelReservationButton.isEnabled = false
         
-        let url = NSURL(string: "\(API.reservation)/\(self.reservation!._id!)")!
+        let url = URL(string: "\(API.reservation)/\(self.reservation!._id!)")!
         let request = NSMutableURLRequest(URL: url)
         
         if let _ = reservation?.status {
@@ -130,7 +130,7 @@ class CompleteReservationViewController: UIViewController {
                     // bind this trip to this reservation
                     parm["trip_id"] = trip_id
                 }
-                if let data = try? NSJSONSerialization.dataWithJSONObject(parm, options:NSJSONWritingOptions(rawValue: 0)) as NSData? {
+                if let data = try? JSONSerialization.data(withJSONObject: parm, options:JSONSerialization.WritingOptions(rawValue: 0)) as Data? {
                     request.HTTPBody = data
                     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                     request.setValue("\(data!.length)", forHTTPHeaderField: "Content-Length")
@@ -187,27 +187,27 @@ class CompleteReservationViewController: UIViewController {
         }
     }
     
-    func confirmForTooShortTrip(callback:()->Void) {
+    func confirmForTooShortTrip(_ callback:@escaping ()->Void) {
         let title = "Confirmation"
         let message = "The driving time is too short to analyze your driving behaviors.\nDo you want to stop driving now?"
         
-        let dialog = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: "Yes", style: .Default) { action in
+        let dialog = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Yes", style: .default) { action in
             callback()
         }
-        let cancelAction = UIAlertAction(title: "No", style: .Cancel) { action in
+        let cancelAction = UIAlertAction(title: "No", style: .cancel) { action in
             // do nothing
         }
         dialog.addAction(okAction)
         dialog.addAction(cancelAction)
         
-        dispatch_async(dispatch_get_main_queue(), {
-            self.presentViewController(dialog, animated: true, completion: nil)
+        DispatchQueue.main.async(execute: {
+            self.present(dialog, animated: true, completion: nil)
         })
     }
     
-    @IBAction func unlockCarAction(sender: AnyObject) {
-        let url = NSURL(string: API.carControl)!
+    @IBAction func unlockCarAction(_ sender: AnyObject) {
+        let url = URL(string: API.carControl)!
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "POST"
         
@@ -217,7 +217,7 @@ class CompleteReservationViewController: UIViewController {
             command = "unlock"
         }
         let parm = ["reservationId": "\(reservationId!)", "command" : "\(command)"]
-        if let data = try? NSJSONSerialization.dataWithJSONObject(parm, options:NSJSONWritingOptions(rawValue: 0)) as NSData? {
+        if let data = try? JSONSerialization.data(withJSONObject: parm, options:JSONSerialization.WritingOptions(rawValue: 0)) as Data? {
             request.HTTPBody = data
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("\(data!.length)", forHTTPHeaderField: "Content-Length")
@@ -260,9 +260,9 @@ class CompleteReservationViewController: UIViewController {
     }
     
     func setLabelsAccordingToStatus() {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeStyle = DateFormatter.Style.short
         
         // If reservation status is active, then the car hasn't been unlocked and the reservation can be canceled.
         // Once the car is unlocked, the reservation status changes to driving.
@@ -270,32 +270,32 @@ class CompleteReservationViewController: UIViewController {
         // If the car's status is locked, then it can be unlocked and vice versa.
         
         if let car: CarData = reservation?.carDetails {
-            if let latTemp = car.lat, longTemp = car.lng {
+            if let latTemp = car.lat, let longTemp = car.lng {
                 getLocation(latTemp, lng: longTemp)
             }
             // set labels depending on status
             if let reservationStatus = reservation?.status {
                 if reservationStatus == "active" {
                     pickUpLabel.text = "Pick up:"
-                    let pickupDate = NSDate(timeIntervalSince1970: (reservation?.pickupTime)!)
-                    self.title = "Pick up at \(dateFormatter.stringFromDate(pickupDate))"
-                    self.cancelReservationButton.setTitle("Cancel Reservation", forState: UIControlState.Normal)
+                    let pickupDate = Date(timeIntervalSince1970: (reservation?.pickupTime)!)
+                    self.title = "Pick up at \(dateFormatter.string(from: pickupDate))"
+                    self.cancelReservationButton.setTitle("Cancel Reservation", for: UIControlState())
                 } else {
                     pickUpLabel.text = "Drop off:"
-                    let dropoffDate = NSDate(timeIntervalSince1970: (reservation?.dropOffTime)!)
-                    self.title = "Drop off at \(dateFormatter.stringFromDate(dropoffDate))"
-                    self.cancelReservationButton.setTitle("Complete Reservation", forState: UIControlState.Normal)
+                    let dropoffDate = Date(timeIntervalSince1970: (reservation?.dropOffTime)!)
+                    self.title = "Drop off at \(dateFormatter.string(from: dropoffDate))"
+                    self.cancelReservationButton.setTitle("Complete Reservation", for: UIControlState())
                     self.unlockMessageLabel.text = ""
                 }
-                self.cancelReservationButton.enabled = true
+                self.cancelReservationButton.isEnabled = true
 
                 let carStatus = car.status
                 if carStatus == "Locked" {
-                    self.unlockButton.setTitle("Unlock the car", forState: UIControlState.Normal)
+                    self.unlockButton.setTitle("Unlock the car", for: UIControlState())
                 } else {
-                    self.unlockButton.setTitle("Lock the car", forState: UIControlState.Normal)
+                    self.unlockButton.setTitle("Lock the car", for: UIControlState())
                 }
-                self.unlockButton.enabled = true
+                self.unlockButton.isEnabled = true
             }
         }
     }
@@ -304,7 +304,7 @@ class CompleteReservationViewController: UIViewController {
         var diffInSecs = (reservation?.pickupTime)! - (reservation?.dropOffTime)!
         let days = floor(diffInSecs/86400)
         diffInSecs -= days * 86400;
-        let hours = floor(diffInSecs/3600) % 24
+        let hours = floor(diffInSecs/3600).truncatingRemainder(dividingBy: 24)
         //diffInSecs -= hours * 3600
         //let mins = floor(diffInSecs/60) % 60
         
@@ -319,19 +319,19 @@ class CompleteReservationViewController: UIViewController {
     }
     
     func calculateDurationLabel() {
-        let pickupDate = NSDate(timeIntervalSince1970: (reservation?.pickupTime)!)
-        let dropoffDate = NSDate(timeIntervalSince1970: (reservation?.dropOffTime)!)
+        let pickupDate = Date(timeIntervalSince1970: (reservation?.pickupTime)!)
+        let dropoffDate = Date(timeIntervalSince1970: (reservation?.dropOffTime)!)
         
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
-        let pickupDateString = dateFormatter.stringFromDate(pickupDate)
-        let dropoffDateString = dateFormatter.stringFromDate(dropoffDate)
-        dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        let pickupTimeString = dateFormatter.stringFromDate(pickupDate)
-        let dropoffTimeString = dateFormatter.stringFromDate(dropoffDate)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeStyle = DateFormatter.Style.none
+        let pickupDateString = dateFormatter.string(from: pickupDate)
+        let dropoffDateString = dateFormatter.string(from: dropoffDate)
+        dateFormatter.dateStyle = DateFormatter.Style.none
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        let pickupTimeString = dateFormatter.string(from: pickupDate)
+        let dropoffTimeString = dateFormatter.string(from: dropoffDate)
         
         var durationText = "\(pickupDateString) \(pickupTimeString)"
         if pickupDateString == dropoffDateString {
@@ -345,33 +345,33 @@ class CompleteReservationViewController: UIViewController {
         reservationDurationLabel.text = durationText
     }
     
-    func getLocation(lat: Double, lng: Double) -> Void {
+    func getLocation(_ lat: Double, lng: Double) -> Void {
         let gc: CLGeocoder = CLGeocoder()
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         gc.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude), completionHandler: {
             (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 if (placemarks!.count > 0) {
                     let placemark = placemarks![0]
                     if placemark.name != nil && placemark.locality != nil {
                         let attrs = [
-                            NSFontAttributeName : UIFont.systemFontOfSize(12.0),
-                            NSForegroundColorAttributeName : UIColor.blackColor(),
+                            NSFontAttributeName : UIFont.systemFont(ofSize: 12.0),
+                            NSForegroundColorAttributeName : UIColor.black,
                             NSUnderlineStyleAttributeName : 1,
-                        ]
+                        ] as [String : Any]
                         let text = "\(placemark.name!), \(placemark.locality!)"
                         //let textRange = NSMakeRange(0, text.characters.count)
                         let attributedText = NSAttributedString(string: text, attributes: attrs)
                         //attributedText.addAttribute(NSUnderlineStyleAttributeName , value:NSUnderlineStyle.StyleSingle.rawValue, range: textRange)
-                        self.locationButton.setAttributedTitle(attributedText, forState: .Normal)
+                        self.locationButton.setAttributedTitle(attributedText, for: UIControlState())
                     } else {
                         // TODO: localize
-                        self.locationButton.setAttributedTitle(NSAttributedString(string: "unknown location"), forState: .Normal)
+                        self.locationButton.setAttributedTitle(NSAttributedString(string: "unknown location"), for: UIControlState())
                         
                     }
                 }
             })
-        })
+        } as! CLGeocodeCompletionHandler)
     }
 
     /*

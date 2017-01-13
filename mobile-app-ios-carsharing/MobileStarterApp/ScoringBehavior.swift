@@ -15,7 +15,7 @@ class ScoringBehavior {
 	var count : Int?
     var name : String?
 
-    class func fromDictionary(array:NSArray, name: String) -> [ScoringBehavior] {
+    class func fromDictionary(_ array:NSArray, name: String) -> [ScoringBehavior] {
         var returnArray:[ScoringBehavior] = []
         for item in array {
             returnArray.append(ScoringBehavior(dictionary: item as! NSDictionary, name: name))

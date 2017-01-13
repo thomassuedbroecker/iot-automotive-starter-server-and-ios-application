@@ -8,5 +8,5 @@
  * You may not use this file except in compliance with the license.
  */
 protocol MessageViewController {
-    func setMessage(text: String) -> Void
+    func setMessage(_ text: String) -> Void
 }

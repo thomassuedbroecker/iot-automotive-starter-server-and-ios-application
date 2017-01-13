@@ -9,6 +9,30 @@
  */
 import Foundation
 import MapKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
  
 class CarData: NSObject, MKAnnotation {
 	var deviceID: String?
@@ -38,7 +62,7 @@ class CarData: NSObject, MKAnnotation {
     var rateCauseShort: String?
     var rateCauseLong: String?
 
-    class func fromDictionary(array:NSArray) -> [CarData] {
+    class func fromDictionary(_ array:NSArray) -> [CarData] {
         var returnArray:[CarData] = []
         for item in array {
             returnArray.append(CarData(dictionary: item as! NSDictionary))
@@ -66,7 +90,7 @@ class CarData: NSObject, MKAnnotation {
 		distance = dictionary["distance"] as? Int
         license = dictionary["license"] as? String
         
-        if let latTemp = lat, longTemp = lng {
+        if let latTemp = lat, let longTemp = lng {
             coordinate = CLLocationCoordinate2D(latitude: latTemp, longitude: longTemp)
         } else {
             coordinate = CLLocationCoordinate2D()

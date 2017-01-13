@@ -17,25 +17,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(application: UIApplication,
-            didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?)
+    func application(_ application: UIApplication,
+            didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?)
             -> Bool {
                 
-        UIApplication.sharedApplication().statusBarStyle = .LightContent
+        UIApplication.shared.statusBarStyle = .lightContent
                 
         if launchOptions != nil {
-            let notification = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey] as! UILocalNotification!
+            let notification = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as! UILocalNotification!
             if notification != nil {
-                handleReservationNotification(notification)
+                handleReservationNotification(notification!)
             }
         }
         return true
     }
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification){
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification){
         print("didReceiveLocalNotification")
         handleReservationNotification(notification)
     }
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("didReceiveRemoteNotification")
         if let aps = userInfo["aps"] as? NSDictionary {
             if let alert = aps["alert"] as? NSDictionary {
@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    func application (application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData){
+    func application (_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data){
         let push = BMSPushClient.sharedInstance
         print("Register Device Token: \(deviceToken)")
         push.registerWithDeviceToken(deviceToken){(response, statusCode, error) -> Void in
@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: ()->Void){
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: @escaping ()->Void){
         print("handleActionWithIdentifier forLocalNotification")
         switch(identifier!){
         case NotificationUtils.ACTION_OPEN_RESERVATION:
@@ -75,12 +75,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             break
         }
     }
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: (() -> Void)) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable: Any], completionHandler: (@escaping () -> Void)) {
         switch(identifier!){
         case NotificationUtils.ACTION_OPEN_RESERVATION:
             let strPayload = userInfo["payload"] as! String
             do{
-                let payload = try NSJSONSerialization.JSONObjectWithData(strPayload.dataUsingEncoding(NSUTF8StringEncoding)!, options: .MutableContainers) as! NSMutableDictionary
+                let payload = try JSONSerialization.jsonObject(with: strPayload.data(using: String.Encoding.utf8)!, options: .mutableContainers) as! NSMutableDictionary
                 let reservationId = payload["reservationId"] as! String
                 ReservationUtils.showReservationPage(reservationId)
             }catch{
@@ -95,19 +95,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         completionHandler()
     }
-    func handleReservationNotification(notification:UILocalNotification){
+    func handleReservationNotification(_ notification:UILocalNotification){
         let userInfo = notification.userInfo as! [String: String]
         let handler = {(action:UIAlertAction)->Void in
             let reservationId = userInfo["reservationId"]!
             ReservationUtils.showReservationPage(reservationId)
-            UIApplication.sharedApplication().cancelLocalNotification(notification)
+            UIApplication.shared.cancelLocalNotification(notification)
         }
-        switch UIApplication.sharedApplication().applicationState{
-        case .Active:
+        switch UIApplication.shared.applicationState{
+        case .active:
             //Work around for iOS10
             let label = (notification.alertAction != nil) ? notification.alertAction! : "OK"
             ReservationUtils.showReservationAlert(label, description:notification.alertBody!, handler: handler)
-        case .Inactive:
+        case .inactive:
             let appRoute = userInfo[USER_DEFAULTS_KEY_APP_ROUTE]!
             let pushAppGuid = userInfo[USER_DEFAULTS_KEY_PUSH_APP_GUID]!
             let pushClientSecret = userInfo[USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET]!
@@ -115,12 +115,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             specifyServer(appRoute, pushAppGuid: pushAppGuid, pushClientSecret: pushClientSecret, mcaTenantId: mcaTenantId)
             NotificationUtils.cancelNotification(userInfo)
             fallthrough
-        case .Background:
+        case .background:
             handler(UIAlertAction())
         }
     }
-    func specifyServer(appRoute:String, pushAppGuid:String, pushClientSecret:String, mcaTenantId:String){
-        let userDefaults = NSUserDefaults.standardUserDefaults()
+    func specifyServer(_ appRoute:String, pushAppGuid:String, pushClientSecret:String, mcaTenantId:String){
+        let userDefaults = UserDefaults.standard
         if appRoute != "" {
             userDefaults.setValue(appRoute, forKey: USER_DEFAULTS_KEY_APP_ROUTE)
             userDefaults.setValue(pushAppGuid, forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
@@ -128,7 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults.setValue(mcaTenantId, forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
         }
         userDefaults.synchronize()
-        self.window?.rootViewController?.childViewControllers[0].performSegueWithIdentifier("showHomeTab", sender: self)
+        self.window?.rootViewController?.childViewControllers[0].performSegue(withIdentifier: "showHomeTab", sender: self)
     }
 }
 

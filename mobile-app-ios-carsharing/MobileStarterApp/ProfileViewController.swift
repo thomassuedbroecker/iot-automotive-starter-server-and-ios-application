@@ -8,6 +8,30 @@
  * You may not use this file except in compliance with the license.
  */
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class ProfileViewController: UIViewController, MessageViewController {
 
@@ -28,13 +52,13 @@ class ProfileViewController: UIViewController, MessageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.backgroundColor = UIColor.whiteColor()
+        self.tableView.backgroundColor = UIColor.white
         headerView.backgroundColor = Colors.dark
         
         getDriverStats()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         super.viewWillAppear(animated)
         
@@ -47,45 +71,45 @@ class ProfileViewController: UIViewController, MessageViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func setMessage(text: String) {
+    func setMessage(_ text: String) {
         self.fetchingLabel.text = text
     }
 
     func getDriverStats() {
-        let url: NSURL = NSURL(string: "\(API.driverStats)")!
-        let request: NSMutableURLRequest = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "GET"
+        let url: URL = URL(string: "\(API.driverStats)")!
+        let request: NSMutableURLRequest = NSMutableURLRequest(url: url)
+        request.httpMethod = "GET"
         
         var stats:[DriverStatistics] = []
         API.doRequest(request) { (response, jsonArray) -> Void in
             stats = DriverStatistics.fromDictionary(jsonArray)
             if stats.count > 0 {
                 if let stat: DriverStatistics = stats[0] {
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         self.stat = stat
                         self.behaviors = stat.scoring!.getScoringBehaviors()
-                        self.behaviors.sortInPlace({$0.count > $1.count})
+                        self.behaviors.sort(by: {$0.count > $1.count})
                         
                         self.timesOfDay = self.stat?.timeRange?.toDictionary()
                         self.timesOfDay?.setValue(nil, forKey: "totalDistance")
-                        self.timesOfDaySortedKeys = (self.timesOfDay! as NSDictionary).keysSortedByValueUsingComparator
-                            {
+                        self.timesOfDaySortedKeys = (self.timesOfDay! as NSDictionary).keysSortedByValue
+                            (comparator: {
                                 ($1 as! NSNumber).compare($0 as! NSNumber)
-                            }
+                            })
                         
                         self.roadTypes = self.stat?.roadType?.toDictionary()
                         self.roadTypes?.setValue(nil, forKey: "totalDistance")
-                        self.roadTypesSortedKeys = (self.roadTypes! as NSDictionary).keysSortedByValueUsingComparator
-                            {
+                        self.roadTypesSortedKeys = (self.roadTypes! as NSDictionary).keysSortedByValue
+                            (comparator: {
                                 ($1 as! NSNumber).compare($0 as! NSNumber)
-                            }
+                            })
                         
                         self.trafficConditions = self.stat?.speedPattern?.toDictionary()
                         self.trafficConditions?.setValue(nil, forKey: "totalDistance")
-                        self.trafficConditionsSortedKeys = (self.trafficConditions! as NSDictionary).keysSortedByValueUsingComparator
-                            {
+                        self.trafficConditionsSortedKeys = (self.trafficConditions! as NSDictionary).keysSortedByValue
+                            (comparator: {
                                 ($1 as! NSNumber).compare($0 as! NSNumber)
-                            }
+                            })
 
                         let totalMiles = round(stat.totalDistance!/16.09344)/100
                         self.fetchingLabel.text = "Your score is \(Int(round(stat.scoring!.score!))) for \(totalMiles) miles."
@@ -94,7 +118,7 @@ class ProfileViewController: UIViewController, MessageViewController {
                     })
                 }
             } else {
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.fetchingLabel.text = "You have no trips."
                     self.tableView.reloadData()
                 })
@@ -102,7 +126,7 @@ class ProfileViewController: UIViewController, MessageViewController {
         }
     }
     
-    func getValueForIndexPath(indexPath: NSIndexPath, allInfo: Bool) -> (key: String, value: String) {
+    func getValueForIndexPath(_ indexPath: IndexPath, allInfo: Bool) -> (key: String, value: String) {
         var key = ""
         var value = ""
         
@@ -117,7 +141,7 @@ class ProfileViewController: UIViewController, MessageViewController {
                     let totalPointsPerBehavior: Double = Double(100 / self.behaviors.count)
                     let pointsForThisBehavior = (self.behaviors[indexPath.row].score! / 100) *  totalPointsPerBehavior
                     let pointsDeducted = Int(round(pointsForThisBehavior - totalPointsPerBehavior))
-                    value.appendContentsOf(" (\(pointsDeducted))")
+                    value.append(" (\(pointsDeducted))")
                 }
                 return (key, value)
             case 1:
@@ -137,10 +161,10 @@ class ProfileViewController: UIViewController, MessageViewController {
                 value = "unknown"
                 return (key, value)
             }
-            value = "\(Int(round(((dict?.valueForKey(key))! as! Double) / totalDistance! * 100)))%"
+            value = "\(Int(round(((dict?.value(forKey: key))! as! Double) / totalDistance! * 100)))%"
             if allInfo {
-                let miles = round(((dict?.valueForKey(key))! as! Double)/16.0934)/100
-                value.appendContentsOf(" (\(miles) miles)")
+                let miles = round(((dict?.value(forKey: key))! as! Double)/16.0934)/100
+                value.append(" (\(miles) miles)")
             }
         }
         return (key, value)
@@ -148,10 +172,10 @@ class ProfileViewController: UIViewController, MessageViewController {
 }
 
 extension ProfileViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if tableView.indexPathForSelectedRow != nil {
             let selectedIndex = tableView.indexPathForSelectedRow!
-            if let cell = tableView.cellForRowAtIndexPath(selectedIndex) {
+            if let cell = tableView.cellForRow(at: selectedIndex) {
                 let cellInfo = getValueForIndexPath(selectedIndex, allInfo: false)
                 cell.textLabel?.text = cellInfo.key
                 cell.detailTextLabel?.text = cellInfo.value
@@ -160,8 +184,8 @@ extension ProfileViewController: UITableViewDelegate {
         return indexPath
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) {
             let cellInfo = getValueForIndexPath(indexPath, allInfo: true)
             cell.detailTextLabel!.text = cellInfo.value
         }
@@ -170,14 +194,14 @@ extension ProfileViewController: UITableViewDelegate {
 
 extension ProfileViewController: UITableViewDataSource {
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if let _ = stat {
             return 4
         }
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let _ = stat {
             switch section {
                 case 0:
@@ -207,17 +231,17 @@ extension ProfileViewController: UITableViewDataSource {
         return 0
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "ProfileViewController-TableViewCell"
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: cellIdentifier)
-            cell.contentView.backgroundColor = UIColor.whiteColor()
-            cell.detailTextLabel?.textColor = UIColor.blackColor()
-            cell.detailTextLabel?.highlightedTextColor = UIColor.whiteColor()
+            cell = UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: cellIdentifier)
+            cell.contentView.backgroundColor = UIColor.white
+            cell.detailTextLabel?.textColor = UIColor.black
+            cell.detailTextLabel?.highlightedTextColor = UIColor.white
             
-            cell.textLabel?.textColor = UIColor.blackColor()
-            cell.textLabel?.highlightedTextColor = UIColor.whiteColor()
+            cell.textLabel?.textColor = UIColor.black
+            cell.textLabel?.highlightedTextColor = UIColor.white
             
             cell.textLabel?.font = UIFont(name: cell.textLabel!.font.fontName, size: 14)
             cell.detailTextLabel?.font = UIFont(name: cell.textLabel!.font.fontName, size: 14)
@@ -235,13 +259,13 @@ extension ProfileViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 30))
-        let label = UILabel(frame: CGRectMake(10,0,320,30))
-        label.font = UIFont.boldSystemFontOfSize(20.0)
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 30))
+        let label = UILabel(frame: CGRect(x: 10,y: 0,width: 320,height: 30))
+        label.font = UIFont.boldSystemFont(ofSize: 20.0)
         label.textColor = Colors.dark
         
-        headerView.backgroundColor = UIColor.whiteColor()
+        headerView.backgroundColor = UIColor.white
         headerView.addSubview(label)
         
         if let _ = stat {

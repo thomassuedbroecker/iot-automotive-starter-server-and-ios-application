@@ -14,26 +14,26 @@ class FilterModalViewController: UIViewController {
     @IBOutlet weak var pickupTextField: UITextField!
     @IBOutlet weak var dropoffTextField: UITextField!
     
-    var pickupDate: NSDate?
-    var dropoffDate: NSDate?
+    var pickupDate: Date?
+    var dropoffDate: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
         
-        pickupDate = NSDate()
-        dropoffDate = NSDate(timeIntervalSince1970: NSDate().timeIntervalSince1970 + 7200)
+        pickupDate = Date()
+        dropoffDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 7200)
         
-        pickupTextField.text = dateFormatter.stringFromDate(pickupDate!)
-        dropoffTextField.text = dateFormatter.stringFromDate(dropoffDate!)
+        pickupTextField.text = dateFormatter.string(from: pickupDate!)
+        dropoffTextField.text = dateFormatter.string(from: dropoffDate!)
         
         setupDatePicker()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         
         super.viewWillAppear(animated)
@@ -41,47 +41,47 @@ class FilterModalViewController: UIViewController {
     
     func setupDatePicker() {
         let datePicker: UIDatePicker = UIDatePicker()
-        datePicker.backgroundColor = UIColor.whiteColor()
-        datePicker.datePickerMode = UIDatePickerMode.DateAndTime
+        datePicker.backgroundColor = UIColor.white
+        datePicker.datePickerMode = UIDatePickerMode.dateAndTime
         datePicker.minuteInterval = 10
         datePicker.addTarget(self, action: #selector(self.datePickerValueChanged),
-                             forControlEvents: UIControlEvents.ValueChanged)
+                             for: UIControlEvents.valueChanged)
         
         pickupTextField.inputView = datePicker
         dropoffTextField.inputView = datePicker
         
         let pickerToolbar = UIToolbar()
-        pickerToolbar.barStyle = UIBarStyle.BlackTranslucent
-        pickerToolbar.tintColor = UIColor.whiteColor()
+        pickerToolbar.barStyle = UIBarStyle.blackTranslucent
+        pickerToolbar.tintColor = UIColor.white
         pickerToolbar.sizeToFit()
         
-        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(self.cancelDatePicker))
+        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.cancelDatePicker))
         pickerToolbar.setItems([cancelButtonPicker, spaceButtonPicker], animated: false)
-        pickerToolbar.userInteractionEnabled = true
+        pickerToolbar.isUserInteractionEnabled = true
         dropoffTextField.inputAccessoryView = pickerToolbar
         pickupTextField.inputAccessoryView = pickerToolbar
     }
     
-    func datePickerValueChanged(sender: UIDatePicker) {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        if (pickupTextField.isFirstResponder()) {
-            pickupTextField.text = dateFormatter.stringFromDate(sender.date)
+    func datePickerValueChanged(_ sender: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        if (pickupTextField.isFirstResponder) {
+            pickupTextField.text = dateFormatter.string(from: sender.date)
             self.pickupDate = sender.date
         } else {
-            dropoffTextField.text = dateFormatter.stringFromDate(sender.date)
+            dropoffTextField.text = dateFormatter.string(from: sender.date)
             self.dropoffDate = sender.date
         }
     }
     
-    func cancelDatePicker(sender: UIBarButtonItem) {
+    func cancelDatePicker(_ sender: UIBarButtonItem) {
         dropoffTextField.resignFirstResponder()
         pickupTextField.resignFirstResponder()
     }
     
-    @IBAction func saveAction(sender: AnyObject) {
+    @IBAction func saveAction(_ sender: AnyObject) {
         CarBrowseViewController.pickupDate = Int((self.pickupDate?.timeIntervalSince1970)!)
         CarBrowseViewController.dropoffDate = Int((self.dropoffDate?.timeIntervalSince1970)!)
         CarBrowseViewController.filtersApplied = true

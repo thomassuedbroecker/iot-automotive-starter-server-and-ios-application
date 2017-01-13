@@ -21,7 +21,7 @@ class BehaviorTimes {
     var brakeOutTurn: [BehaviorDuration]?
     var sharpTurn: [BehaviorDuration]?
 
-    class func fromDictionary(array:NSArray) -> [BehaviorTimes] {
+    class func fromDictionary(_ array:NSArray) -> [BehaviorTimes] {
         var returnArray:[BehaviorTimes] = []
         for item in array {
             returnArray.append(BehaviorTimes(dictionary: item as! NSDictionary))

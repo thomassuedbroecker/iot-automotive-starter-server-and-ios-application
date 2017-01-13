@@ -19,7 +19,7 @@ let USER_DEFAULTS_KEY_MCA_TENANT_ID = "mcaTenantId"
 
 struct API {
     static var moveToRootOnError = true
-    //static let defaultAppURL = "https://iota-starter-server.mybluemix.net"
+    //static let defaultAppURL = "https://iot-automotive-starter-tsuedbro.eu-gb.mybluemix.net"
     static let defaultPushAppGUID = ""
     static let defaultPushClientSecret = ""
     static let defaultMcaTenantId = ""
@@ -43,7 +43,7 @@ struct API {
     static var tripAnalysisStatus = "\(connectedAppURL)/user/driverInsights/tripanalysisstatus"
     static var credentials = "\(connectedAppURL)/user/device/credentials"
 
-    static func setURIs(appURL: String) {
+    static func setURIs(_ appURL: String) {
         carsNearby = "\(appURL)/user/carsnearby"
         reservation = "\(appURL)/user/reservation"
         reservations = "\(appURL)/user/activeReservations"
@@ -80,11 +80,11 @@ struct API {
     }
 
     static func doInitialize() {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        let appRoute = userDefaults.valueForKey(USER_DEFAULTS_KEY_APP_ROUTE) as? String
-        let pushAppGUID = userDefaults.valueForKey(USER_DEFAULTS_KEY_PUSH_APP_GUID) as? String
-        let pushClientSecret = userDefaults.valueForKey(USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET) as? String
-        let mcaTenantId = userDefaults.valueForKey(USER_DEFAULTS_KEY_MCA_TENANT_ID) as? String
+        let userDefaults = UserDefaults.standard
+        let appRoute = userDefaults.value(forKey: USER_DEFAULTS_KEY_APP_ROUTE) as? String
+        let pushAppGUID = userDefaults.value(forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID) as? String
+        let pushClientSecret = userDefaults.value(forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET) as? String
+        let mcaTenantId = userDefaults.value(forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID) as? String
         moveToRootOnError = true
         if(appRoute != nil){
             connectedAppURL = appRoute!
@@ -106,7 +106,7 @@ struct API {
         }
     }
     
-    static func login(requestAfterLogin: NSMutableURLRequest?, callback: ((NSHTTPURLResponse, [NSDictionary]) -> Void)?){
+    static func login(_ requestAfterLogin: NSMutableURLRequest?, callback: ((HTTPURLResponse, [NSDictionary]) -> Void)?){
         let customResourceURL = BMSClient.sharedInstance.bluemixAppRoute! + "/user/login"
         let request = Request(url: customResourceURL, method: HttpMethod.GET)
         
@@ -124,70 +124,70 @@ struct API {
         request.send(completionHandler: callBack)
     }
    
-    static func handleError(error: NSError) {
+    static func handleError(_ error: NSError) {
         doHandleError("Communication Error", message: "\(error)", moveToRoot: moveToRootOnError)
     }
     
-    static func handleServerError(data:NSData, response: NSHTTPURLResponse) {
-        let responseString = String(data: data, encoding: NSUTF8StringEncoding)
+    static func handleServerError(_ data:Data, response: HTTPURLResponse) {
+        let responseString = String(data: data, encoding: String.Encoding.utf8)
         let statusCode = response.statusCode
         doHandleError("Server Error", message: "Status Code: \(statusCode) - \(responseString!)", moveToRoot: false)
     }
     
-    static func doHandleError(title:String, message: String, moveToRoot: Bool) {
+    static func doHandleError(_ title:String, message: String, moveToRoot: Bool) {
         var vc: UIViewController?
-        if var topController = UIApplication.sharedApplication().keyWindow?.rootViewController {
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
             }
             vc = topController
         } else {
-            let window:UIWindow?? = UIApplication.sharedApplication().delegate?.window
+            let window:UIWindow?? = UIApplication.shared.delegate?.window
             vc = window!!.rootViewController!
         }
         
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
             alert.removeFromParentViewController()
             if(moveToRoot){
-                UIApplication.sharedApplication().cancelAllLocalNotifications()
+                UIApplication.shared.cancelAllLocalNotifications()
                 // reset view back to Get Started
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let controller = storyboard.instantiateInitialViewController()! as UIViewController
-                UIApplication.sharedApplication().windows[0].rootViewController = controller
+                UIApplication.shared.windows[0].rootViewController = controller
             }
         }
         alert.addAction(okAction)
         
-        dispatch_async(dispatch_get_main_queue(), {
-            vc!.presentViewController(alert, animated: true, completion: nil)
+        DispatchQueue.main.async(execute: {
+            vc!.present(alert, animated: true, completion: nil)
         })
     }
     
     static func getUUID() -> String {
-        if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("iota-starter-uuid") {
+        if let uuid = UserDefaults.standard.string(forKey: "iota-starter-uuid") {
             return uuid
         } else {
-            let value = NSUUID().UUIDString
-            NSUserDefaults.standardUserDefaults().setValue(value, forKey: "iota-starter-uuid")
+            let value = UUID().uuidString
+            UserDefaults.standard.setValue(value, forKey: "iota-starter-uuid")
             return value
         }
     }
 
     // convert NSMutableURLRequest to BMSCore Request
-    static private func toBMSRequest(request: NSMutableURLRequest) -> Request {
-        let bmsRequest = Request(url: request.URL!.absoluteString!, headers: request.allHTTPHeaderFields, queryParameters: request.allHTTPHeaderFields, method: HttpMethod(rawValue: request.HTTPMethod)!)
-        print("toBMSRequest url: \(request.URL!.absoluteString)")
+    static fileprivate func toBMSRequest(_ request: NSMutableURLRequest) -> Request {
+        let bmsRequest = Request(url: request.url!.absoluteString!, headers: request.allHTTPHeaderFields, queryParameters: request.allHTTPHeaderFields, method: HttpMethod(rawValue: request.httpMethod)!)
+        print("toBMSRequest url: \(request.url!.absoluteString)")
         return bmsRequest
     }
     
-    static private func toJsonArray(data: NSData) -> [NSMutableDictionary] {
+    static fileprivate func toJsonArray(_ data: Data) -> [NSMutableDictionary] {
         var jsonArray: [NSMutableDictionary] = []
         do {
-            if let tempArray:[NSMutableDictionary] = try NSJSONSerialization.JSONObjectWithData(data, options: [NSJSONReadingOptions.MutableContainers]) as? [NSMutableDictionary] {
+            if let tempArray:[NSMutableDictionary] = try JSONSerialization.jsonObject(with: data, options: [JSONSerialization.ReadingOptions.mutableContainers]) as? [NSMutableDictionary] {
                 jsonArray = tempArray
             } else {
-                if let temp = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? NSMutableDictionary {
+                if let temp = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as? NSMutableDictionary {
                     jsonArray.append(temp)
                 }
             }
@@ -206,8 +206,8 @@ struct API {
         return jsonArray
     }
 
-    static func doRequest(request: NSMutableURLRequest, callback: ((NSHTTPURLResponse, [NSDictionary]) -> Void)?) {
-        print("\(request.HTTPMethod) to \(request.URL!)")
+    static func doRequest(_ request: NSMutableURLRequest, callback: ((HTTPURLResponse, [NSDictionary]) -> Void)?) {
+        print("\(request.httpMethod) to \(request.url!)")
         request.setValue(getUUID(), forHTTPHeaderField: "iota-starter-uuid")
         print("using UUID: \(getUUID())")
         
@@ -217,7 +217,7 @@ struct API {
             // Convert callback for NSURLSession dataTaskWithRequest(request) to callback for BMSCore sendWithCompletionHandler() or sendData()
             let bmsCallback: BMSCompletionHandler = {(response: Response?, error: NSError?) in
                 if error == nil {
-                    let nsResponse = NSHTTPURLResponse(URL: request.URL!, statusCode: response!.statusCode!, HTTPVersion: "HTTP/?.?", headerFields: response!.headers as! [String : String])!
+                    let nsResponse = HTTPURLResponse(url: request.url!, statusCode: response!.statusCode!, httpVersion: "HTTP/?.?", headerFields: response!.headers as! [String : String])!
                     
                     print("response = \(response!.statusCode!) \(response!.headers)")
                     
@@ -248,15 +248,15 @@ struct API {
                     print ("error: \(error.debugDescription)")
                 }
             }
-            if request.HTTPBody == nil {
+            if request.httpBody == nil {
                 print("doRequest(BMS) no HTTPBody")
                 bmsRequest.send(completionHandler: bmsCallback)
             } else {
-                print("doRequest(BMS) HTTPBody \(NSString(data: request.HTTPBody!, encoding: NSUTF8StringEncoding) as? String)")
-                bmsRequest.send(requestBody: request.HTTPBody!, completionHandler: bmsCallback)
+                print("doRequest(BMS) HTTPBody \(NSString(data: request.httpBody!, encoding: String.Encoding.utf8.rawValue) as? String)")
+                bmsRequest.send(requestBody: request.httpBody!, completionHandler: bmsCallback)
             }
         } else {
-            let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+            let task = URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 guard error == nil && data != nil else {
                     print("error=\(error!)")
                     handleError(error!)
@@ -265,12 +265,12 @@ struct API {
             
                 print("response = \(response!)")
             
-                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                let responseString = NSString(data: data!, encoding: String.Encoding.utf8)
                 print("responseString = \(responseString!)")
             
                 let jsonArray = toJsonArray(data!)
             
-                let httpStatus = response as? NSHTTPURLResponse
+                let httpStatus = response as? HTTPURLResponse
                 print("statusCode was \(httpStatus!.statusCode)")
             
                 let statusCode = httpStatus?.statusCode
@@ -280,48 +280,48 @@ struct API {
                 self.login(request, callback: callback)
                 break
                 case 500..<600:
-                self.handleServerError(data!, response: (response as? NSHTTPURLResponse)!)
+                self.handleServerError(data!, response: (response as? HTTPURLResponse)!)
                     break
                 case 200..<400:
-                    if !checkAPIVersion(response as! NSHTTPURLResponse)     {
+                    if !checkAPIVersion(response as! HTTPURLResponse)     {
                         doHandleError("API Version Error", message: "API version between the server and mobile app is inconsistent. Please upgrade your server or mobile app.", moveToRoot: true)
                         return;
                     }
                     fallthrough
                 default:
-                    callback?((response as? NSHTTPURLResponse)!, jsonArray)
+                    callback?((response as? HTTPURLResponse)!, jsonArray)
                     moveToRootOnError = false
                 }
-             }
+             }) 
             task.resume()
         }
     }
 
-    static func checkAPIVersion(response:NSHTTPURLResponse)->Bool{
+    static func checkAPIVersion(_ response:HTTPURLResponse)->Bool{
         guard let apiVersion:String = response.allHeaderFields["iota-starter-car-sharing-version"] as? String else{
             print("Server API 1.0 is not supported")
             return false
         }
-        let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
-        let splitedApiVersion = apiVersion.componentsSeparatedByString(".")
-        let splitedAppVersion = appVersion.componentsSeparatedByString(".")
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let splitedApiVersion = apiVersion.components(separatedBy: ".")
+        let splitedAppVersion = appVersion.components(separatedBy: ".")
         return splitedApiVersion[0] == splitedAppVersion[0]
     }
     
-    static func getLocation(lat: Double, lng: Double, label: UILabel) -> Void {
+    static func getLocation(_ lat: Double, lng: Double, label: UILabel) -> Void {
         let gc: CLGeocoder = CLGeocoder()
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         gc.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude), completionHandler: {
             (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 if (placemarks!.count > 0) {
                     let placemark = placemarks![0]
                     if placemark.name != nil && placemark.locality != nil {
                         let attrs = [
-                            NSFontAttributeName : UIFont.systemFontOfSize(12.0),
-                            NSForegroundColorAttributeName : UIColor.blackColor().colorWithAlphaComponent(0.6),
+                            NSFontAttributeName : UIFont.systemFont(ofSize: 12.0),
+                            NSForegroundColorAttributeName : UIColor.black.withAlphaComponent(0.6),
                             NSUnderlineStyleAttributeName : 1,
-                        ]
+                        ] as [String : Any]
                         let text = "\(placemark.name!), \(placemark.locality!)"
                         let attributedText = NSAttributedString(string: text, attributes: attrs)
                         label.text = attributedText.string
@@ -331,10 +331,10 @@ struct API {
                         label.text = "unknown location"
                     }
                     
-                    label.textColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
-                    label.highlightedTextColor = UIColor.whiteColor()
+                    label.textColor = UIColor.black.withAlphaComponent(0.6)
+                    label.highlightedTextColor = UIColor.white
                 }
             })
-        })
+        } as! CLGeocodeCompletionHandler)
     }
 }

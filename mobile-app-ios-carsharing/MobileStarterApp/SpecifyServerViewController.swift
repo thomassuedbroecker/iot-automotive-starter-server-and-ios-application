@@ -20,17 +20,17 @@ class SpecifyServerViewController: UIViewController {
         serverSpecified = false
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.backItem?.title = ""
         self.title = "Specify Server"
         
-        if let appRoute: String = NSUserDefaults.standardUserDefaults().valueForKey(USER_DEFAULTS_KEY_APP_ROUTE) as? String {
-            if let url : NSURL = NSURL(string: appRoute) {
-                if UIApplication.sharedApplication().canOpenURL(url) {
+        if let appRoute: String = UserDefaults.standard.value(forKey: USER_DEFAULTS_KEY_APP_ROUTE) as? String {
+            if let url : URL = URL(string: appRoute) {
+                if UIApplication.shared.canOpenURL(url) {
                     if(serverSpecified){
                         API.doInitialize()
-                        performSegueWithIdentifier("goToHomeScreen", sender: self)
+                        performSegue(withIdentifier: "goToHomeScreen", sender: self)
                     }
                 } else {
                     showError("No valid URL found from data provided:\n\n\(appRoute)")
@@ -45,34 +45,34 @@ class SpecifyServerViewController: UIViewController {
         super.viewWillAppear(animated)
     }
     
-    func showError(message: String) {
-        let alert = UIAlertController(title: "Scan Error", message: message, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
+    func showError(_ message: String) {
+        let alert = UIAlertController(title: "Scan Error", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
             alert.removeFromParentViewController()
         }
         alert.addAction(okAction)
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
-    @IBAction func useDefaultAction(sender: AnyObject) {
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_APP_ROUTE)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_PUSH_APP_GUID)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_KEY_MCA_TENANT_ID)
+    @IBAction func useDefaultAction(_ sender: AnyObject) {
+        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_APP_ROUTE)
+        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_PUSH_APP_GUID)
+        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_PUSH_CLIENT_SECRET)
+        UserDefaults.standard.removeObject(forKey: USER_DEFAULTS_KEY_MCA_TENANT_ID)
         API.setDefaultServer()
         API.doInitialize()
     }
 
-    @IBAction func moreInfoAction(sender: AnyObject) {
-        let url : NSURL = NSURL(string: "http://www.ibm.com/internet-of-things/iot-industry/iot-automotive/")!
-        if UIApplication.sharedApplication().canOpenURL(url) {
-            UIApplication.sharedApplication().openURL(url)
+    @IBAction func moreInfoAction(_ sender: AnyObject) {
+        let url : URL = URL(string: "http://www.ibm.com/internet-of-things/iot-industry/iot-automotive/")!
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.openURL(url)
         }
     }
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let target :UITabBarController? = segue.destinationViewController as? UITabBarController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let target :UITabBarController? = segue.destination as? UITabBarController
         if(segue.identifier == "goToHomeScreen"){
-            target?.viewControllers!.removeAtIndex(0) // Drive
+            target?.viewControllers!.remove(at: 0) // Drive
             NotificationUtils.initRemoteNotification()
             ViewController.behaviorDemo = false
         }else if(segue.identifier == "goToCodeReader"){

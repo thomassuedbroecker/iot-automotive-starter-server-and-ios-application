@@ -14,41 +14,41 @@ import BMSPush
 import UserNotifications
 
 class NotificationUtils{
-    private init(){}
+    fileprivate init(){}
     static let ALERT_TITLE = "IoT Automotive Car Sharing"
     static let ACTION_OPEN_RESERVATION = "ACTION_OPEN_RESERVATION"
     static let ACTION_OK = "ACTION_OK"
     static let CATEGORY_OPEN_RESERVATION = "CATEGORY_OPEN_RESERVATION"
     static let CATEGORY_OK = "CATEGORY_OK"
 
-    static func setNotification(notifyAt:NSDate, message:String, actionLabel:String, userInfo: [NSObject: AnyObject]){
-        let calendar = NSCalendar(identifier:NSCalendarIdentifierGregorian)
-        let result = calendar?.compareDate(NSDate(), toDate: notifyAt, toUnitGranularity: .Second)
-        if result == NSComparisonResult.OrderedDescending {
+    static func setNotification(_ notifyAt:Date, message:String, actionLabel:String, userInfo: [AnyHashable: Any]){
+        let calendar = Calendar(identifier:Calendar.Identifier.gregorian)
+        let result = (calendar as NSCalendar?)?.compare(Date(), to: notifyAt, toUnitGranularity: .second)
+        if result == ComparisonResult.orderedDescending {
                return
         }
         let notification = UILocalNotification()
-        notification.timeZone = NSTimeZone.systemTimeZone()
+        notification.timeZone = TimeZone.current
         notification.fireDate = notifyAt
         notification.alertBody = message
         notification.alertAction = actionLabel
         notification.category = NotificationUtils.CATEGORY_OPEN_RESERVATION
         notification.userInfo = userInfo
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        UIApplication.shared.scheduleLocalNotification(notification)
     }
-    static func cancelNotification(userInfo:Dictionary<String, String>){
-        for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-            if(notification.userInfo != nil && NSDictionary(dictionary: notification.userInfo!).isEqualToDictionary(userInfo)){
-                UIApplication.sharedApplication().cancelLocalNotification(notification)
+    static func cancelNotification(_ userInfo:Dictionary<String, String>){
+        for notification in UIApplication.shared.scheduledLocalNotifications! {
+            if(notification.userInfo != nil && NSDictionary(dictionary: notification.userInfo!).isEqual(to: userInfo)){
+                UIApplication.shared.cancelLocalNotification(notification)
                 return
             }
         }
     }
-    static func showAlert(description:String, action: UIAlertAction){
-        let window = UIApplication.sharedApplication().keyWindow
-        let alert = UIAlertController(title: NotificationUtils.ALERT_TITLE, message: description, preferredStyle: .Alert)
+    static func showAlert(_ description:String, action: UIAlertAction){
+        let window = UIApplication.shared.keyWindow
+        let alert = UIAlertController(title: NotificationUtils.ALERT_TITLE, message: description, preferredStyle: .alert)
         alert.addAction(action)
-        window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+        window?.rootViewController?.present(alert, animated: true, completion: nil)
     }
     static func initRemoteNotification(){
         let bmsClient = BMSClient.sharedInstance
@@ -61,33 +61,33 @@ class NotificationUtils{
         let openReservationAction = UIMutableUserNotificationAction()
         openReservationAction.identifier = ACTION_OPEN_RESERVATION
         openReservationAction.title = "Open"
-        openReservationAction.activationMode = .Foreground
-        openReservationAction.destructive = false
-        openReservationAction.authenticationRequired = true
+        openReservationAction.activationMode = .foreground
+        openReservationAction.isDestructive = false
+        openReservationAction.isAuthenticationRequired = true
         
         let okAction = UIMutableUserNotificationAction()
         okAction.identifier = ACTION_OK
         okAction.title = "OK"
-        okAction.activationMode = .Background
-        okAction.destructive = false
-        okAction.authenticationRequired = false
+        okAction.activationMode = .background
+        okAction.isDestructive = false
+        okAction.isAuthenticationRequired = false
         
         let openReservationCategory = UIMutableUserNotificationCategory()
         openReservationCategory.identifier = CATEGORY_OPEN_RESERVATION
-        openReservationCategory.setActions([openReservationAction, okAction], forContext: .Minimal)
+        openReservationCategory.setActions([openReservationAction, okAction], for: .minimal)
         
         let okCategory = UIMutableUserNotificationCategory()
         okCategory.identifier = CATEGORY_OK
-        okCategory.setActions([okAction], forContext: .Minimal)
+        okCategory.setActions([okAction], for: .minimal)
 
         if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.currentNotificationCenter().requestAuthorizationWithOptions([.Alert, .Sound, .Badge])
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
             {(granted, error) in
-                UIApplication.sharedApplication().registerForRemoteNotifications()
+                UIApplication.shared.registerForRemoteNotifications()
             }
         } else {
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: Set([openReservationCategory, okCategory])))
-            UIApplication.sharedApplication().registerForRemoteNotifications()
+            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: Set([openReservationCategory, okCategory])))
+            UIApplication.shared.registerForRemoteNotifications()
         }
     }
     static func getDeviceId() -> String?{

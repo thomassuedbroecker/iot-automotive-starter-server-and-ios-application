@@ -24,7 +24,7 @@ class TripData {
     var end_longitude : Double?
     var duration: Double?
 
-    class func fromDictionary(array:NSArray) -> [TripData] {
+    class func fromDictionary(_ array:NSArray) -> [TripData] {
         var returnArray:[TripData] = []
         for item in array {
             returnArray.append(TripData(dictionary: item as! NSDictionary))

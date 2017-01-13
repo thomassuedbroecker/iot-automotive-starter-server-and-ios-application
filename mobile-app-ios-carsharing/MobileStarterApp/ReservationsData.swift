@@ -21,7 +21,7 @@ class ReservationsData {
 	var status : String?
 	var carDetails : CarData?
 
-    class func fromDictionary(array:NSArray) -> [ReservationsData] {
+    class func fromDictionary(_ array:NSArray) -> [ReservationsData] {
         var returnArray:[ReservationsData] = []
         for item in array {
             returnArray.append(ReservationsData(dictionary: item as! NSDictionary))

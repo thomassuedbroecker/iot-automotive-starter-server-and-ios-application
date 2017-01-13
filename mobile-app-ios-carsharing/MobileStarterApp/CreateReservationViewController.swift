@@ -13,8 +13,8 @@ import CoreLocation
 class CreateReservationViewController: UIViewController {
     
     var car: CarData?
-    var pickupDate: NSDate?
-    var dropoffDate: NSDate?
+    var pickupDate: Date?
+    var dropoffDate: Date?
 
     @IBOutlet weak var dropoffTextField: UITextField!
     @IBOutlet weak var pickupTextField: UITextField!
@@ -30,10 +30,10 @@ class CreateReservationViewController: UIViewController {
     
     @IBOutlet weak var carReserveThumbnail: UIImageView!
     
-    @IBAction func locationButtonAction(sender: AnyObject) {
-        let url : NSURL = NSURL(string: "http://maps.apple.com/maps?q=\((car?.lat)!),\((car?.lng)!)")!
-        if UIApplication.sharedApplication().canOpenURL(url) {
-            UIApplication.sharedApplication().openURL(url)
+    @IBAction func locationButtonAction(_ sender: AnyObject) {
+        let url : URL = URL(string: "http://maps.apple.com/maps?q=\((car?.lat)!),\((car?.lng)!)")!
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.openURL(url)
         }
     }
     
@@ -42,19 +42,19 @@ class CreateReservationViewController: UIViewController {
         
         // TODO: localize
         self.title = "Confirm Reservation"
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.carReserveThumbnail.image = CarBrowseViewController.thumbnailCache[(car?.thumbnailURL)!]  as? UIImage
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        pickupDate = NSDate(timeIntervalSinceNow: ReservationUtils.DEFAULT_PICKUP_TIME_OFFSET)
-        pickupDate = NSDate(timeIntervalSince1970: CreateReservationViewController.round10Min(pickupDate!.timeIntervalSince1970))
-        dropoffDate = NSDate(timeIntervalSinceNow: ReservationUtils.DEFAULT_DROPOFF_TIME_OFFSET)
-        dropoffDate = NSDate(timeIntervalSince1970: CreateReservationViewController.round10Min(dropoffDate!.timeIntervalSince1970))
-        pickupTextField.text = dateFormatter.stringFromDate(pickupDate!)
-        dropoffTextField.text = dateFormatter.stringFromDate(dropoffDate!)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        pickupDate = Date(timeIntervalSinceNow: ReservationUtils.DEFAULT_PICKUP_TIME_OFFSET)
+        pickupDate = Date(timeIntervalSince1970: CreateReservationViewController.round10Min(pickupDate!.timeIntervalSince1970))
+        dropoffDate = Date(timeIntervalSinceNow: ReservationUtils.DEFAULT_DROPOFF_TIME_OFFSET)
+        dropoffDate = Date(timeIntervalSince1970: CreateReservationViewController.round10Min(dropoffDate!.timeIntervalSince1970))
+        pickupTextField.text = dateFormatter.string(from: pickupDate!)
+        dropoffTextField.text = dateFormatter.string(from: dropoffDate!)
 
         // Do any additional setup after loading the view.
         setupDatePicker(pickupTextField, offsetTime: (pickupDate?.timeIntervalSinceNow)!)
@@ -63,7 +63,7 @@ class CreateReservationViewController: UIViewController {
         carNameLabel.text = car?.name
         
         getLocation((car?.lat)!, lng: (car?.lng)!)
-        ratingLabel.text = String(count: (car?.stars)!, repeatedValue: Character("\u{2605}")) + String(count: (5-(car?.stars)!), repeatedValue: Character("\u{2606}"))
+        ratingLabel.text = String(repeating: "\u{2605}", count: (car?.stars)!) + String(repeating: "\u{2606}", count: (5-(car?.stars)!))
         
         ratingLabel.textColor = UIColor(red: 243/255, green: 118/255, blue: 54/255, alpha: 100)
         
@@ -78,11 +78,11 @@ class CreateReservationViewController: UIViewController {
         pickupTextField.addSubview(pickupImageView)
         dropoffTextField.addSubview(dropoffImageView)
 
-        pickupTextField.leftView = UIView.init(frame: CGRectMake(5, 0, 20, 20))
-        dropoffTextField.leftView = UIView.init(frame: CGRectMake(5, 0, 20, 20))
+        pickupTextField.leftView = UIView.init(frame: CGRect(x: 5, y: 0, width: 20, height: 20))
+        dropoffTextField.leftView = UIView.init(frame: CGRect(x: 5, y: 0, width: 20, height: 20))
         
-        pickupTextField.leftViewMode = UITextFieldViewMode.Always
-        dropoffTextField.leftViewMode = UITextFieldViewMode.Always
+        pickupTextField.leftViewMode = UITextFieldViewMode.always
+        dropoffTextField.leftViewMode = UITextFieldViewMode.always
         
         typeLabel.text = car?.type
         driveLabel.text = car?.drive
@@ -100,7 +100,7 @@ class CreateReservationViewController: UIViewController {
         var diffInSecs = (dropoffDate?.timeIntervalSince1970)! - (pickupDate?.timeIntervalSince1970)!
         let days = floor(diffInSecs/86400)
         diffInSecs -= days * 86400;
-        let hours = floor(diffInSecs/3600) % 24
+        let hours = floor(diffInSecs/3600).truncatingRemainder(dividingBy: 24)
         //diffInSecs -= hours * 3600
         //let mins = floor(diffInSecs/60) % 60
         
@@ -126,8 +126,8 @@ class CreateReservationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func reserveCarAction(sender: AnyObject) {
-        let url = NSURL(string: API.reservation)!
+    @IBAction func reserveCarAction(_ sender: AnyObject) {
+        let url = URL(string: API.reservation)!
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "POST"
         
@@ -138,20 +138,20 @@ class CreateReservationViewController: UIViewController {
         if let deviceId = NotificationUtils.getDeviceId() {
             params += "&deviceId=\(deviceId)"
         }
-        request.HTTPBody = params.dataUsingEncoding(NSUTF8StringEncoding)
+        request.HTTPBody = params.dataUsingEncoding(String.Encoding.utf8)
         
         API.doRequest(request, callback: reserveCarActionCallback)
     }
-    static func round10Min(time:NSTimeInterval)->NSTimeInterval{
-        let date = NSDate(timeIntervalSince1970: time)
-        let cal = NSCalendar(identifier: NSCalendarIdentifierGregorian)
-        let components = cal?.components([.Year, .Month, .Day, .Hour, .Minute], fromDate:date)
+    static func round10Min(_ time:TimeInterval)->TimeInterval{
+        let date = Date(timeIntervalSince1970: time)
+        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = (cal as NSCalendar?)?.components([.year, .month, .day, .hour, .minute], from:date)
         components?.minute = ((components?.minute)!/10)*10
         components?.second = 0
-        return (cal?.dateFromComponents(components!)?.timeIntervalSince1970)!
+        return (cal.date(from: components!)?.timeIntervalSince1970)!
     }
 
-    func reserveCarActionCallback(httpResponse: NSHTTPURLResponse, jsonArray: [NSDictionary]) {
+    func reserveCarActionCallback(_ httpResponse: HTTPURLResponse, jsonArray: [NSDictionary]) {
         let statusCode = httpResponse.statusCode
         var title = ""
         var leavePage = true
@@ -174,9 +174,9 @@ class CreateReservationViewController: UIViewController {
             title = "Something went wrong."
             leavePage = false
         }
-        let alert = UIAlertController(title: title, message: "", preferredStyle: .Alert)
+        let alert = UIAlertController(title: title, message: "", preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
+        let okAction = UIAlertAction(title: "OK", style: .cancel) { action -> Void in
             alert.removeFromParentViewController()
             if leavePage {
                 // pop to home tab
@@ -189,83 +189,83 @@ class CreateReservationViewController: UIViewController {
         }
         alert.addAction(okAction)
         
-        dispatch_async(dispatch_get_main_queue(), {
-            self.presentViewController(alert, animated: true, completion: nil)
+        DispatchQueue.main.async(execute: {
+            self.present(alert, animated: true, completion: nil)
         })
     }
     
-    func setupDatePicker(textField:UITextField, offsetTime: NSTimeInterval) {
+    func setupDatePicker(_ textField:UITextField, offsetTime: TimeInterval) {
         let datePicker: UIDatePicker = UIDatePicker()
-        datePicker.backgroundColor = UIColor.whiteColor()
-        datePicker.datePickerMode = UIDatePickerMode.DateAndTime
+        datePicker.backgroundColor = UIColor.white
+        datePicker.datePickerMode = UIDatePickerMode.dateAndTime
         datePicker.minuteInterval = 10
         datePicker.addTarget(self, action: #selector(self.datePickerValueChanged),
-            forControlEvents: UIControlEvents.ValueChanged)
-        datePicker.date = NSDate(timeIntervalSince1970: CreateReservationViewController.round10Min(NSDate().timeIntervalSince1970 + offsetTime))
+            for: UIControlEvents.valueChanged)
+        datePicker.date = Date(timeIntervalSince1970: CreateReservationViewController.round10Min(Date().timeIntervalSince1970 + offsetTime))
         textField.inputView = datePicker
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        textField.text = dateFormatter.stringFromDate(datePicker.date)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        textField.text = dateFormatter.string(from: datePicker.date)
         
         let pickerToolbar = UIToolbar()
-        pickerToolbar.barStyle = UIBarStyle.BlackTranslucent
-        pickerToolbar.tintColor = UIColor.whiteColor()
+        pickerToolbar.barStyle = UIBarStyle.blackTranslucent
+        pickerToolbar.tintColor = UIColor.white
         pickerToolbar.sizeToFit()
         
-        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(self.cancelDatePicker))
+        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.cancelDatePicker))
         pickerToolbar.setItems([cancelButtonPicker, spaceButtonPicker], animated: false)
-        pickerToolbar.userInteractionEnabled = true
+        pickerToolbar.isUserInteractionEnabled = true
         textField.inputAccessoryView = pickerToolbar
     }
     
-    func datePickerValueChanged(sender: UIDatePicker) {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-        if (pickupTextField.isFirstResponder()) {
-            pickupTextField.text = dateFormatter.stringFromDate(sender.date)
+    func datePickerValueChanged(_ sender: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        if (pickupTextField.isFirstResponder) {
+            pickupTextField.text = dateFormatter.string(from: sender.date)
             pickupDate = sender.date
         } else {
-            dropoffTextField.text = dateFormatter.stringFromDate(sender.date)
+            dropoffTextField.text = dateFormatter.string(from: sender.date)
             dropoffDate = sender.date
         }
         calculateTime()
     }
     
-    func cancelDatePicker(sender: UIBarButtonItem) {
+    func cancelDatePicker(_ sender: UIBarButtonItem) {
         dropoffTextField.resignFirstResponder()
         pickupTextField.resignFirstResponder()
     }
     
-    func getLocation(lat: Double, lng: Double) -> Void {
+    func getLocation(_ lat: Double, lng: Double) -> Void {
         let gc: CLGeocoder = CLGeocoder()
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         gc.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude), completionHandler: {
             (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 if (placemarks!.count > 0) {
                     let placemark = placemarks![0]
                     if placemark.name != nil && placemark.locality != nil {
                         let attrs = [
-                            NSFontAttributeName : UIFont.systemFontOfSize(12.0),
-                            NSForegroundColorAttributeName : UIColor.blackColor(),
+                            NSFontAttributeName : UIFont.systemFont(ofSize: 12.0),
+                            NSForegroundColorAttributeName : UIColor.black,
                             NSUnderlineStyleAttributeName : 1,
-                        ]
+                        ] as [String : Any]
                         let text = "\(placemark.name!), \(placemark.locality!)"
                         //let textRange = NSMakeRange(0, text.characters.count)
                         let attributedText = NSAttributedString(string: text, attributes: attrs)
                         //attributedText.addAttribute(NSUnderlineStyleAttributeName , value:NSUnderlineStyle.StyleSingle.rawValue, range: textRange)
-                        self.locationButton.setAttributedTitle(attributedText, forState: .Normal)
+                        self.locationButton.setAttributedTitle(attributedText, for: UIControlState())
                     } else {
                         // TODO: localize
-                        self.locationButton.setAttributedTitle(NSAttributedString(string: "unknown location"), forState: .Normal)
+                        self.locationButton.setAttributedTitle(NSAttributedString(string: "unknown location"), for: UIControlState())
                         
                     }
                 }
             })
-        })
+        } as! CLGeocodeCompletionHandler)
     }
     
     /*

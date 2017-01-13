@@ -10,6 +10,30 @@
 import UIKit
 import MapKit
 import CoreLocation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class CarBrowseViewController: UIViewController {
 
@@ -63,14 +87,14 @@ class CarBrowseViewController: UIViewController {
         
         self.locationManager.delegate = self
         self.mapView.delegate = self
-        self.tabBarController?.tabBar.hidden = false
+        self.tabBarController?.tabBar.isHidden = false
         
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
         
-        tableView.backgroundColor = UIColor.whiteColor()
+        tableView.backgroundColor = UIColor.white
 
         
         headerView.backgroundColor = Colors.dark
@@ -78,7 +102,7 @@ class CarBrowseViewController: UIViewController {
         setupPicker()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
 
         if (self.location != nil && CarBrowseViewController.userReserved) {
@@ -97,35 +121,35 @@ class CarBrowseViewController: UIViewController {
         }
         
         if (ViewController.behaviorDemo) {
-            locationIcon.hidden = true
+            locationIcon.isHidden = true
         }
         
         super.viewWillAppear(animated)
     }
-    @IBAction func onHomeButtonTapped(sender: UIButton) {
-        self.tabBarController?.navigationController?.popToRootViewControllerAnimated(true)
+    @IBAction func onHomeButtonTapped(_ sender: UIButton) {
+        self.tabBarController?.navigationController?.popToRootViewController(animated: true)
     }
     
-    func getCars(location: CLLocationCoordinate2D) {
+    func getCars(_ location: CLLocationCoordinate2D) {
         let lat = location.latitude
         let lng = location.longitude
-        let url: NSURL
+        let url: URL
         
         if (CarBrowseViewController.pickupDate != nil && CarBrowseViewController.dropoffDate != nil) {
-            url = NSURL(string: "\(API.carsNearby)/\(lat)/\(lng)/\((CarBrowseViewController.pickupDate)!)/\((CarBrowseViewController.dropoffDate)!)")!
+            url = URL(string: "\(API.carsNearby)/\(lat)/\(lng)/\((CarBrowseViewController.pickupDate)!)/\((CarBrowseViewController.dropoffDate)!)")!
         } else {
-            url = NSURL(string: "\(API.carsNearby)/\(lat)/\(lng)")!
+            url = URL(string: "\(API.carsNearby)/\(lat)/\(lng)")!
         }
         
-        let request: NSMutableURLRequest = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "GET"
+        let request: NSMutableURLRequest = NSMutableURLRequest(url: url)
+        request.httpMethod = "GET"
         
         API.doRequest(request) { (response, jsonArray) -> Void in
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 self.clearCarsFromMap(true)
                 self.carData = CarData.fromDictionary(jsonArray)
                 if (ViewController.behaviorDemo && !CarBrowseViewController.userOwnDeviceCreated) {
-                    if(self.carData.indexOf({$0.deviceID == ViewController.mobileAppDeviceId}) < 0){
+                    if(self.carData.index(where: {$0.deviceID == ViewController.mobileAppDeviceId}) < 0){
                         // create user own device locally. 
                         // Once its created in server-side as result of getCredentials, stop this.
                         let carInfo: NSDictionary = [
@@ -159,16 +183,16 @@ class CarBrowseViewController: UIViewController {
                 default: self.titleLabel.text = "There are \(self.carData.count) cars available."
                 }
                 
-                self.carData.sortInPlace({$0.distance < $1.distance})
+                self.carData.sort(by: {$0.distance < $1.distance})
                 if (CarBrowseViewController.pickupDate != nil && CarBrowseViewController.dropoffDate != nil) {
-                    self.carData.sortInPlace({$0.rate > $1.rate})
+                    self.carData.sort(by: {$0.rate > $1.rate})
                 }
                 
                 // my device should be always displayed at top
                 if(ViewController.behaviorDemo){
-                    let mydeviceindex = self.carData.indexOf({$0.deviceID == ViewController.mobileAppDeviceId});
+                    let mydeviceindex = self.carData.index(where: {$0.deviceID == ViewController.mobileAppDeviceId});
                     if(mydeviceindex > 0){
-                        self.carData.insert(self.carData.removeAtIndex(mydeviceindex!), atIndex: 0)
+                        self.carData.insert(self.carData.remove(at: mydeviceindex!), at: 0)
                     }
                 }
             
@@ -186,7 +210,7 @@ class CarBrowseViewController: UIViewController {
                     points.append(self.location!)
                     let polyline = MKPolyline(coordinates: UnsafeMutablePointer(points), count: points.count)
                 
-                    self.mapView.addOverlay(polyline)
+                    self.mapView.add(polyline)
                     self.mapRect = self.mapView.mapRectThatFits(polyline.boundingMapRect, edgePadding: UIEdgeInsetsMake(50, 50, 50, 50))
                     if self.mapRect?.size.width < CarBrowseViewController.MIN_MAP_RECT_WIDTH {
                         self.mapRect?.size.width = CarBrowseViewController.MIN_MAP_RECT_WIDTH
@@ -203,7 +227,7 @@ class CarBrowseViewController: UIViewController {
         }
     }
     
-    func clearCarsFromMap(carsOnly: Bool) {
+    func clearCarsFromMap(_ carsOnly: Bool) {
         for annotation in mapView.annotations {
             if annotation is CarData {
                 mapView.removeAnnotation(annotation)
@@ -214,12 +238,12 @@ class CarBrowseViewController: UIViewController {
     }
     
     // MARK: - Navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if(segue.destinationViewController.isKindOfClass(CarDetailsViewController)){
-            let targetController: CarDetailsViewController = segue.destinationViewController as! CarDetailsViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if(segue.destination.isKind(of: CarDetailsViewController.self)){
+            let targetController: CarDetailsViewController = segue.destination as! CarDetailsViewController
             
             if let tableCell: UITableViewCell = sender as? UITableViewCell {
-                if let selectedIndex: NSIndexPath! = self.tableView.indexPathForCell(tableCell) {
+                if let selectedIndex: IndexPath? = self.tableView.indexPath(for: tableCell) {
                     targetController.car = self.carData[selectedIndex!.item]
                 }
             } else if let annotation: MKAnnotation = sender as? MKAnnotation {
@@ -230,54 +254,54 @@ class CarBrowseViewController: UIViewController {
         }
     }
     
-    @IBAction func exitToCarBrowseScreen(segue: UIStoryboardSegue, sender: AnyObject?) {
+    @IBAction func exitToCarBrowseScreen(_ segue: UIStoryboardSegue, sender: AnyObject?) {
         // Needed to jump back to this screen from 
         // CreateReservationViewController (or anything else that needs to reset)
     }
     
     func setupPicker() {
-        let screenWidth = UIScreen.mainScreen().bounds.size.width
-        let screenHeight = UIScreen.mainScreen().bounds.size.height
+        let screenWidth = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
         
-        pickerView = UIView(frame: CGRectMake(0.0, screenHeight, screenWidth, 260))
+        pickerView = UIView(frame: CGRect(x: 0.0, y: screenHeight, width: screenWidth, height: 260))
         
-        locationPicker = UIPickerView(frame: CGRectMake(0.0, 44.0, screenWidth, 216.0))
+        locationPicker = UIPickerView(frame: CGRect(x: 0.0, y: 44.0, width: screenWidth, height: 216.0))
         locationPicker.delegate = self
         locationPicker.dataSource = self
         locationPicker.showsSelectionIndicator = true
-        locationPicker.backgroundColor = UIColor.whiteColor()
+        locationPicker.backgroundColor = UIColor.white
         
         let pickerToolbar = UIToolbar()
-        pickerToolbar.barStyle = UIBarStyle.BlackTranslucent
-        pickerToolbar.tintColor = UIColor.whiteColor()
+        pickerToolbar.barStyle = UIBarStyle.blackTranslucent
+        pickerToolbar.tintColor = UIColor.white
         pickerToolbar.sizeToFit()
         
-        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(self.donePicker))
+        let spaceButtonPicker = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButtonPicker = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.donePicker))
         pickerToolbar.setItems([cancelButtonPicker, spaceButtonPicker], animated: false)
-        pickerToolbar.userInteractionEnabled = true
+        pickerToolbar.isUserInteractionEnabled = true
         
         pickerView.addSubview(pickerToolbar)
         pickerView.addSubview(locationPicker)
     }
     
-    @IBAction func pickLocationAction(sender: AnyObject) {
+    @IBAction func pickLocationAction(_ sender: AnyObject) {
         self.view.addSubview(pickerView)
 
-        UIView.animateWithDuration(0.2, animations: {
-            self.pickerView.frame = CGRectMake(0,
-                UIScreen.mainScreen().bounds.size.height - 260.0,
-                UIScreen.mainScreen().bounds.size.width, 260.0)
+        UIView.animate(withDuration: 0.2, animations: {
+            self.pickerView.frame = CGRect(x: 0,
+                y: UIScreen.main.bounds.size.height - 260.0,
+                width: UIScreen.main.bounds.size.width, height: 260.0)
         })
     }
     
-    func donePicker(sender: UIBarButtonItem) {
-        let row = locationPicker.selectedRowInComponent(0)
+    func donePicker(_ sender: UIBarButtonItem) {
+        let row = locationPicker.selectedRow(inComponent: 0)
         
-        UIView.animateWithDuration(0.2, animations: {
-            self.pickerView.frame = CGRectMake(0,
-                UIScreen.mainScreen().bounds.size.height,
-                UIScreen.mainScreen().bounds.size.width, 260.0)
+        UIView.animate(withDuration: 0.2, animations: {
+            self.pickerView.frame = CGRect(x: 0,
+                y: UIScreen.main.bounds.size.height,
+                width: UIScreen.main.bounds.size.width, height: 260.0)
         })
         
         let newLocation = locationData[row]
@@ -309,20 +333,20 @@ class CarBrowseViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension CarBrowseViewController: UITableViewDataSource {
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return carData.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "CarTableViewCell"
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? CarTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? CarTableViewCell
         
-        cell?.backgroundColor = UIColor.whiteColor()
+        cell?.backgroundColor = UIColor.white
         
         let backgroundView = UIView()
         backgroundView.backgroundColor = Colors.dark
@@ -332,11 +356,11 @@ extension CarBrowseViewController: UITableViewDataSource {
         
         cell?.carThumbnail.image = nil
         if CarBrowseViewController.thumbnailCache[car.thumbnailURL!] == nil {
-            let url = NSURL(string: (car.thumbnailURL)!)
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let data = NSData(contentsOfURL: url!)
+            let url = URL(string: (car.thumbnailURL)!)
+            DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
+                let data = try? Data(contentsOf: url!)
                 if (data != nil){
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         CarBrowseViewController.thumbnailCache[car.thumbnailURL!] = UIImage(data: data!)
                         cell?.carThumbnail.image = CarBrowseViewController.thumbnailCache[car.thumbnailURL!] as? UIImage
                     }
@@ -348,23 +372,23 @@ extension CarBrowseViewController: UITableViewDataSource {
         
         cell?.carNameLabel.text = car.name
         cell?.carNameLabel.textColor = Colors.dark
-        cell?.carNameLabel.highlightedTextColor = UIColor.whiteColor()
+        cell?.carNameLabel.highlightedTextColor = UIColor.white
         
         //TODO localize and use real data
         if let distance = car.distance {
             cell?.distanceLabel.text = "\(distance) meters away"
             cell?.distanceLabel.textColor = UIColor(red: 78/255, green: 78/255, blue: 78/255, alpha: 100)
-            cell?.distanceLabel.highlightedTextColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
+            cell?.distanceLabel.highlightedTextColor = UIColor.white.withAlphaComponent(0.6)
         }
         
-        cell?.ratingLabel.text = String(count: (car.stars)!, repeatedValue: Character("\u{2605}")) + String(count: (5-(car.stars)!), repeatedValue: Character("\u{2606}"))
+        cell?.ratingLabel.text = String(repeating: "\u{2605}", count: (car.stars)!) + String(repeating: "\u{2606}", count: (5-(car.stars)!))
         
         cell?.ratingLabel.textColor = UIColor(red: 243/255, green: 118/255, blue: 54/255, alpha: 100)
-        cell?.ratingLabel.highlightedTextColor = UIColor.whiteColor()
+        cell?.ratingLabel.highlightedTextColor = UIColor.white
         
         cell?.costLabel.text = "$\((car.hourlyRate)!)/hr, $\((car.dailyRate)!)/day"
-        cell?.costLabel.textColor = UIColor.blackColor()
-        cell?.costLabel.highlightedTextColor = UIColor.whiteColor()
+        cell?.costLabel.textColor = UIColor.black
+        cell?.costLabel.highlightedTextColor = UIColor.white
         
         
         if (indexPath.section==0 && indexPath.row==0) {
@@ -381,7 +405,7 @@ extension CarBrowseViewController: UITableViewDataSource {
 extension CarBrowseViewController: MKMapViewDelegate {
     
     // define what shows on the map for the annotation
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
             return nil
         }
@@ -392,7 +416,7 @@ extension CarBrowseViewController: MKMapViewDelegate {
         }
         let reuseId = "test"
         
-        var anView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+        var anView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
         if anView == nil {
             anView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             anView!.canShowCallout = true
@@ -401,7 +425,7 @@ extension CarBrowseViewController: MKMapViewDelegate {
             // set the size of the image - really??
             let size = CGSize(width: 22, height: 20)
             UIGraphicsBeginImageContext(size)
-            pinImage!.drawInRect(CGRectMake(0, 0, size.width, size.height))
+            pinImage!.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             anView!.image = resizedImage
@@ -411,14 +435,14 @@ extension CarBrowseViewController: MKMapViewDelegate {
         return anView
     }
     
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if view.annotation is CarData {
             let carPicked = view.annotation as! CarData
             
             var count = 0
             for car in carData {
                 if carPicked.deviceID == car.deviceID {
-                    tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: count, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+                    tableView.scrollToRow(at: IndexPath(row: count, section: 0), at: UITableViewScrollPosition.top, animated: true)
                 } else {
                     count += 1
                 }
@@ -431,7 +455,7 @@ extension CarBrowseViewController: MKMapViewDelegate {
 extension CarBrowseViewController: CLLocationManagerDelegate {
     
     // needed to show the user location in map
-    func locationManager(manager: CLLocationManager,
+    func locationManager(_ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]) {
             
             let location = locations.last
@@ -454,24 +478,24 @@ extension CarBrowseViewController: CLLocationManagerDelegate {
             getCars(center)
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Errors: " + error.localizedDescription)
     }
 }
 
 extension CarBrowseViewController: UIPickerViewDelegate {
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return pickerData[row] as String
     }
 }
 
 extension CarBrowseViewController: UIPickerViewDataSource {
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return pickerData.count
     }
 }
