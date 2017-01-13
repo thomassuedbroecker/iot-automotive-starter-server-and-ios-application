@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "106D1BBDF655D116329651B6A93908B80201B10C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "106D1BBDF655D116329651B6A93908B80201B10C" : 0,
+    "056959F1DBA0EDF39021D95A2DDF2CEFF637136D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C086935B-8940-4ED0-BF47-533CCFFC130F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "106D1BBDF655D116329651B6A93908B80201B10C" : "IoT-Automotive-mobileApp-swift\/",
+    "056959F1DBA0EDF39021D95A2DDF2CEFF637136D" : "IoT-Automotive-mobileApp-swift\/Moscapsule\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MobileStarterApp",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MobileStarterApp.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/flightonary\/Moscapsule.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "056959F1DBA0EDF39021D95A2DDF2CEFF637136D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.ibm.com:Watson-IoT\/IoT-Automotive-mobileApp-swift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "106D1BBDF655D116329651B6A93908B80201B10C"
+    }
+  ]
+}
