@@ -9,6 +9,6 @@ echo "-> Start Setup IoT for Automotive Sample"
 echo "-> Start creating the Bluemix Services"
 ./deploy_create_services.sh
 echo "-> Start deploy the CF App to Bluemix"
-./push_and_log.sh
+./push-setup.sh
 
 echo "--> Setup IoT for Automotive Sample - DONE!"

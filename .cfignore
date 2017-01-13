@@ -1,3 +1,5 @@
 /node_modules/
 /.git/
 /.settings/
+/mobile-app-ios-carsharing/
+/docs/

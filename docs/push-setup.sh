@@ -1,12 +1,12 @@
 #!/bin/bash
 # Information steps:
-# 1) chmod u+x push-and-log.sh
-# 2) ./push-and-log.sh
+# 1) chmod u+x push-setup.sh
+# 2) ./push-setup.sh
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 
 echo "--> Ensure to deploy into the right bluemix region"
-echo "-> Start"
+echo "-> Start setup"
 # cd ..
 # cf api https://api.eu-gb.bluemix.net
 # cf login
@@ -27,12 +27,27 @@ read -s password
 cd ..
 cf login -a $bluemix_api -u $user -p $password -o $organization_name -s $space_name
 
-echo "--> Starting push and log CF $application_name"
+echo "--> Starting push $application_name"
 cf spaces
 echo "****** show existing apps *********"
 cf apps
 echo "******* push to CF ********"
-cf push  $application_name
-echo "******* start CF logging ********"
-cf logs  $application_name
-echo "-> DONE!"
+cf push  $application_name --no-start
+echo "-> Setup DONE!"
+echo ""
+echo "Now you must:"
+echo ""
+echo "Activating the bluemix services"
+echo "Before you can use the application you must activate the Context Mapping and Driver Behavior services on Bluemix, as outlined in the following steps:"
+echo "Make sure that the app is not running on Bluemix."
+echo " 1-Open the Bluemix dashboard in your browser."
+echo " 2-Open the Context Mapping service and wait for a few seconds until your credentials display."
+echo " 3-Open the Driver Behavior service."
+echo ""
+echo "Did you finish this tasks: Y/N"
+read answer
+if [ answer = Y ]
+then
+   echo "OK fine, now you are ready to do the next step!"
+   echo "-> Setup done"
+fi

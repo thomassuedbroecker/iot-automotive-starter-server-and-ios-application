@@ -1,21 +1,26 @@
 # IBM IoT for Automotive - Mobility Starter Application server
 
-The IBM IoT for Automotive - Mobility Starter Application is a demo app that uses the **Watson IoT Platform**, **Context Mapping**, **Driver Behavior**, and other services on **IBM Bluemix** to help you to quickly build a smart car sharing automotive solution.
+The IBM IoT for Automotive - Mobility Starter Application is a demo app that uses:
+
+1. **Watson IoT Platform**
+2. **Context Mapping**
+3. **Driver Behavior**
+4. other services on **IBM Bluemix** to help you to quickly build a smart car sharing automotive solution.
 
 ## Overview
 
-The starter app provides a mobile app for customers to quickly find and hire a car without human intervention from a car-hire company. The server component provides features that can help car hire companies manage a pool of cars and to get insights into customer usage and requirements that can also help to attract and retain customers. 
+The starter app provides a mobile app for customers to quickly find and hire a car without human intervention from a car-hire company. The server component provides features that can help car hire companies manage a pool of cars and to get insights into customer usage and requirements that can also help to attract and retain customers.
 
-## Server component 
+## Server component
 
 The server component provides the back-end car sharing and system monitoring services. Car-hire companies can use the server component features to do the following car-hire operations tasks:
 
-- Monitor the location of all cars in the hire pool on a GIS map
+- Monitor the location of all cars in the hire pool on a [Geographic Information System (GIS) map](https://en.wikipedia.org/wiki/Geographic_information_system)
 - View detailed information about each vehicle and its current status
 - View and manage customer information
-- Evaluate and score customer driving behavior 
+- Evaluate and score customer driving behavior
 
-### Mobile app 
+### Mobile app
 
 Customers who want to hire a car can use the Mobility Starter Application mobile app to search for available cars that are nearby, reserve a car, unlock the car, and then start driving the car. While you drive the car, the service tracks your location and also records your driving behavior. When you reach your driving destination, you can view information about each trip that you took in the car and you can also view your driving behavior score. You can also see how this new type of service generates vehicle data that helps automotive companies attract and retain customers.
 
@@ -44,7 +49,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
 3. Clone the Mobility Starter Application app to your local environment by using the following Terminal command:
 
   ```
-  git clone https://github.com/ibm-watson-iot/iota-starter-server.git
+  git clone https://hub.jazz.net/project/thomas.suedbroecker/iota-starter-server-tsuedbro/overview
   ```
 4. Change to the directory that you just created.
 
@@ -97,7 +102,7 @@ You now have your very own instance of the IoT for Automotive - Mobility Starter
 To run the car sharing Mobility Starter Application you need to install the mobile app and connect it to your server instance. You must also activate the IoT for Automotive services on Bluemix that you created earlier when you deployed your server instance and then complete the optional configuration steps.
 
 
-## <a name="deploy_mobile_app"></a>Deploying the mobile app
+## Deploying the mobile app
 
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
 
@@ -110,7 +115,7 @@ To play a demo of the app, see the [Starter Experience home page](https://iot-au
 
 Before you can use the application you must activate the **Context Mapping** and **Driver Behavior** services on Bluemix, as outlined in the following steps:
 
-1. Make sure that the app is not running on Bluemix. 
+1. Make sure that the app is not running on Bluemix.
 
 2. Open the [Bluemix dashboard][bluemix_dashboard_url] in your browser.
 
@@ -189,7 +194,7 @@ When you start your mobile app, you might see some simulated cars plotted at the
 
 ### Disabling the simulation engine
 
-Your physical devices can coexist with the simulated cars in the app. You can disable the simulated cars if you prefer. 
+Your physical devices can coexist with the simulated cars in the app. You can disable the simulated cars if you prefer.
 
 1. Go to your [Bluemix dashboard][bluemix_dashboard_url] and open the app.
 
@@ -242,8 +247,8 @@ To simplify configuration and retrieve the credentials, you can use the followin
 ```
 GET /user/device/credentials/:deviceId
 ```
-**Notes:** 
-- To call the API from your device, you must disable the Mobile Client Access service. 
+**Notes:**
+- To call the API from your device, you must disable the Mobile Client Access service.
 - The **deviceId** value is the ID that is assigned to the device. If you did not register your device by using the above step, the API will register your device automatically with the specified ID and returns the credentials for the device. In this case, the default car values, for example name, photo, and car model, are assigned automatically. The default name is __User owned car__.
 
 ### Modifying car details
