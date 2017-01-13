@@ -7,7 +7,7 @@
 
 user="thomas.suedbroecker.2@de.ibm.com"
 # bluemix_api="https://api.eu-gb.bluemix.net"
-bluemix_api="https:///api.ng.bluemix.net"
+bluemix_api="https://api.ng.bluemix.net"
 organization_name="thomas.suedbroecker.2@de.ibm.com"
 # space_name="01_DEMO"
 space_name="01_development"
