@@ -31,21 +31,25 @@ if(!BM_APPLICATION_ID)
 
 //global USER_PROVIDED VCAP_SERVICES contains additional vcap_services
 USER_PROVIDED_VCAP_SERVICES = JSON.parse(process.env.USER_PROVIDED_VCAP_SERVICES || '{}');
+console.log(">> USER_PROVIDED_VCAP_SERVICES: ", USER_PROVIDED_VCAP_SERVICES);
 
 //There are many useful environment variables available in process.env.
 //global VCAP_APPLICATION contains useful information about a deployed application.
 VCAP_APPLICATION = JSON.parse(process.env.VCAP_APPLICATION || '{}');
+console.log(">> VCAP_APPLICATION: ", VCAP_APPLICATION);
+
 //global VCAP_SERVICES contains all the credentials of services bound to
 //this application. For details of its content, please refer to
 //the document or sample of each service.
-VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES || '{}')
+VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES || '{}');
+console.log(">> VCAP_SERVICES: ", VCAP_SERVICES);
 
 /*
  * List DEMO-related user defined environment variables
  */
 // true not to use simulated car devices
 //DISABLE_DEMO_CAR_DEVICES = process.env.DISABLE_DEMO_CAR_DEVICES // _app.js
-// false to skip MCA authentication and act as "demo user" 
+// false to skip MCA authentication and act as "demo user"
 //MCA_AUTHENTICATION = process.env.MCA_AUTHENTICATION // routes/user/auth.js
 
 
@@ -134,7 +138,7 @@ app.use(function(req, res, next){
 //		console.error('accepted due to no referrer');
 		return next();
 	}
-	
+
 	referrer = referrer.toLowerCase();
 	for(var i=0; i<appEnv.urls.length; i++){
 		var url = appEnv.urls[i].toLowerCase();
@@ -142,7 +146,7 @@ app.use(function(req, res, next){
 //			console.error('accepted as the server name matched');
 			return next(); // accept
 	}
-	
+
 	if(req.method === 'GET' && req.path){
 		// allow link to the top page
 		if(req.path === '/') return next();
@@ -150,7 +154,7 @@ app.use(function(req, res, next){
 		// allow direct link to images, esp. QR code
 		if(req.path.startsWith('/admin/qr/')) return next();
 	}
-	
+
 	//reject
 	console.error('Rejected request as the referrer [%s] does not match to any server URLs.', referrer);
 	res.status(403).send('Unauthorized');
@@ -244,7 +248,7 @@ function onListening() {
 	var addr = app.server.address();
 	var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 	console.log('Server listening on ' + bind);
-	
+
 	// start DEMO-related activities
 	require("./_app.js");
 }
