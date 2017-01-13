@@ -14,13 +14,4 @@ chmod u+x push-and-log.sh
 chmod u+x restage-and-log.sh
 chmod u+x start-sample.sh
 
-echo "--> Init extra scripts"
-echo "--> ../public/bin"
-cd ..
-cd public/bin
-
-chmod u+x browserify.sh
-# chmod u+x start-selenium.sh
-# chmod u+x watchify.sh
-
 echo "--> Init bash scripts - Done!"

@@ -7,13 +7,13 @@
 
 echo "--> Ensure to deploy into the right bluemix region"
 echo "-> Start"
-# cd ..
-# cf api https://api.eu-gb.bluemix.net
-# cf login
+
 user="thomas.suedbroecker.2@de.ibm.com"
-bluemix_api="https://api.eu-gb.bluemix.net"
+# bluemix_api="https://api.eu-gb.bluemix.net"
+bluemix_api="https:///api.ng.bluemix.net"
 organization_name="thomas.suedbroecker.2@de.ibm.com"
-space_name="01_DEMO"
+# space_name="01_DEMO"
+space_name="01_development"
 application_name="iot-automotive-starter-tsuedbro"
 
 echo "User: '$user' API: '$bluemix_api'"
