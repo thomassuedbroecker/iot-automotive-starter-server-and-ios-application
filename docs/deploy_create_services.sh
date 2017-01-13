@@ -13,7 +13,7 @@ organization_name="thomas.suedbroecker.2@de.ibm.com"
 space_name="01_development"
 application_name="iot-automotive-starter-tsuedbro"
 
-cho "User: '$user' API: '$bluemix_api'"
+echo "User: '$user' API: '$bluemix_api'"
 echo "Organization: '$organization_name'"
 echo "Space: '$space_name'"
 
