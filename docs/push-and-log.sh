@@ -11,7 +11,7 @@ echo "--> Ensure to deploy into the right bluemix region"
 # cf login
 user="thomas.suedbroecker.2@de.ibm.com"
 bluemix_api="https://api.eu-gb.bluemix.net"
-organization_name="01_Demo"
+organization_name="01_DEMO"
 space_name="thomas.suedbroecker.2@de.ibm.com"
 application_name="iot-automotive-starter-tsuedbro"
 
