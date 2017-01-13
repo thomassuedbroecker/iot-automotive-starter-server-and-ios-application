@@ -1,32 +1,32 @@
 declared-services:
-  IoTPlatform:
+  iota-IoTPlatform:
     label: iotf-service
     plan: iotf-service-free
-  MobilityDB:
+  iota-MobilityDB:
     label: cloudantNoSQLDB
     plan: Lite
-  ContextMapping:
+  iota-ContextMapping:
     label: mapinsights
     plan: free
-  DriverBehavior:
+  iota-DriverBehavior:
     label: driverinsights
     plan: free
-  WeatherInsights:
+  iota-WeatherInsights:
     label: weatherinsights
     plan: Free-v2
 
 applications:
   - services:
-      - IoTPlatform
-      - MobilityDB
-      - ContextMapping
-      - DriverBehavior
-      - WeatherInsights
+      - iota-IoTPlatform
+      - iota-MobilityDB
+      - iota-ContextMapping
+      - iota-DriverBehavior
+      - iota-WeatherInsights
     disk_quota: 1024M
-#    host: iot-automotive-starter
+    host: iot-automotive-starter-tsuedbro
     name: iot-automotive-starter-tsuedbro
     path: .
     instances: 1
     memory: 640M
     iotWbManagedServices:
-      - MobilityDB
+      - iota-MobilityDB

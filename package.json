@@ -1,7 +1,7 @@
 {
     "name": "iota-starter-server-tsuedbro",
     "version": "1.3.2",
-    "description": "IoT for Automotive Starter Application Server",
+    "description": "IoT for Automotive Starter Application Server tsuedbro",
     "scripts": {
         "start": "node app.js"
     },
@@ -36,7 +36,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ibm-watson-iot/iota-starter-server.git"
+        "url": "https://github.com/thomassuedbroecker/iota-starter-server-tsuedbro.git"
     },
     "license": "SEE LICENSE IN LICENSE"
 }
