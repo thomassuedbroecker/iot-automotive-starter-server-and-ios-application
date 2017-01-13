@@ -42,9 +42,9 @@ echo "-> Bluemix Services: Backend Server Related - DONE!"
 
 echo "-> Bluemix Services: MobileApp Related"
 echo "-> AdvancedMobileAccess"
-#cf create-service AdvancedMobileAccess Gold  iotf-AdvancedMobileAccess
+cf create-service AdvancedMobileAccess Gold  iotf-AdvancedMobileAccess
 echo "-> imfpush"
-#cf create-service imfpush Basic  iotf-PushNotifications
+cf create-service imfpush Basic  iotf-PushNotifications
 echo "-> Bluemix Services: MobileApp Related - DONE!"
 
 echo "--> Create Bluemix Service - DONE!"

@@ -41,9 +41,9 @@ echo "->Set ADMIN USER and PASSWORD"
 cf set-env $application_name ADMIN_USER admin
 cf set-env $application_name ADMIN_PASSWORD rational
 echo "->Disable MCA_AUTHENTICATION"
-cf set-env MCA_AUTHENTICATION false
+cf set-env $application_name MCA_AUTHENTICATION false
 echo "->Do not enable DISABLE_DEMO_CAR_DEVICES"
-cf set-env DISABLE_DEMO_CAR_DEVICES false
+cf set-env $application_name DISABLE_DEMO_CAR_DEVICES false
 echo ""
 echo "***************"
 echo "Now you must:"

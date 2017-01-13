@@ -19,7 +19,10 @@ let USER_DEFAULTS_KEY_MCA_TENANT_ID = "mcaTenantId"
 
 struct API {
     static var moveToRootOnError = true
-    static let defaultAppURL = "https://iot-automotive-starter-tsuedbro.eu-gb.mybluemix.net" // My Bluemix URL
+    // Set My Bluemix URL
+    // ****
+    static let defaultAppURL = "https://iot-automotive-starter-tsuedbro.mybluemix.net" // My Bluemix URL
+    // ****
     static let defaultPushAppGUID = ""
     static let defaultPushClientSecret = ""
     static let defaultMcaTenantId = ""
