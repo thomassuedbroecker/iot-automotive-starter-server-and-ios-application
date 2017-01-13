@@ -94,6 +94,7 @@
 		61F9494D1D2591C900AF5CF7 /* UserOwnedCarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserOwnedCarViewController.swift; sourceTree = "<group>"; };
 		705AC6F01D0ACFFC002C24C4 /* NotificationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationUtils.swift; sourceTree = "<group>"; };
 		7061C2F61DB612030041006E /* LicenseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseViewController.swift; sourceTree = "<group>"; };
+		7AA1D9261E293D5D006632C1 /* MobilityStarterApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MobilityStarterApp.entitlements; sourceTree = "<group>"; };
 		8012086A1D2A570C00E552EE /* ReservationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReservationUtils.swift; path = MobileStarterApp/ReservationUtils.swift; sourceTree = "<group>"; };
 		807D2A381D118A35001FBDD6 /* CustomAuthDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAuthDelegate.swift; sourceTree = "<group>"; };
 		80C148FC1D47781C009FEBB8 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -178,6 +179,7 @@
 		0C58966A1C7E1CC8003CF841 = {
 			isa = PBXGroup;
 			children = (
+				7AA1D9261E293D5D006632C1 /* MobilityStarterApp.entitlements */,
 				DEE521B91D9B62FD0062F1E5 /* LICENSE */,
 				0C08BFFD1CEBBABF00A3D49C /* CLA.md */,
 				0C08BFFB1CEB9E0600A3D49C /* README.md */,
@@ -295,6 +297,9 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -516,13 +521,15 @@
 			baseConfigurationReference = 926152C1835324B31CA17C96 /* Pods-MobilityStarterApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MobilityStarterApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = P9M2BHXPN4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileStarterApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.iot.automotive.starter.carsharing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tsuedbro.iot.automotive.starter.carsharing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -536,13 +543,15 @@
 			baseConfigurationReference = B856EBD2E12765539912014C /* Pods-MobilityStarterApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MobilityStarterApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = P9M2BHXPN4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileStarterApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ibm.iot.automotive.starter.carsharing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tsuedbro.iot.automotive.starter.carsharing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";

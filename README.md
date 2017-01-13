@@ -143,6 +143,15 @@ You can enable push notifications when the weather at the drop off time of your 
 
 8. Register your Apple Push Notification Service certificate as outlined in [Configuring credentials for Apple Push Notifications](https://console.ng.bluemix.net/docs/services/mobilepush/t_push_provider_ios.html).
 
+9. iOS related: Please configure in the app.swift file variables based on your Bluemix Services
+```
+     static let defaultAppURL = ""           // Your Bluemix Application URL
+     static let defaultPushAppGUID = ""      // Your PushNotifications Service
+     static let defaultPushClientSecret = "" // Your PushNotifications Service
+     static let defaultMcaTenantId = ""      //  Your AdvancedMobileAccess Service
+     static var bmRegion = BMSClient.Region.usSouth
+     static var customRealm = "custauth"
+```
 
 ### (Optional) Setting up the Mobile Client Access service
 

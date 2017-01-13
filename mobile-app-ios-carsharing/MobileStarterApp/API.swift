@@ -19,13 +19,11 @@ let USER_DEFAULTS_KEY_MCA_TENANT_ID = "mcaTenantId"
 
 struct API {
     static var moveToRootOnError = true
-    // Set My Bluemix URL
-    // ****
+    // Set your varibales
     static let defaultAppURL = "https://iot-automotive-starter-tsuedbro.mybluemix.net" // My Bluemix URL
-    // ****
-    static let defaultPushAppGUID = ""
-    static let defaultPushClientSecret = ""
-    static let defaultMcaTenantId = ""
+    static let defaultPushAppGUID = "002fee1a-71ed-4531-a602-3b3a97602b2a"      // PushNotifications Service
+    static let defaultPushClientSecret = "a1c164d3-2bae-46fc-be96-cf3551b50522" // PushNotifications Service
+    static let defaultMcaTenantId = "26818fe8-b490-4773-934c-5dc3f3da331f"      // AdvancedMobileAccess Service
     static var bmRegion = BMSClient.Region.usSouth
     static var customRealm = "custauth"
 
@@ -103,7 +101,7 @@ struct API {
             BMSClient.sharedInstance.authorizationManager = mcaAuthManager
             delegateCustomAuthHandler()
             // uncomment the next line if make that login is always necessary after restart this application
-            // MCAAuthorizationManager.sharedInstance.logout(nil)
+            MCAAuthorizationManager.sharedInstance.logout(nil)
         } else {
             print("non-MCA server")
         }
