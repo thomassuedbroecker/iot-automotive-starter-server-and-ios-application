@@ -48,7 +48,7 @@ console.log(">> VCAP_SERVICES: ", VCAP_SERVICES);
  * List DEMO-related user defined environment variables
  */
 // true not to use simulated car devices
-//DISABLE_DEMO_CAR_DEVICES = process.env.DISABLE_DEMO_CAR_DEVICES // _app.js
+DISABLE_DEMO_CAR_DEVICES = process.env.DISABLE_DEMO_CAR_DEVICES; // _app.js
 // false to skip MCA authentication and act as "demo user"
 MCA_AUTHENTICATION = process.env.MCA_AUTHENTICATION; // routes/user/auth.js
 

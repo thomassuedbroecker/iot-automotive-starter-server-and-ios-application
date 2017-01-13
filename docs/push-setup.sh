@@ -31,10 +31,21 @@ echo "--> Starting push $application_name"
 cf spaces
 echo "****** show existing apps *********"
 cf apps
-echo "******* push to CF ********"
+echo "******* push $application_name to Bluemix ********"
 cf push  $application_name --no-start
-echo "-> Setup DONE!"
+echo "******* Create Custom Environment Variable ********"
+echo "->Set ADMIN USER and PASSWOR"
+cf set-env $application_name ADMIN_USER admin
+cf set-env $application_name ADMIN_PASSWORD rational
+echo "->Set ADMIN USER and PASSWORD"
+cf set-env $application_name ADMIN_USER admin
+cf set-env $application_name ADMIN_PASSWORD rational
+echo "->Disable MCA_AUTHENTICATION"
+cf set-env MCA_AUTHENTICATION false
+echo "->Do not enable DISABLE_DEMO_CAR_DEVICES"
+cf set-env DISABLE_DEMO_CAR_DEVICES false
 echo ""
+echo "***************"
 echo "Now you must:"
 echo ""
 echo "Activating the bluemix services"
@@ -46,8 +57,14 @@ echo " 3-Open the Driver Behavior service."
 echo ""
 echo "Did you finish this tasks: Y/N"
 read answer
-if [ answer = Y ]
+if [ $answer == 'Y' ]
 then
    echo "OK fine, now you are ready to do the next step!"
-   echo "-> Setup done"
+   echo "******* restage $application_name ********"
+   cf restage  $application_name
+   echo "-> DONE!"
+   echo "-> First Setup is DONE!"
+   echo "-> There are remaining steps to do!"
+else
+  echo "-> Setup FAILED!"
 fi

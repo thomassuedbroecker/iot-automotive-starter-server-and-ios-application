@@ -22,11 +22,13 @@ applications:
       - iotf-ContextMapping
       - iotf-DriverBehavior
       - iotf-WeatherInsights
+      - iotf-PushNotifications
+      - iotf-AdvancedMobileAccess
     disk_quota: 1024M
     host: iot-automotive-starter-tsuedbro
     name: iot-automotive-starter-tsuedbro
     path: .
     instances: 1
-    memory: 640M
+    memory: 1024M
     iotWbManagedServices:
       - iotf-MobilityDB

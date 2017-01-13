@@ -20,6 +20,7 @@ var appEnv = require("cfenv").getAppEnv();
 
 if(process.env.MCA_AUTHENTICATION === "true"){
 	var MCABackendStrategy = require('bms-mca-token-validation-strategy').MCABackendStrategy;
+	console.log(">> Using MCA_AUTHENTICATION", MCABackendStrategy);
 	passport.use(new MCABackendStrategy());
 }
 
@@ -98,4 +99,3 @@ router.get('/logout', function (req, res){
 	else
 		return res.send("logged out");
 });
-
