@@ -50,7 +50,7 @@ console.log(">> VCAP_SERVICES: ", VCAP_SERVICES);
 // true not to use simulated car devices
 //DISABLE_DEMO_CAR_DEVICES = process.env.DISABLE_DEMO_CAR_DEVICES // _app.js
 // false to skip MCA authentication and act as "demo user"
-//MCA_AUTHENTICATION = process.env.MCA_AUTHENTICATION // routes/user/auth.js
+MCA_AUTHENTICATION = process.env.MCA_AUTHENTICATION; // routes/user/auth.js
 
 
 //global error handling function to dumpError referred by device simulation engine.
