@@ -78,27 +78,27 @@ To manually deploy your own instance of the Mobility Starter Application server 
 
 7. Edit the `docs/bm-push-and-log.sh`, `docs/bm-push-setup.sh`, `docs/bm-restage-and-log.sh` and `docs/bm-deploy_create_services`  files and change the values of `<bluemix-id>`, `<bluemix-organization-name>`, `<bluemix-space-name>` and `<bluemix-application-name>` to your needs.
 
-   ```javascript
+    ```javascript
       user="<bluemix-id>"
       # bluemix_api="https://api.eu-gb.bluemix.net"
       bluemix_api="https://api.ng.bluemix.net"
       organization_name="<bluemix-organization-name>"
       space_name="<bluemix-space-name>"
       application_name="<bluemix-application-name>"
-   ```
+    ```
 
 8. By using the command line to enable the bash scripts for execution.
 
-   ```sh
-   $ cd docs
-   $ chmod u+x init-bash-scripts.sh
-   $ ./init-bash-scripts.sh
-   ```
-
-9. Using the command line to run the bash setup. Follow the written instructions during the execution.
-
     ```sh
     $ cd docs
+    $ chmod u+x init-bash-scripts.sh
+    $ ./init-bash-scripts.sh
+    ```
+
+9. Using the command line to run the bash setup. Follow the written instructions during the execution, by the execution of the **./init-sample-bluemix-cf-application.sh** file.
+
+    **a) Creating the Bluemix Services**   
+    ```sh
     $ ./init-sample-bluemix-cf-application.sh
     $ --> This script will create the needed Bluemix Services and the Bluemix CF Node JS Application
     $ -> Start Setup IoT for Automotive Sample
@@ -106,13 +106,19 @@ To manually deploy your own instance of the Mobility Starter Application server 
     ...
     $ Insert your password:
     $ *******
-    ...
     $ --> Create Bluemix Service - DONE!
-    $ --> Ensure to deploy into the right bluemix region
+    ```
+    **b) the script continue with creating the Bluemix Application**
+    ```sh
+    ...
     $ -> Start setup
     ...
     $ Insert your password:
     $ *******
+    ```
+
+    **c) now the script continue with creating custom environment variables**
+    ```sh
     ...
     $ ->Set ADMIN USER and PASSWORD
     $ ->Choose a administration user:
@@ -120,14 +126,23 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $ ->Choose a administration user password:
     ADMIN
     $ ->***************
+    ```
+
+    **c) now the script continue with creating custom environment variables**
+    ```sh
     $ ->Now you must:
     $
     $ Activating the bluemix services
     $ Before you can use the application you must activate the Context Mapping and Driver Behavior services on Bluemix, as outlined in the following steps:
-    $  Make sure that the app is not running on Bluemix.
-    $   1-Open the Bluemix dashboard in your browser.
-    $   2-Open the Context Mapping service and wait for a few seconds until your credentials display.
-    $   3-Open the Driver Behavior service.
+    $   Step 0: Make sure that the app is not running on Bluemix. (PRESS RETURN)
+    $   Step 1: Open the Bluemix dashboard in your browser. (PRESS RETURN)
+    $   Step 2: Open the 'Context Mapping' service and wait for a few seconds until your credentials display. (PRESS RETURN)
+    $   Step 3: Open the 'Driver Behavior' service and wait for a few seconds until your credentials display. (PRESS RETURN)
+    $   Step 4: Start the Bluemix Application inside Bluemix. (PRESS RETURN)
+    ```
+
+    **d) Restage the Bluemix Application**
+    ```sh
     $  
     $  Did you finish this tasks: Y/N
     $  Y

@@ -49,11 +49,18 @@ echo "*****************************************************"
 echo "Now you must:"
 echo ""
 echo "Activating the bluemix services"
+echp "==============================="
 echo "Before you can use the application you must activate the Context Mapping and Driver Behavior services on Bluemix, as outlined in the following steps:"
-echo "Make sure that the app is not running on Bluemix."
-echo " 1-Open the Bluemix dashboard in your browser."
-echo " 2-Open the Context Mapping service and wait for a few seconds until your credentials display."
-echo " 3-Open the Driver Behavior service."
+echo " Step 0: Make sure that the app is not running on Bluemix. (PRESS RETURN)"
+read return
+echo " Step 1: Open the Bluemix dashboard in your browser.(PRESS RETURN)"
+read return
+echo " Step 2: Open the Context Mapping service and wait for a few seconds until your credentials display.(PRESS RETURN)"
+read return
+echo " Step 3: Open the Driver Behavior service.(PRESS RETURN)"
+read return
+echo " Step 4: Start the Bluemix application inside your Bluemix dashboard.(PRESS RETURN)"
+read return
 echo ""
 echo "Did you finish this tasks: Y/N"
 read answer
