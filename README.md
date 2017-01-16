@@ -135,7 +135,8 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $  -> First Setup is DONE!
     $  -> There are remaining steps to do!
     ```
-## Alternative the manual steps
+
+## Alternative do these manual steps
 
 1. Create an instance of Watson IoT Platform, Context Mapping, and Driver Behavior services on Bluemix.
 
@@ -208,7 +209,7 @@ Before you can use the application you must activate the **Context Mapping** and
 
 4. Open the **Driver Behavior** service.
 
-### (Optional) Set up the Push Notifications service
+### Manual setup the Push Notifications service
 
 You can enable push notifications when the weather at the drop off time of your car reservation becomes bad. Complete the following steps to enable push notifications:
 
@@ -228,17 +229,8 @@ You can enable push notifications when the weather at the drop off time of your 
 
 8. Register your Apple Push Notification Service certificate as outlined in [Configuring credentials for Apple Push Notifications](https://console.ng.bluemix.net/docs/services/mobilepush/t_push_provider_ios.html).
 
-9. iOS related: Please configure in the app.swift file variables based on your Bluemix Services
-```
-     static let defaultAppURL = ""           // Your Bluemix Application URL
-     static let defaultPushAppGUID = ""      // Your PushNotifications Service
-     static let defaultPushClientSecret = "" // Your PushNotifications Service
-     static let defaultMcaTenantId = ""      //  Your AdvancedMobileAccess Service
-     static var bmRegion = BMSClient.Region.usSouth
-     static var customRealm = "custauth"
-```
 
-### (Optional) Setting up the Mobile Client Access service
+### Manual setup of the Mobile Client Access service
 
 The Mobililty Starter Application provides a simple custom authentication service that you can optionally use. To use the service, configure the Mobile Client Access service for Bluemix and enable the authentication.
 
