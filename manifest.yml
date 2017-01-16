@@ -17,13 +17,13 @@ declared-services:
 
 applications:
   - services:
-      - iotf-IoTPlatform
-      - iotf-MobilityDB
-      - iotf-ContextMapping
-      - iotf-DriverBehavior
-      - iotf-WeatherInsights
-      - iotf-PushNotifications
-      - iotf-AdvancedMobileAccess
+      - iot-automotive-IoTPlatform
+      - iot-automotive-MobilityDB
+      - iot-automotive-ContextMapping
+      - iot-automotive-DriverBehavior
+      - iot-automotive-WeatherInsights
+      - iot-automotive-PushNotifications
+      - iot-automotive-AdvancedMobileAccess
     disk_quota: 1024M
     host: <host>
     name: <name>

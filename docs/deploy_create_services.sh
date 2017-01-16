@@ -29,22 +29,22 @@ echo "--> Start - Create Bluemix Service"
 
 echo "-> Bluemix Services: Backend Server Related"
 echo "-> iotf-service "
-cf create-service iotf-service iotf-service-free iotf-IoTPlatform
+cf create-service iotf-service iotf-service-free iot-automotive-IoTPlatform
 echo "-> cloudantNoSQLDB "
-cf create-service cloudantNoSQLDB Lite  iotf-MobilityDB
+cf create-service cloudantNoSQLDB Lite  iot-automotive-MobilityDB
 echo "-> mapinsights "
-cf create-service mapinsights free  iotf-ContextMapping
+cf create-service mapinsights free  iot-automotive-ContextMapping
 echo "-> driverinsights "
-cf create-service driverinsights free  iotf-DriverBehavior
+cf create-service driverinsights free  iot-automotive-DriverBehavior
 echo "-> weatherinsights "
 cf create-service weatherinsights Free-v2  iotf-WeatherInsights
 echo "-> Bluemix Services: Backend Server Related - DONE!"
 
 echo "-> Bluemix Services: MobileApp Related"
 echo "-> AdvancedMobileAccess"
-cf create-service AdvancedMobileAccess Gold  iotf-AdvancedMobileAccess
+cf create-service AdvancedMobileAccess Gold  iot-automotive-AdvancedMobileAccess
 echo "-> imfpush"
-cf create-service imfpush Basic  iotf-PushNotifications
+cf create-service imfpush Basic  iot-automotive-PushNotifications
 echo "-> Bluemix Services: MobileApp Related - DONE!"
 
 echo "--> Create Bluemix Service - DONE!"

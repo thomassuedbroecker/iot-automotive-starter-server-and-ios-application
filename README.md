@@ -180,7 +180,7 @@ This will open the xCode workspace.
   ```sh
   $ ./setup-ios-mobile-app.sh
   ```
-To configure the **PUSH** you need to change the bundle ID **com.ibm.iot.automotive.starter.carsharing** to your needs and you need the two Mobile Services "PushNotifications and Mobile Client Access" connected to your server application.
+To configure the **PUSH** you need to change the bundle ID **com.ibm.iot.automotive.starter.carsharing** to your needs and you need the two Mobile Services **"PushNotifications and Mobile Client Access"** connected to your server application.
 
 Also you need to change **ConnectedDriverAPI/API.swift** file variables based on your Bluemix Services
   ```
