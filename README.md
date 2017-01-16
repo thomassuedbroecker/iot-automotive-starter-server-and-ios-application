@@ -164,16 +164,16 @@ You **MUST** also activate the IoT for Automotive services on Bluemix that you c
 
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
 
-I this project the iOS Mobile code is in this project in the folder
-**mobile-app-ios-carsharing** .
+I this project the iOS Mobile App code is in this _github-project_, in the folder
+**./mobile-app-ios-carsharing** .
 
 To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
 
 Later you will enable push notifications when the weather at the drop off time of your car reservation becomes bad.
 
-The Mobililty Starter Application provides a simple custom authentication service that you use here.
+The **Mobililty Starter Application** provides a simple custom authentication service that you use here.
 
-_First we need to configure the Mobile Client Access service:_
+_First we need to configure the **Mobile Client Access** service:_
 
 1. Open the Mobile Client Access service that you just created.
 
