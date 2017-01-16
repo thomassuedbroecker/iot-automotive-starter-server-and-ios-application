@@ -87,7 +87,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
       application_name="<bluemix-application-name>"
    ```
 
-6. By using the command line to enable the bash scripts for execution.
+8. By using the command line to enable the bash scripts for execution.
 
    ```sh
    $ cd docs
@@ -95,7 +95,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
    $ ./init-bash-scripts.sh
    ```
 
-6. Using the command line to run the bash setup. Follow the written instructions during the execution.
+9. Using the command line to run the bash setup. Follow the written instructions during the execution.
 
     ```sh
     $ cd docs
@@ -135,25 +135,26 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $  -> First Setup is DONE!
     $  -> There are remaining steps to do!
     ```
+## Alternative the manual steps
 
-7. Create an instance of Watson IoT Platform, Context Mapping, and Driver Behavior services on Bluemix.
+1. Create an instance of Watson IoT Platform, Context Mapping, and Driver Behavior services on Bluemix.
 
-  ```
+  ```sh
   $ cf create-service iotf-service iotf-service-free IoTPlatform
   $ cf create-service mapinsights free ContextMapping
   $ cf create-service driverinsights free DriverBehavior
   ```
 
-8. Create an instance of the Cloudant NoSQL DB and the Weather Company Data services on Bluemix.
+2. Create an instance of the Cloudant NoSQL DB and the Weather Company Data services on Bluemix.
 
-  ```
+  ```sh
   $ cf create-service cloudantNoSQLDB Lite MobilityDB
   $ cf create-service weatherinsights Free-v2 WeatherInsights
   ```
 
-9. Push the app to Bluemix. As you will need to complete further steps when the app is deployed, be sure to use the **--no-start** argument by using the following push command:
+3. Push the app to Bluemix. As you will need to complete further steps when the app is deployed, be sure to use the **--no-start** argument by using the following push command:
 
-  ```
+  ```sh
   $ cf push --no-start
   ```
 
@@ -167,9 +168,32 @@ To run the car sharing Mobility Starter Application you need to install the mobi
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
 
 - To access the mobile app source code and deployment instructions for iOS, see [iota-starter-carsharing](https://github.com/ibm-watson-iot/iota-starter-carsharing).
-- To access the mobile app source code and deployment instructions for Android, see [iota-starter-carsharing-android](https://github.com/ibm-watson-iot/iota-starter-carsharing-android).
 
 To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
+
+I this project the iOS Mobile code is in this project.
+**mobile-app-ios-carsharing** .
+
+To setup the project you call the **docs/setup-ios-mobile-app.sh** from the commandline.
+This will open the xCode workspace.
+
+  ```sh
+  $ ./setup-ios-mobile-app.sh
+  ```
+To configure the **PUSH** you need to change the bundle ID **com.ibm.iot.automotive.starter.carsharing** to your needs.
+
+Also you need to change **ConnectedDriverAPI/API.swift** file variables based on your Bluemix Services
+  ```
+    static let defaultAppURL = ""                // Your Bluemix Application URL
+    static let defaultPushAppGUID = ""           // Your PushNotifications Service
+    static let defaultPushClientSecret = ""      // Your PushNotifications Service
+    static let defaultMcaTenantId = ""           // Your AdvancedMobileAccess Service
+    static var bmRegion = BMSClient.Region.usSouth
+    static var customRealm = "custauth"
+  ```
+Also follow the steps written here:
+
+[Setting up push notifications](https://github.com/ibm-watson-iot/iota-starter-carsharing#setting-up-push-notifications)
 
 ### Activating the services
 
