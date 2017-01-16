@@ -31,4 +31,4 @@ applications:
     instances: 1
     memory: 1024M
     iotWbManagedServices:
-      - iotf-MobilityDB
+      - iot-automotive-MobilityDB
