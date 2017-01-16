@@ -19,6 +19,6 @@ echo "--> Init Setup scripts"
 chmod u+x init-sample-bluemix-cf-application.sh
 
 echo "--> Init MobileApp script"
-chmod u+x setup-ios-mobile-app
+chmod u+x mobile-setup-ios-mobile-app.sh
 
 echo "--> Init bash scripts - Done!"
