@@ -10,10 +10,12 @@ chmod u+x git-setup-rebase.sh
 chmod u+x git-create-version.sh
 
 echo "--> Init Bluemix scripts"
-chmod u+x push-and-log.sh
-chmod u+x restage-and-log.sh
-chmod u+x deploy_create_services.sh
-chmod u+x push-setup.sh
+chmod u+x bm-push-and-log.sh
+chmod u+x bm-restage-and-log.sh
+chmod u+x bm-deploy_create_services.sh
+chmod u+x bm-push-setup.sh
+
+echo "--> Init Setup scripts"
 chmod u+x init-sample-bluemix-cf-application.sh
 
 echo "--> Init MobileApp script"

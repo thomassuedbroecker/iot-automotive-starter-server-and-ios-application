@@ -76,7 +76,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
      "version": "1.3.2",
    ```
 
-7. Edit the `docs/push-and-log.sh`, `docs/push-setup.sh`, `docs/restage-and-log.sh` and `docs/deploy_create_services`  files and change the values of `<bluemix-id>`, `<bluemix-organization-name>`, `<bluemix-space-name>` and `<bluemix-application-name>` to your needs.
+7. Edit the `docs/bm-push-and-log.sh`, `docs/bm-push-setup.sh`, `docs/bm-restage-and-log.sh` and `docs/bm-deploy_create_services`  files and change the values of `<bluemix-id>`, `<bluemix-organization-name>`, `<bluemix-space-name>` and `<bluemix-application-name>` to your needs.
 
    ```javascript
       user="<bluemix-id>"

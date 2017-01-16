@@ -1,17 +1,16 @@
 #!/bin/bash
 # Information steps:
-# 1) chmod u+x deploy_create_services.sh
-# 2) ./deploy_create_services.sh
+# 1) chmod u+x bm-deploy_create_services.sh
+# 2) ./bm-deploy_create_services.sh
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 
-user="thomas.suedbroecker.2@de.ibm.com"
+user="<bluemix-id>"
 # bluemix_api="https://api.eu-gb.bluemix.net"
 bluemix_api="https://api.ng.bluemix.net"
-organization_name="thomas.suedbroecker.2@de.ibm.com"
-# space_name="01_DEMO"
-space_name="01_development"
-application_name="iot-automotive-starter-tsuedbro"
+organization_name="<bluemix-organization-name>"
+space_name="<bluemix-space-name>"
+application_name="<bluemix-application-name>"
 
 echo "User: '$user' API: '$bluemix_api'"
 echo "Organization: '$organization_name'"

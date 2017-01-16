@@ -1,7 +1,7 @@
 #!/bin/bash
 # Information steps:
-# 1) chmod u+x push-setup.sh
-# 2) ./push-setup.sh
+# 1) chmod u+x bm-push-setup.sh
+# 2) ./bm-push-setup.sh
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 

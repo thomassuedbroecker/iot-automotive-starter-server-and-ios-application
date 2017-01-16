@@ -1,7 +1,7 @@
 #!/bin/bash
 # Information steps:
-# 1) chmod u+x restage-and-log.sh
-# 2) ./restage-and-log.sh
+# 1) chmod u+x bm-restage-and-log.sh
+# 2) ./bm-restage-and-log.sh
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 

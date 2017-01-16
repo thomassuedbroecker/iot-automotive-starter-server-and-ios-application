@@ -7,8 +7,8 @@ echo "--> This script will create the needed Bluemix Services and the Bluemix CF
 echo "-> Start Setup IoT for Automotive Sample"
 
 echo "-> Start creating the Bluemix Services"
-./deploy_create_services.sh
+./bm-deploy_create_services.sh
 echo "-> Start deploy the CF App to Bluemix"
-./push-setup.sh
+./bm-push-setup.sh
 
 echo "--> Setup IoT for Automotive Sample - DONE!"
