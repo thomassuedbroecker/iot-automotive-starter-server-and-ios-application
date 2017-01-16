@@ -151,46 +151,49 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $  -> There are remaining steps to do!
     ```
 
-## Alternative do these manual steps
-
-1. Create an instance of Watson IoT Platform, Context Mapping, and Driver Behavior services on Bluemix.
-
-  ```sh
-  $ cf create-service iotf-service iotf-service-free IoTPlatform
-  $ cf create-service mapinsights free ContextMapping
-  $ cf create-service driverinsights free DriverBehavior
-  ```
-
-2. Create an instance of the Cloudant NoSQL DB and the Weather Company Data services on Bluemix.
-
-  ```sh
-  $ cf create-service cloudantNoSQLDB Lite MobilityDB
-  $ cf create-service weatherinsights Free-v2 WeatherInsights
-  ```
-
-3. Push the app to Bluemix. As you will need to complete further steps when the app is deployed, be sure to use the **--no-start** argument by using the following push command:
-
-  ```sh
-  $ cf push --no-start
-  ```
-
 You now have your very own instance of the IoT for Automotive - Mobility Starter Application on Bluemix.  
 
 To run the car sharing Mobility Starter Application you need to install the mobile app and connect it to your server instance. You must also activate the IoT for Automotive services on Bluemix that you created earlier when you deployed your server instance and then complete the optional configuration steps.
 
 
-## Deploying the mobile app
+## Deploying the mobile app and enable the push-notifications
 
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
-
-- To access the mobile app source code and deployment instructions for iOS, see [iota-starter-carsharing](https://github.com/ibm-watson-iot/iota-starter-carsharing).
-
-To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
 
 I this project the iOS Mobile code is in this project.
 **mobile-app-ios-carsharing** .
 
-To setup the project you call the **docs/setup-ios-mobile-app.sh** from the commandline.
+To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
+
+Later you will enable push notifications when the weather at the drop off time of your car reservation becomes bad.
+
+The Mobililty Starter Application provides a simple custom authentication service that you use here.
+
+_First we need to configure the Mobile Client Access service:_
+
+1. Open the Mobile Client Access service that you just created.
+
+2. Under **_Custom_**, click **_Configure_**.
+
+3. Enter the following authentication credentials:
+-  __Realm name__ : `custauth`  
+-  __Custom Identity Provider Url__ : `https://<host>.mybluemix.net`
+
+4. Click **Save**.
+
+5. Go to your [Bluemix dashboard][bluemix_dashboard_url] and open the app.
+
+6. Click ** _Environment Variables_**.
+
+7. Click **USER-DEFINED**.
+
+8. Configure the following variable and then save it.  
+-  __Name__ : `MCA_AUTHENTICATION`  
+-  __Value__ : `true`
+
+_NOTE:_ For more details to you can take a look here: [Mobile Client Access service](https://github.com/ibm-watson-iot/iota-starter-carsharing#mobile-client-access-service)
+
+To setup the iOS project you call the **docs/setup-ios-mobile-app.sh** from the commandline.
 This will open the xCode workspace.
 
   ```sh
@@ -198,7 +201,8 @@ This will open the xCode workspace.
   ```
 To configure the **PUSH** you need to change the bundle ID **com.ibm.iot.automotive.starter.carsharing** to your needs and you need the two Mobile Services **"PushNotifications and Mobile Client Access"** connected to your server application.
 
-Also you need to change **ConnectedDriverAPI/API.swift** file variables based on your Bluemix Services
+Also you need to change **ConnectedDriverAPI/API.swift** file variables based on your Bluemix Services.
+
   ```
     static let defaultAppURL = ""                // Your Bluemix Application URL
     static let defaultPushAppGUID = ""           // Your PushNotifications Service
@@ -210,39 +214,6 @@ Also you need to change **ConnectedDriverAPI/API.swift** file variables based on
 Also follow the steps written here:
 
 1. [Setting up push notifications](https://github.com/ibm-watson-iot/iota-starter-carsharing#setting-up-push-notifications)
-2. [Mobile Client Access service](https://github.com/ibm-watson-iot/iota-starter-carsharing#mobile-client-access-service)
-
-### Activating the services
-
-Before you can use the application you must activate the **Context Mapping** and **Driver Behavior** services on Bluemix, as outlined in the following steps:
-
-1. Make sure that the app is not running on Bluemix.
-
-2. Open the [Bluemix dashboard][bluemix_dashboard_url] in your browser.
-
-3. Open the **Context Mapping** service and wait for a few seconds until your credentials display.
-
-4. Open the **Driver Behavior** service.
-
-### Manual setup the Push Notifications service
-
-You can enable push notifications when the weather at the drop off time of your car reservation becomes bad. Complete the following steps to enable push notifications:
-
-1. Start a browser and open the [Bluemix dashboard][bluemix_dashboard_url].
-
-2. Open the app that you created.
-
-3. Click **ADD A SERVICE OR API**.
-
-4. From the catalog, select **Push Notifications**.
-
-5. Click **CREATE**.
-
-6. Open the push notifications service that you just created.
-
-7. Click **Setup Push**.
-
-8. Register your Apple Push Notification Service certificate as outlined in [Configuring credentials for Apple Push Notifications](https://console.ng.bluemix.net/docs/services/mobilepush/t_push_provider_ios.html).
 
 
 ### Manual setup of the Mobile Client Access service
