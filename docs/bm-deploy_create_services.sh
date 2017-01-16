@@ -36,7 +36,7 @@ cf create-service mapinsights free  iot-automotive-ContextMapping
 echo "-> driverinsights "
 cf create-service driverinsights free  iot-automotive-DriverBehavior
 echo "-> weatherinsights "
-cf create-service weatherinsights Free-v2  iotf-WeatherInsights
+cf create-service weatherinsights Free-v2  iot-automotive-WeatherInsights
 echo "-> Bluemix Services: Backend Server Related - DONE!"
 
 echo "-> Bluemix Services: MobileApp Related"
