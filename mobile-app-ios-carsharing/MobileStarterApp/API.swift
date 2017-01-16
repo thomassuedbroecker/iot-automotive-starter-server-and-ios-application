@@ -20,10 +20,10 @@ let USER_DEFAULTS_KEY_MCA_TENANT_ID = "mcaTenantId"
 struct API {
     static var moveToRootOnError = true
     // Set your varibales
-    static let defaultAppURL = "https://iot-automotive-starter-tsuedbro.mybluemix.net" // My Bluemix URL
-    static let defaultPushAppGUID = "002fee1a-71ed-4531-a602-3b3a97602b2a"      // PushNotifications Service
-    static let defaultPushClientSecret = "a1c164d3-2bae-46fc-be96-cf3551b50522" // PushNotifications Service
-    static let defaultMcaTenantId = "26818fe8-b490-4773-934c-5dc3f3da331f"      // AdvancedMobileAccess Service
+    static let defaultAppURL = "https://<host>.mybluemix.net" // My Bluemix URL
+    static let defaultPushAppGUID = "<your-key>"      // PushNotifications Service
+    static let defaultPushClientSecret = "<your-key>" // PushNotifications Service
+    static let defaultMcaTenantId = "<your-key>"      // AdvancedMobileAccess Service
     static var bmRegion = BMSClient.Region.usSouth
     static var customRealm = "custauth"
 
@@ -31,7 +31,7 @@ struct API {
     static var connectedPushAppGUID = defaultPushAppGUID
     static var connectedPushClientSecret = defaultPushClientSecret
     static var connectedMcaTenantId = defaultMcaTenantId
-    
+
     static var carsNearby = "\(connectedAppURL)/user/carsnearby"
     static var reservation = "\(connectedAppURL)/user/reservation"
     static var reservations = "\(connectedAppURL)/user/activeReservations"
@@ -70,7 +70,7 @@ struct API {
     static func delegateCustomAuthHandler() -> Void {
         let delegate = CustomAuthDelegate()
         let mcaAuthManager = MCAAuthorizationManager.sharedInstance
-        
+
         do {
             try mcaAuthManager.registerAuthenticationDelegate(delegate, realm: customRealm)
             print("CustomeAuthDelegate was registered")
@@ -106,11 +106,11 @@ struct API {
             print("non-MCA server")
         }
     }
-    
+
     static func login(requestAfterLogin: NSMutableURLRequest?, callback: ((NSHTTPURLResponse, [NSDictionary]) -> Void)?){
         let customResourceURL = BMSClient.sharedInstance.bluemixAppRoute! + "/user/login"
         let request = Request(url: customResourceURL, method: HttpMethod.GET)
-        
+
         print("get to /user/login")
         let callBack: BMSCompletionHandler = {(response: Response?, error: NSError?) in
             if error == nil {
@@ -124,17 +124,17 @@ struct API {
         }
         request.send(completionHandler: callBack)
     }
-   
+
     static func handleError(error: NSError) {
         doHandleError("Communication Error", message: "\(error)", moveToRoot: moveToRootOnError)
     }
-    
+
     static func handleServerError(data:NSData, response: NSHTTPURLResponse) {
         let responseString = String(data: data, encoding: NSUTF8StringEncoding)
         let statusCode = response.statusCode
         doHandleError("Server Error", message: "Status Code: \(statusCode) - \(responseString!)", moveToRoot: false)
     }
-    
+
     static func doHandleError(title:String, message: String, moveToRoot: Bool) {
         var vc: UIViewController?
         if var topController = UIApplication.sharedApplication().keyWindow?.rootViewController {
@@ -146,7 +146,7 @@ struct API {
             let window:UIWindow?? = UIApplication.sharedApplication().delegate?.window
             vc = window!!.rootViewController!
         }
-        
+
         let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
             alert.removeFromParentViewController()
@@ -159,12 +159,12 @@ struct API {
             }
         }
         alert.addAction(okAction)
-        
+
         dispatch_async(dispatch_get_main_queue(), {
             vc!.presentViewController(alert, animated: true, completion: nil)
         })
     }
-    
+
     static func getUUID() -> String {
         if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("iota-starter-uuid") {
             return uuid
@@ -181,7 +181,7 @@ struct API {
         print("toBMSRequest url: \(request.URL!.absoluteString)")
         return bmsRequest
     }
-    
+
     static private func toJsonArray(data: NSData) -> [NSMutableDictionary] {
         var jsonArray: [NSMutableDictionary] = []
         do {
@@ -211,7 +211,7 @@ struct API {
         print("\(request.HTTPMethod) to \(request.URL!)")
         request.setValue(getUUID(), forHTTPHeaderField: "iota-starter-uuid")
         print("using UUID: \(getUUID())")
-        
+
         if connectedMcaTenantId != "" {
             print("doRequest(BMS)")
             let bmsRequest = toBMSRequest(request)
@@ -219,16 +219,16 @@ struct API {
             let bmsCallback: BMSCompletionHandler = {(response: Response?, error: NSError?) in
                 if error == nil {
                     let nsResponse = NSHTTPURLResponse(URL: request.URL!, statusCode: response!.statusCode!, HTTPVersion: "HTTP/?.?", headerFields: response!.headers as! [String : String])!
-                    
+
                     print("response = \(response!.statusCode!) \(response!.headers)")
-                    
+
                     print("responseString = \(response!.responseText)")
-                    
+
                     let jsonArray = toJsonArray(response!.responseData!)
-                    
+
                     let statusCode = response!.statusCode
                     print("statusCode was \(statusCode)")
-                    
+
                     switch statusCode! {
                     case 401:
                         fallthrough
@@ -263,19 +263,19 @@ struct API {
                     handleError(error!)
                     return
                 }
-            
+
                 print("response = \(response!)")
-            
+
                 let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
                 print("responseString = \(responseString!)")
-            
+
                 let jsonArray = toJsonArray(data!)
-            
+
                 let httpStatus = response as? NSHTTPURLResponse
                 print("statusCode was \(httpStatus!.statusCode)")
-            
+
                 let statusCode = httpStatus?.statusCode
-            
+
                 switch statusCode! {
                 case 401:
                 self.login(request, callback: callback)
@@ -308,7 +308,7 @@ struct API {
         let splitedAppVersion = appVersion.componentsSeparatedByString(".")
         return splitedApiVersion[0] == splitedAppVersion[0]
     }
-    
+
     static func getLocation(lat: Double, lng: Double, label: UILabel) -> Void {
         let gc: CLGeocoder = CLGeocoder()
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
@@ -331,7 +331,7 @@ struct API {
                         // TODO: localize
                         label.text = "unknown location"
                     }
-                    
+
                     label.textColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
                     label.highlightedTextColor = UIColor.whiteColor()
                 }

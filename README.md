@@ -141,7 +141,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $   Step 4: Start the Bluemix Application inside Bluemix. (PRESS RETURN)
     ```
 
-    **d) Restage the Bluemix Application**
+    **d) Push the Bluemix Application**
     ```sh
     $  
     $  Did you finish this tasks: Y/N
