@@ -12,7 +12,8 @@ organization_name="<bluemix-organization-name>"
 space_name="<bluemix-space-name>"
 application_name="<bluemix-application-name>"
 
-echo "--> Ensure to deploy into the right bluemix region"
+echo "*****************************************************"
+echo "--> Start Restage and ensure to deploy into the right bluemix region"
 echo "Insert your password:"
 # How to input a password in bash shell
 # http://stackoverflow.com/questions/3980668/how-to-get-a-password-from-a-shell-script-without-echoing
@@ -28,3 +29,5 @@ echo "******* push to CF ********"
 cf restage  $application_name
 echo "******* start CF logging ********"
 cf logs  $application_name
+echo "-> DONE!"
+echo "*****************************************************"

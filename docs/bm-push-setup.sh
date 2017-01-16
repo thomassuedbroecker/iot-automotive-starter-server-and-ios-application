@@ -5,8 +5,8 @@
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 
-echo "--> Ensure to deploy into the right bluemix region"
-echo "-> Start setup"
+echo "*****************************************************"
+echo "-> Start setup Bluemix Application"
 
 user="<bluemix-id>"
 # bluemix_api="https://api.eu-gb.bluemix.net"
@@ -34,18 +34,18 @@ echo "******* push $application_name to Bluemix ********"
 cf push  $application_name --no-start
 echo "******* Create Custom Environment Variable ********"
 echo "->Set ADMIN USER and PASSWORD"
-echo "->Choose a administration user:"
-read -s $user
+echo "->Choose a administration user (ADMIN):"
+read user
 cf set-env $application_name ADMIN_USER $user
-echo "->Choose a administration user password:"
-read -s $password
+echo "->Choose a administration user password (ADMIN):"
+read password
 cf set-env $application_name ADMIN_PASSWORD $password
-echo "->Disable MCA_AUTHENTICATION"
+echo "->Disable MCA_AUTHENTICATION = false"
 cf set-env $application_name MCA_AUTHENTICATION false
-echo "->Do not enable DISABLE_DEMO_CAR_DEVICES"
+echo "->Do not enable DISABLE_DEMO_CAR_DEVICES = false"
 cf set-env $application_name DISABLE_DEMO_CAR_DEVICES false
 echo ""
-echo "***************"
+echo "*****************************************************"
 echo "Now you must:"
 echo ""
 echo "Activating the bluemix services"
@@ -65,7 +65,9 @@ then
    echo "-> DONE!"
    echo "-> First Setup is DONE!"
    echo "-> There are remaining steps to do!"
+   echo "*****************************************************"
 else
   echo "-> Setup FAILED!"
   echo "-> Best is to delete the application and services and run the setup once more."
+  echo "*****************************************************"
 fi

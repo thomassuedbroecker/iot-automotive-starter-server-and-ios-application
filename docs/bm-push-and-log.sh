@@ -5,6 +5,7 @@
 # cf api https://api.eu-gb.bluemix.net UK
 # cf api https://api.ng.bluemix.net US
 
+echo "*****************************************************"
 echo "--> Ensure to deploy into the right bluemix region"
 echo "-> Start"
 
@@ -35,3 +36,4 @@ cf push  $application_name
 echo "******* start CF logging ********"
 cf logs  $application_name
 echo "-> DONE!"
+echo "*****************************************************"

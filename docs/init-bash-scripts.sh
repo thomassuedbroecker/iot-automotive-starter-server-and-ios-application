@@ -2,7 +2,7 @@
 # Information steps:
 # 1) chmod u+x init-bash-scripts.sh
 # 2) ./init-bash-scripts.sh
-
+echo "********************************"
 echo "--> Init all bash scripts"
 echo "--> Init Git scripts"
 chmod u+x git-commit.sh
@@ -22,3 +22,4 @@ echo "--> Init MobileApp script"
 chmod u+x mobile-setup-ios-mobile-app.sh
 
 echo "--> Init bash scripts - Done!"
+echo "********************************"
