@@ -67,11 +67,13 @@ read answer
 if [ $answer == 'Y' ]
 then
    echo "OK fine, now you are ready to do the next step!"
-   echo "******* restage $application_name ********"
-   cf restage  $application_name
+   echo "******* push $application_name ********"
+   cf push  $application_name
    echo "-> DONE!"
    echo "-> First Setup is DONE!"
    echo "-> There are remaining steps to do!"
+   echo "-> a) Setup MobileAccess and PushNotifications"
+   echo "-> b) Setup iOS Application"
    echo "*****************************************************"
 else
   echo "-> Setup FAILED!"
