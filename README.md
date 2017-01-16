@@ -151,16 +151,20 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $  -> There are remaining steps to do!
     ```
 
-You now have your very own instance of the IoT for Automotive - Mobility Starter Application on Bluemix.  
+You now have your very own instance of the
+**IoT for Automotive - Mobility Starter Application**
+on Bluemix.  
 
-To run the car sharing Mobility Starter Application you need to install the mobile app and connect it to your server instance. You must also activate the IoT for Automotive services on Bluemix that you created earlier when you deployed your server instance and then complete the optional configuration steps.
+To run the car sharing **Mobility Starter Application** you need to install the mobile app and connect it to your server instance.
+
+You **MUST** also activate the IoT for Automotive services on Bluemix that you created earlier when you deployed your server instance and then complete the configuration steps.
 
 
 ## Deploying the mobile app and enable the push-notifications
 
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
 
-I this project the iOS Mobile code is in this project.
+I this project the iOS Mobile code is in this project in the folder
 **mobile-app-ios-carsharing** .
 
 To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
@@ -197,7 +201,7 @@ To setup the iOS project you call the **docs/setup-ios-mobile-app.sh** from the 
 This will open the xCode workspace.
 
   ```sh
-  $ ./setup-ios-mobile-app.sh
+  $ ./mobile-setup-ios-mobile-app.sh
   ```
 To configure the **PUSH** you need to change the bundle ID **com.ibm.iot.automotive.starter.carsharing** to your needs and you need the two Mobile Services **"PushNotifications and Mobile Client Access"** connected to your server application.
 
