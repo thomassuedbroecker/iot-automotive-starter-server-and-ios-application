@@ -7,6 +7,22 @@
  *
  * You may not use this file except in compliance with the license.
  */
+
+ /** Implementation Information for the folder driverInsights
+ *   ========================================================
+ *
+ *  Driver Profile handles a request to access a driver's behavior by using Driver Behavior service.
+ *  The routes/user/insights.js component defines the end point and the driverInsights/analyze.js component contains the implementation.
+ *
+ *  Driving Analysis gets events containing probe data from registered cars through Watson IoT Platform.
+ *  It then sends the probe data to the Context Mapping service to get the corrected location and sends
+ *  the corrected location to the Driver Behavior service to get the driver's behavior.
+ *  The driverInsights/probe.js component is the entry point to explore the implementation.
+ *  It also stores the probe data to Cloudant database "trip_route" that is used to retrieve a trip route.
+ *  For more information, see the driverInsights/tripRoutes.js component.
+ *
+ */
+ 
 var Q = new require('q');
 var _ = new require('underscore');
 var request = require("request");
@@ -29,7 +45,7 @@ var contextMapping = {
 		}
 		throw new Error("!!! no provided credentials for MapInsights. using shared one !!!");
 	}(),
-	
+
 	/*
 	 * Get options for an HTTP request
 	 */
@@ -57,9 +73,9 @@ var contextMapping = {
 		var deferred = Q.defer();
 
 		var options = {
-				url: this.contextMappingConfig.baseURL + '/mapservice/routesearch' + 
-					'?tenant_id=' + this.contextMappingConfig.tenant_id + 
-					'&orig_heading=0&dest_heading=0' + 
+				url: this.contextMappingConfig.baseURL + '/mapservice/routesearch' +
+					'?tenant_id=' + this.contextMappingConfig.tenant_id +
+					'&orig_heading=0&dest_heading=0' +
 					'&orig_latitude=' + orig_lat.toString() +
 					'&orig_longitude=' + orig_lon.toString() +
 					'&dest_latitude=' + dest_lat.toString() +
@@ -80,7 +96,7 @@ var contextMapping = {
 				console.error("error on routesearch\n url: " +  options.url + "\n body: " + body);
 				return deferred.reject(response.toJSON());
 			}
-			
+
 			try{
 				deferred.resolve(JSON.parse(body));
 			}catch(e){
@@ -90,7 +106,7 @@ var contextMapping = {
 		});
 		return deferred.promise;
 	},
-	
+
 	/**
 	 * Async get distance from (orig_lat, orig_lon) to (dest lat, dest_lon).
 	 */
@@ -110,11 +126,11 @@ var contextMapping = {
 	 */
 	matchMapRaw: function(lat, lon, errorOnErrorResponse){
 		var deferred = Q.defer();
-		
+
 		var options = {
 				url: this.contextMappingConfig.baseURL + '/mapservice/map/matching' +
-						'?tenant_id=' + this.contextMappingConfig.tenant_id + 
-						'&latitude=' + lat.toString() + 
+						'?tenant_id=' + this.contextMappingConfig.tenant_id +
+						'&latitude=' + lat.toString() +
 						'&longitude=' + lon.toString(),
 				rejectUnauthorized: false,
 				'auth': {
@@ -206,7 +222,7 @@ var contextMapping = {
 				debug('[CACHE]   cache size is reduced to %d.', Object.keys(this._linkInformationCache).length);
 			}
 		}
-		
+
 		var deferred = Q.defer();
 		var options = {
 			url: this.contextMappingConfig.baseURL + "/mapservice/link" +
@@ -251,7 +267,7 @@ var contextMapping = {
 	/**
 	 * Create an event in the Context Mapping servie
 	 * https://developer.ibm.com/api/view/id-194:title-IBM__Watson_IoT_Context_Mapping#POST/eventservice/event
-	 * @param event: a JSON object w/ s_latitude, s_longitude, event_type properties. 
+	 * @param event: a JSON object w/ s_latitude, s_longitude, event_type properties.
 	 * @returns deferred. successful result returns the event ID (integer).
 	 */
 	createEvent: function(event){
@@ -316,7 +332,7 @@ var contextMapping = {
 			};
 		if (event_type) params.event_type = event_type;
 		if (status) params.status = status;
-		
+
 		var options = contextMapping._getRequestOptions('/eventservice/event/query', params);
 		request(options, function(error, response, body){
 			if(!error && response.statusCode == 200){

@@ -7,6 +7,22 @@
  *
  * You may not use this file except in compliance with the license.
  */
+
+/** Implementation Information for the folder driverInsights
+*   ========================================================
+*
+*  Driver Profile handles a request to access a driver's behavior by using Driver Behavior service.
+*  The routes/user/insights.js component defines the end point and the driverInsights/analyze.js component contains the implementation.
+*
+*  Driving Analysis gets events containing probe data from registered cars through Watson IoT Platform.
+*  It then sends the probe data to the Context Mapping service to get the corrected location and sends
+*  the corrected location to the Driver Behavior service to get the driver's behavior.
+*  The driverInsights/probe.js component is the entry point to explore the implementation.
+*  It also stores the probe data to Cloudant database "trip_route" that is used to retrieve a trip route.
+*  For more information, see the driverInsights/tripRoutes.js component.
+*
+*/
+
 var _ = require("underscore");
 var Q = new require('q');
 var request = require("request");
@@ -24,10 +40,10 @@ var insertTripRouteTimer = null;
 IOTF.on("+", function(payload, deviceType, deviceId){
 	// check mandatory field
 	if(!payload || !payload.trip_id || payload.trip_id.length === 0) return;
-	if(!(payload.matched_longitude && 
-			payload.matched_latitude && 
-			payload.matched_heading && 
-			(payload.matched_link_id || payload.link_id) && 
+	if(!(payload.matched_longitude &&
+			payload.matched_latitude &&
+			payload.matched_heading &&
+			(payload.matched_link_id || payload.link_id) &&
 			payload.speed)){
 		// need map matching
 		if(isNaN(payload.lng) || isNaN(payload.lat) || !payload.trip_id || isNaN(payload.speed)){
@@ -40,7 +56,7 @@ IOTF.on("+", function(payload, deviceType, deviceId){
 
 	// assign ts if missing
 	payload.ts = moment(payload.ts || Date.now()).valueOf();
-	
+
 	(driverInsightsProbe.mapMatch(deviceType, deviceId, payload).then(function(prob){
 		driverInsightsProbe.sendProbeData([prob]);
 		return prob;
@@ -96,13 +112,13 @@ var driverInsightsProbe = {
 		}
 		throw new Exception("!!! no provided credentials for DriverInsights. using shared one !!!");
 	}(),
-	
+
 	mapMatch: function(deviceType, deviceId, payload){
 		var self = this;
 		var getProbe = function(results){
 			if (results.length == 0)
 				return Q.reject(new Error('rejecting as no matched location.'));
-			
+
 			var matched = results[0];
 			var m = moment(payload.ts);
 			var prob = {
@@ -127,16 +143,16 @@ var driverInsightsProbe = {
 				return prob;
 			}
 		}
-		if(payload.matched_longitude && 
-			payload.matched_latitude && 
-			payload.matched_heading && 
-			(payload.matched_link_id || payload.link_id) && 
+		if(payload.matched_longitude &&
+			payload.matched_latitude &&
+			payload.matched_heading &&
+			(payload.matched_link_id || payload.link_id) &&
 			payload.speed){
 			return Q(getProbe([payload]));
 		}
 		return contextMapping.matchMapRaw(payload.lat, payload.lng).then(getProbe);
 	},
-	
+
 	/*
 	 * @param carProbeData a JSON object like
 	 * [
@@ -148,7 +164,7 @@ var driverInsightsProbe = {
 		var self = this;
 		var node = this.driverInsightsConfig;
 		var api = "/datastore/carProbe";
-		
+
 		var options = {
 				method: 'POST',
 				url: node.baseURL+api+'?tenant_id='+node.tenant_id,
@@ -179,10 +195,10 @@ var driverInsightsProbe = {
 			});
 		}
 	},
-	
+
 	getCarProbeDataListAsDate: function(callback) {
 		var deferred = Q.defer();
-		
+
 		var node = this.driverInsightsConfig;
 		var api = "/datastore/carProbe/dateList";
 		var options = {

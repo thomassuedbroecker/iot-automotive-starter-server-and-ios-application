@@ -7,6 +7,22 @@
  *
  * You may not use this file except in compliance with the license.
  */
+
+ /** Implementation Information for the folder driverInsights
+ *   ========================================================
+ *
+ *  Driver Profile handles a request to access a driver's behavior by using Driver Behavior service.
+ *  The routes/user/insights.js component defines the end point and the driverInsights/analyze.js component contains the implementation.
+ *
+ *  Driving Analysis gets events containing probe data from registered cars through Watson IoT Platform.
+ *  It then sends the probe data to the Context Mapping service to get the corrected location and sends
+ *  the corrected location to the Driver Behavior service to get the driver's behavior.
+ *  The driverInsights/probe.js component is the entry point to explore the implementation.
+ *  It also stores the probe data to Cloudant database "trip_route" that is used to retrieve a trip route.
+ *  For more information, see the driverInsights/tripRoutes.js component.
+ *
+ */
+ 
 var tripRoutes = module.exports;
 
 var _ = require("underscore");
@@ -43,10 +59,10 @@ _.extend(tripRoutes, {
 						var route0 = body.routes[0];
 						var routeZ = body.routes[numRoutes-1];
 						deferred.resolve({
-							trip_id: trip_id, 
-							start_latitude: route0.lat-0, 
+							trip_id: trip_id,
+							start_latitude: route0.lat-0,
 							start_longitude: route0.lng-0,
-							end_latitude: routeZ.lat-0, 
+							end_latitude: routeZ.lat-0,
 							end_longitude: routeZ.lng-0,
 							start_time: moment(route0.ts).valueOf(),
 							end_time: moment(routeZ.ts).valueOf()
@@ -61,7 +77,7 @@ _.extend(tripRoutes, {
 		});
 		return deferred.promise;
 	},
-	
+
 	getTripLocation: function(trip_id){
 		var deferred = Q.defer();
 		Q.when(this.db, function(db){
@@ -115,7 +131,7 @@ _.extend(tripRoutes, {
 			});
 		});
 	},
-	
+
 	getTripRouteRaw: function(trip_id){
 		var deferred = Q.defer();
 		var self = this;
@@ -227,7 +243,7 @@ _.extend(tripRoutes, {
 				});
 			});
 	},
-	
+
 	setJobIdToStatus: function(job_id, tripIds) {
 		var self = this;
 		var deferred = Q.defer();
@@ -345,8 +361,8 @@ _.extend(tripRoutes, {
 		};
 		var designDoc = {
 				_id: '_design/' + TRIPROUTES_DB_NAME,
-				indexes: { 
-					trips: { 
+				indexes: {
+					trips: {
 						analyzer: {name: 'keyword'},
 						index: deviceTripIndexer.toString()
 					},

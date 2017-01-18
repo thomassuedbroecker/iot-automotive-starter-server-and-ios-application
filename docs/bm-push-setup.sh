@@ -49,7 +49,7 @@ echo "*****************************************************"
 echo "Now you must:"
 echo ""
 echo "Activating the bluemix services"
-echp "==============================="
+echo "==============================="
 echo "Before you can use the application you must activate the Context Mapping and Driver Behavior services on Bluemix, as outlined in the following steps:"
 echo " Step 0: Make sure that the app is not running on Bluemix. (PRESS RETURN)"
 read return

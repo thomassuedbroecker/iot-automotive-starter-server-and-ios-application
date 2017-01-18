@@ -7,6 +7,22 @@
  *
  * You may not use this file except in compliance with the license.
  */
+
+ /** Implementation Information for the folder driverInsights
+ *   ========================================================
+ *
+ *  Driver Profile handles a request to access a driver's behavior by using Driver Behavior service.
+ *  The routes/user/insights.js component defines the end point and the driverInsights/analyze.js component contains the implementation.
+ *
+ *  Driving Analysis gets events containing probe data from registered cars through Watson IoT Platform.
+ *  It then sends the probe data to the Context Mapping service to get the corrected location and sends
+ *  the corrected location to the Driver Behavior service to get the driver's behavior.
+ *  The driverInsights/probe.js component is the entry point to explore the implementation.
+ *  It also stores the probe data to Cloudant database "trip_route" that is used to retrieve a trip route.
+ *  For more information, see the driverInsights/tripRoutes.js component.
+ *
+ */
+ 
 var driverInsightsAnalyze = module.exports = {};
 
 var _ = require("underscore");
@@ -47,14 +63,14 @@ _.extend(driverInsightsAnalyze, {
 
 	// Configurations for Driver Behavior service is specified in ./probe.js
 	driverInsightsConfig: driverInsightsProbe.driverInsightsConfig,
-	
+
 	last_job_ts: 0, // Set an old date to analyze all probe data if no analysis has requested before
 
 	watchingJobs: [], // List of watching jobs to delete duplicated analyze results
 	timeoutId: null,
 	requestQueue: [],
-	
-	authOptions: { 
+
+	authOptions: {
 		rejectUnauthorized: false,
 		auth: {
 			user: driverInsightsProbe.driverInsightsConfig.username,
@@ -130,13 +146,13 @@ _.extend(driverInsightsAnalyze, {
 				}
 				self.last_job_ts = moment().valueOf();
 			} else {
-				console.error('SendJobRequest error: '+ body + 
-						'\n response: ' + JSON.stringify(response) + 
+				console.error('SendJobRequest error: '+ body +
+						'\n response: ' + JSON.stringify(response) +
 						'\n error: ' + JSON.stringify(error));
 			}
 		});
 	},
-	
+
 	/**
 	 * Get summary of a trip.
 	 * The response is as is of response from Driver Behavior service.
@@ -145,7 +161,7 @@ _.extend(driverInsightsAnalyze, {
 	 */
 	getSummary: function(trip_id){
 		var deferred = Q.defer();
-		
+
 		var config = this.driverInsightsConfig;
 		var url = config.baseURL+'/drbresult/tripSummaryList?tenant_id='+config.tenant_id;
 		if(trip_id){
@@ -170,10 +186,10 @@ _.extend(driverInsightsAnalyze, {
 				deferred.reject({message: msg, trip_id: trip_id});
 			}
 		});
-		
+
 		return deferred.promise;
 	},
-	 
+
 	/*
 	 * Get list of analysis result.
 	 * The response is as is of response from Driver Behavior service.
@@ -191,7 +207,7 @@ _.extend(driverInsightsAnalyze, {
 		var numTrip = idList.length;
 		var numResponse = 0;
 		var results = [];
-		
+
 		var f = function(error, body){
 			if(error && error.trip_id && allTrips){
 				// may be analysis is not done yet
@@ -220,13 +236,13 @@ _.extend(driverInsightsAnalyze, {
 			var id = idList.shift();
 			retrieveMethod(id.trip_id, id.trip_uuid).then(successf, f);
 		}
-		
+
 		return deferred.promise;
 	},
-	
+
 	getList: function(tripIdList, allTrips){
 		this.sendJobRequest();
-		
+
 		if(tripIdList){
 			var idList = tripIdList.map(function(id){
 				return {trip_id: id};
@@ -236,7 +252,7 @@ _.extend(driverInsightsAnalyze, {
 			return this.getSummary();
 		}
 	},
-	
+
 	/**
 	 * Get an analysis result.
 	 * The response is as is of response from Driver Behavior service.
@@ -245,7 +261,7 @@ _.extend(driverInsightsAnalyze, {
 	getDetail: function(tripuuid) {
 		return this._getDetail(null, tripuuid);
 	},
-	
+
 	/*
 	 * Get an analysis result.
 	 * The response is as is of response from Driver Behavior service.
@@ -253,7 +269,7 @@ _.extend(driverInsightsAnalyze, {
 	_getDetail: function(trip_id, tripuuid) {
 		if(tripuuid){
 			var deferred = Q.defer();
-			
+
 			var config = this.driverInsightsConfig;
 			var api = "/drbresult/trip";
 			var options = {
@@ -271,7 +287,7 @@ _.extend(driverInsightsAnalyze, {
 				}
 			});
 			return deferred.promise;
-			
+
 		}else if(trip_id){
 			var deferred = Q.defer();
 			driverInsightsTripRoutes.getTripInfo(trip_id).then(function(info){
@@ -291,7 +307,7 @@ _.extend(driverInsightsAnalyze, {
 	getTripAnalysisStatus: function(trip_id){
 		var deferred = Q.defer();
 		var self = this;
-		
+
 		driverInsightsTripRoutes.getJobStatus(trip_id)
 			.then(function(jobStatus){
 				var job_status = jobStatus.job_status;
@@ -357,7 +373,7 @@ _.extend(driverInsightsAnalyze, {
 	 */
 	getLatestBehavior: function() {
 		var deferred = Q.defer();
-		
+
 		var self = this;
 		this.getList().then(function(response){
 			if(response && response.length > 0){
@@ -372,7 +388,7 @@ _.extend(driverInsightsAnalyze, {
 		}, function(error){
 			deferred.reject(error);
 		});
-		
+
 		return deferred.promise;
 	},
 
@@ -381,7 +397,7 @@ _.extend(driverInsightsAnalyze, {
 	 */
 	getBehavior: function(tripuuid) {
 		var deferred = Q.defer();
-		
+
 		var self = driverInsightsAnalyze;
 		self.getDetail(tripuuid).then(function(response){
 			var subtripsarray = response.ctx_sub_trips;
@@ -407,7 +423,7 @@ _.extend(driverInsightsAnalyze, {
 			// behaviors
 			var behaviors = {};
 			behaviorNames.forEach(function(name){ behaviors[name] = []; });
-			
+
 			subtripsarray.forEach(function(subtrip){
 				var driving_behavior_details = subtrip.driving_behavior_details;
 				driving_behavior_details.forEach(function(bhr){
@@ -445,27 +461,27 @@ _.extend(driverInsightsAnalyze, {
 			body.locations = locations;
 			// scoring
 			body.scoring = self._calculateBehaviorScores(response);
-			
+
 			deferred.resolve(body);
-			
+
 		}, function(error){
 			deferred.reject(error);
 		});
-		
+
 		return deferred.promise;
 	},
-	
+
 	/*
 	 * Get list of driver behaviors.
 	 * The response is as is of response from Driver Behavior service.
 	 * @param ids list of {trip_uuid, trip_id}
-	 * @param allTrips true to get all trips including trips that don't have a corresponding analysis result yet. 
-	 * @param If allTrips is true, The ids should contains trip_id. 
+	 * @param allTrips true to get all trips including trips that don't have a corresponding analysis result yet.
+	 * @param If allTrips is true, The ids should contains trip_id.
 	 */
 	_getListOfDetail:function(ids, allTrips) {
 		return this._getListOfTrips(ids, false, allTrips);
 	},
-	
+
 	/*
 	 * Calculate driving score for a trip.
 	 */
@@ -480,7 +496,7 @@ _.extend(driverInsightsAnalyze, {
 		};
 		var trip_total_time = trip.end_time - trip.start_time;
 		scoring.totalTime += trip_total_time;
-		
+
 		behaviorNames.forEach(function(name){
 			if(!scoring[name]){
 				scoring[name] = {
@@ -540,13 +556,13 @@ _.extend(driverInsightsAnalyze, {
 		scoring.score = scoring.allBehavior.score;
 		return scoring;
 	},
-	
+
 	/**
 	 * Get list of driving behavior.
 	 */
 	getTripList: function(tripIdList, allTrips) {
 		var deferred = Q.defer();
-		
+
 		var self = this;
 		this.getList(tripIdList, allTrips).then(function(response){
 			if(response && response.length > 0){
@@ -670,13 +686,13 @@ _.extend(driverInsightsAnalyze, {
 	},
 
 	/**
-	* Get a Job 
+	* Get a Job
 	*/
 	getJobInfo: function(job_id, callback, errorback){
 		console.log('Getting job info: job_id = ' + job_id);
 		this._run("GET", "/jobcontrol/job", {job_id: job_id}, null, callback, errorback || (this._handleError).bind(this));
 	},
-	
+
 	/**
 	* Delete a Job
 	*/
@@ -684,7 +700,7 @@ _.extend(driverInsightsAnalyze, {
 		console.log('Deleting job result: job_id = ' + job_id);
 		this._run("DELETE", "/drbresult/jobResult", {job_id: job_id}, null, callback, errorback || (this._handleError).bind(this));
 	},
-	
+
 	/*
 	* Internal methods
 	*/
@@ -714,7 +730,7 @@ _.extend(driverInsightsAnalyze, {
 			options.body = JSON.stringify(body);
 			options.headers["Content-Length"] = Buffer.byteLength(options.body);
 		}
-		
+
 		debug("Request: " + JSON.stringify(options));
 		request(options, function(err, response, body){
 			if(!err && response.statusCode === 200){
@@ -729,9 +745,9 @@ _.extend(driverInsightsAnalyze, {
 			}
 		});
 	},
-	
+
 	_handleError: function(err, response, body){
-		console.error("analyze: Error::" + 
+		console.error("analyze: Error::" +
 				(err || (response && response.statusCode + ": " + response.statusMessage)) +
 				(body ? ('body::' + JSON.stringify(body) + '\n') : ''));
 	},
@@ -797,4 +813,3 @@ _.extend(driverInsightsAnalyze, {
 // https://console.ng.bluemix.net/docs/services/IotDriverInsights/index.html
 driverInsightsAnalyze.getAnalyzedTripSummaryList = driverInsightsAnalyze.getSummary
 driverInsightsAnalyze.getAnalyzedTripInfo = driverInsightsAnalyze.getDetail;
-
