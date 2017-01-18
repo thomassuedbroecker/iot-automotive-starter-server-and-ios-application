@@ -55,14 +55,16 @@ echo " Step 0: Make sure that the app is not running on Bluemix. (PRESS RETURN)"
 read return
 echo " Step 1: Open the Bluemix dashboard in your browser.(PRESS RETURN)"
 read return
-echo " Step 2: Open the Context Mapping service and wait for a few seconds until your credentials display.(PRESS RETURN)"
+echo " Step 2: Open the Context Mapping service and wait for a few seconds until your credentials were displayed.(PRESS RETURN)"
 read return
-echo " Step 3: Open the Driver Behavior service.(PRESS RETURN)"
+echo " Step 3: Open the Driver Behavior service and wait for a few seconds until your credentials were displayed.(PRESS RETURN)"
 read return
-echo " Step 4: Start the Bluemix application inside your Bluemix dashboard.(PRESS RETURN)"
+echo " Step 4: Open the Internet of Things service and under the tab manage pess launch dashboard, wait until you see the dashboard.(PRESS RETURN)"
 read return
+#echo " Step 5: Start the Bluemix application inside your Bluemix dashboard.(PRESS RETURN)"
+#read return
 echo ""
-echo "Did you finish this tasks: Y/N"
+echo "Did you finish these tasks: Y/N"
 read answer
 if [ $answer == 'Y' ]
 then
