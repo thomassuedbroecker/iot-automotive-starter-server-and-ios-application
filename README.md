@@ -138,7 +138,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
     $   Step 1: Open the Bluemix dashboard in your browser. (PRESS RETURN)
     $   Step 2: Open the 'Context Mapping' service and wait for a few seconds until your credentials display. (PRESS RETURN)
     $   Step 3: Open the 'Driver Behavior' service and wait for a few seconds until your credentials display. (PRESS RETURN)
-    $   Step 4: Start the Bluemix Application inside Bluemix. (PRESS RETURN)
+    $   Step 4: Open the Internet of Things service and under the tab manage press launch dashboard, wait until you see the dashboard.(PRESS RETURN) (PRESS RETURN)
     ```
 
     **d) Push the Bluemix Application**

@@ -59,7 +59,7 @@ echo " Step 2: Open the Context Mapping service and wait for a few seconds until
 read return
 echo " Step 3: Open the Driver Behavior service and wait for a few seconds until your credentials were displayed.(PRESS RETURN)"
 read return
-echo " Step 4: Open the Internet of Things service and under the tab manage pess launch dashboard, wait until you see the dashboard.(PRESS RETURN)"
+echo " Step 4: Open the Internet of Things service and under the tab manage press launch dashboard, wait until you see the dashboard.(PRESS RETURN)"
 read return
 #echo " Step 5: Start the Bluemix application inside your Bluemix dashboard.(PRESS RETURN)"
 #read return
