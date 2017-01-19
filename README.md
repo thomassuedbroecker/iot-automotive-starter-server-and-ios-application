@@ -1,3 +1,14 @@
+_NOTE:_  **Why was this project created?**
+
+This project is based on the _"IBM IoT for Automotive - Mobility Starter Application server"_, which is available here: https://github.com/ibm-watson-iot/iota-starter-server and the _"IBM IoT for Automotive - Mobility Starter Application mobile app for iOS"_ which is available here https://github.com/ibm-watson-iot/iota-starter-carsharing .
+
+The **objective** in the current project is to **simplify the setup**, be using bash scripts to automate manual command line steps. Also to have the **Server** and **Mobile Application** in **ONE** github repository.
+Also providing the full steps to setup the full sample with **PUSH Notifications**.
+
+- **simplify the setup**
+- **Server** and **Mobile Application** in **ONE** github repository
+- full setup with full with the iOS **PUSH Notifications**.
+
 # IBM IoT for Automotive - Mobility Starter Application server
 
 The IBM IoT for Automotive - Mobility Starter Application is a demo app that uses:
