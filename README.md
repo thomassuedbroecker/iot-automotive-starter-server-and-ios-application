@@ -9,7 +9,7 @@ Also providing the full steps to setup the full sample with **PUSH Notifications
 - **Server** and **Mobile Application** in **ONE** github repository
 - full setup with full with the iOS **PUSH Notifications**.
 
-# IBM IoT for Automotive - Mobility Starter Application server
+# IBM IoT for Automotive - Car Sharing Sample
 
 The IBM IoT for Automotive - Mobility Starter Application is a demo app that uses:
 
@@ -21,6 +21,11 @@ The IBM IoT for Automotive - Mobility Starter Application is a demo app that use
 ## Overview
 
 The starter app provides a mobile app for customers to quickly find and hire a car without human intervention from a car-hire company. The server component provides features that can help car hire companies manage a pool of cars and to get insights into customer usage and requirements that can also help to attract and retain customers.
+
+Some sample basic UseCases of the car-sharing system and the related Bluemix services.
+The detailed description you can find in chapter **Implementation** in this readme.
+
+![Components and flows](docs/usecase-carsharing.png)
 
 ## Server component
 
