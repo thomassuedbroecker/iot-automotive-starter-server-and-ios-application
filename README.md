@@ -107,8 +107,7 @@ To manually deploy your own instance of the Mobility Starter Application server 
 
     ```sh
     $ cd docs
-    $ chmod u+x init-bash-scripts.sh
-    $ ./init-bash-scripts.sh
+    $ chmod u+x *.sh
     ```
 
 9. Using the command line to run the bash setup. Follow the written instructions during the execution, by the execution of the **./init-sample-bluemix-cf-application.sh** file.
