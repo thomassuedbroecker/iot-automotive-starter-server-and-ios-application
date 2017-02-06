@@ -179,7 +179,7 @@ You **MUST** also activate the IoT for Automotive services on Bluemix that you c
 
 After deploying the server component, to simulate and run the starter experience, you need to install a mobile app. The mobile app is available for both iOS and Android devices.
 
-I this project the iOS Mobile App code is in this _github-project_, in the folder
+In this _github-project_, the iOS MobileApp code is in the folder
 **./mobile-app-ios-carsharing** .
 
 To play with a demo of the mobile app, you can use the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
