@@ -185,7 +185,7 @@ In this _github-project_, the iOS MobileApp code is in the folder
 To play with a demo of the mobile app, you can use the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
 
 Later you will enable push notifications.
-The push notification will show you, what is the weather condition at the drop of your current car reservation.
+The push notification will show you, what is the weather condition at the drop area, for your current car reservation.
 
 The **Mobililty Starter Application** provides a simple custom authentication service that you use here.
 
