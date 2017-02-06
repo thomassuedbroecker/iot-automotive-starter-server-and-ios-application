@@ -213,7 +213,7 @@ _First we need to configure the **Mobile Client Access** service:_
 
 _NOTE:_ For more details to you can take a look here: [Mobile Client Access service](https://github.com/ibm-watson-iot/iota-starter-carsharing#mobile-client-access-service)
 
-To setup the iOS project you call the **docs/setup-ios-mobile-app.sh** from the commandline.
+To setup the iOS project you call the **docs/mobile-setup-ios-mobile-app.sh** from the commandline.
 This will open the xCode workspace.
 
   ```sh
