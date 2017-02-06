@@ -182,9 +182,10 @@ After deploying the server component, to simulate and run the starter experience
 I this project the iOS Mobile App code is in this _github-project_, in the folder
 **./mobile-app-ios-carsharing** .
 
-To play a demo of the app, see the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
+To play with a demo of the mobile app, you can use the [Starter Experience home page](https://iot-automotive-starter.mybluemix.net).
 
-Later you will enable push notifications when the weather at the drop off time of your car reservation becomes bad.
+Later you will enable push notifications.
+The push notification will show you, what is the weather condition at the drop of your current car reservation.
 
 The **Mobililty Starter Application** provides a simple custom authentication service that you use here.
 
