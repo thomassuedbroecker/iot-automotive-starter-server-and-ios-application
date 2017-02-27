@@ -7,7 +7,7 @@ Also providing the full steps to setup the full sample with **PUSH Notifications
 
 - **simplify the setup**
 - **Server** and **Mobile Application** in **ONE** github repository
-- full setup with full with the iOS **PUSH Notifications**.
+- full setup with full iOS **PUSH Notifications** configuration.
 
 # IBM IoT for Automotive - Car Sharing Sample
 
