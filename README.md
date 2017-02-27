@@ -54,9 +54,7 @@ The Mobility Starter Application server demonstrates how quickly you can build a
 
 ## Deploying the Mobility Starter Application server on Bluemix
 
-You can automatically deploy an instance of the Mobility Starter Application server on Bluemix by clicking [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/iota-starter-server.git). You can also deploy the app manually. Note that you have to do the service activation step mentioned below after the automatic or manual deployment.
-
-To manually deploy your own instance of the Mobility Starter Application server on Bluemix, complete all of the following steps:
+Do manually deploy your own instance of the Mobility Starter Application server on Bluemix, complete all of the following steps:
 
 1. Register an account on Bluemix or use an existing valid account.
 
