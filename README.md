@@ -54,7 +54,7 @@ The Mobility Starter Application server demonstrates how quickly you can build a
 
 ## Deploying the Mobility Starter Application server on Bluemix
 
-Do manually deploy your own instance of the Mobility Starter Application server on Bluemix, complete all of the following steps:
+To manually deploy your own instance of the Mobility Starter Application server on Bluemix, complete all of the following steps:
 
 1. Register an account on Bluemix or use an existing valid account.
 
